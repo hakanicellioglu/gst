@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Teklif Detay</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    checkAuth();
+  </script>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="teklif-liste.html">Teklif Yönetimi</a>
+      <button class="btn btn-outline-danger" onclick="logout()">Çıkış Yap</button>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2>Teklif Detayı</h2>
+    <div id="teklifDetay" class="mt-3">
+      <div class="alert alert-info">Yükleniyor...</div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-sm btn-outline-primary" onclick="pdfIndir(teklifId)">PDF İndir</button>
+      <button class="btn btn-sm btn-outline-success" onclick="excelIndir(teklifId)">Excel İndir</button>
+    </div>
+    <a href="teklif-liste.html" class="btn btn-secondary mt-3">Geri Dön</a>
+  </div>
+
+
+  <script>
+    let teklifId = null;
+    async function yukle() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get("id");
+      teklifId = id;
+
+      if (!id) {
+        document.getElementById("teklifDetay").innerHTML =
+          '<div class="alert alert-danger">Teklif ID bulunamadı.</div>';
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/teklif/${id}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      if (!response.ok) {
+        document.getElementById("teklifDetay").innerHTML =
+          '<div class="alert alert-danger">Teklif yüklenemedi.</div>';
+        return;
+      }
+
+      const teklif = await response.json();
+      const html = `
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">${teklif.baslik || "-"}</h4>
+            <p class="card-text">
+              <strong>Müşteri:</strong> ${teklif.musteriAdi || "-"}<br>
+              <strong>Sistem Tipi:</strong> ${teklif.sistemTipi || "-"}<br>
+              <strong>Sistem Adedi:</strong> ${teklif.sistemAdedi || "-"}<br>
+              <strong>Teklif Tipi:</strong> ${teklif.teklifTipi || "-"}<br>
+              <strong>Tarih:</strong> ${new Date(teklif.tarih).toLocaleDateString()}<br>
+              <strong>Toplam Tutar:</strong> ${teklif.vergilerDahilToplam?.toLocaleString('tr-TR')} ₺
+            </p>
+            ${teklif.urunler?.length > 0
+          ? `
+              <h5>Ürünler</h5>
+              <ul class="list-group">
+                ${teklif.urunler
+            .map(
+              (u) =>
+                `<li class="list-group-item">${u.isim} - ${u.adet || 0} adet</li>`
+            )
+            .join("")}
+              </ul>
+              `
+          : `<p><em>Ürün bilgisi yok.</em></p>`
+        }
+          </div>
+        </div>
+      `;
+
+      document.getElementById("teklifDetay").innerHTML = html;
+    }
+
+    document.addEventListener("DOMContentLoaded", yukle);
+
+    async function pdfIndir(id) {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5000/api/teklif/${id}/pdf`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        },
+        cache: 'no-store'
+      });
+
+      if (!response.ok) {
+        alert('PDF indirilemedi.');
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `teklif_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+    }
+
+    async function excelIndir(id) {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5000/api/teklif/${id}/excel`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        },
+        cache: 'no-store'
+      });
+
+      if (!response.ok) {
+        alert('Excel indirilemedi.');
+        return;
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `teklif_${id}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+
+  </script>
+</body>
+
+</html>
