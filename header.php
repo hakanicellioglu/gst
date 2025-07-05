@@ -1,0 +1,64 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once 'config.php';
+
+$userName = 'Kullanıcı';
+if (isset($_SESSION['user_id'])) {
+    $stmt = $conn->prepare('SELECT isim, kullanici_adi FROM kullanicilar WHERE id = ?');
+    $stmt->bind_param('i', $_SESSION['user_id']);
+    $stmt->execute();
+    $info = $stmt->get_result()->fetch_assoc();
+    if ($info) {
+        $userName = $info['isim'] ?: $info['kullanici_adi'];
+    }
+}
+?>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index">Teklif Pro</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="firmalar">Firmalar</a></li>
+                <li class="nav-item"><a class="nav-link" href="musteriler">Müşteriler</a></li>
+                <li class="nav-item"><a class="nav-link" href="urunler">Ürünler</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="teklifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Teklifler</a>
+                    <ul class="dropdown-menu" aria-labelledby="teklifDropdown">
+                        <li><a class="dropdown-item" href="teklifler/genel">Genel</a></li>
+                        <li><a class="dropdown-item" href="teklifler/giyotin">Giyotin</a></li>
+                        <li><a class="dropdown-item" href="teklifler/surme">Sürme</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-outline-secondary me-3" id="themeToggle">Tema</button>
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?= htmlspecialchars($userName) ?>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" href="profil">Profil</a></li>
+                        <li><a class="dropdown-item" href="ayarlar">Ayarlar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="logout">Çıkış Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<script>
+// basit tema değiştirici
+const toggleBtn = document.getElementById('themeToggle');
+if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('bg-dark');
+        document.body.classList.toggle('text-white');
+    });
+}
+</script>
