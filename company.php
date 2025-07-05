@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $action = $_GET['action'] ?? '';
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 // Add company
 if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -70,101 +70,135 @@ $companies = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firmalar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 </head>
+
 <body>
-<?php include 'header.php'; ?>
-<div class="container mt-4">
-    <h1 class="mb-4">Firmalar</h1>
+    <?php include 'header.php'; ?>
+    <div class="container mt-4">
+        <h1 class="mb-4">Firmalar</h1>
 
-    <form class="row mb-4" method="get" action="company">
-        <div class="col-md-4">
-            <input type="text" name="search" class="form-control" placeholder="Ara" value="<?= htmlspecialchars($search) ?>">
-        </div>
-        <div class="col-md-3">
-            <select name="sort" class="form-select">
-                <option value="firma_adi" <?= $sort === 'firma_adi' ? 'selected' : '' ?>>Firma Adı</option>
-                <option value="created_at" <?= $sort === 'created_at' ? 'selected' : '' ?>>Oluşturma Tarihi</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select name="order" class="form-select">
-                <option value="asc" <?= $order === 'ASC' ? 'selected' : '' ?>>Artan</option>
-                <option value="desc" <?= $order === 'DESC' ? 'selected' : '' ?>>Azalan</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-primary w-100">Filtrele</button>
-        </div>
-    </form>
+        <form class="row mb-4" method="get" action="company">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Ara"
+                    value="<?= htmlspecialchars($search) ?>">
+            </div>
+            <div class="col-md-3">
+                <select name="sort" class="form-select">
+                    <option value="firma_adi" <?= $sort === 'firma_adi' ? 'selected' : '' ?>>Firma Adı</option>
+                    <option value="created_at" <?= $sort === 'created_at' ? 'selected' : '' ?>>Oluşturma Tarihi</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="order" class="form-select">
+                    <option value="asc" <?= $order === 'ASC' ? 'selected' : '' ?>>Artan</option>
+                    <option value="desc" <?= $order === 'DESC' ? 'selected' : '' ?>>Azalan</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Filtrele</button>
+            </div>
+        </form>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Firma Adı</th>
-                <th>Yetkili Adı</th>
-                <th>Telefon</th>
-                <th>Adres</th>
-                <th>Eposta</th>
-                <th>İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($companies as $c): ?>
-            <tr>
-                <td><?= $c['id'] ?></td>
-                <td><?= htmlspecialchars($c['firma_adi']) ?></td>
-                <td><?= htmlspecialchars($c['yetkili_adi']) ?></td>
-                <td><?= htmlspecialchars($c['telefon']) ?></td>
-                <td><?= htmlspecialchars($c['adres']) ?></td>
-                <td><?= htmlspecialchars($c['eposta']) ?></td>
-                <td>
-                    <a href="company?action=edit&id=<?= $c['id'] ?>" class="btn btn-sm btn-warning">Düzenle</a>
-                    <a href="company?action=delete&id=<?= $c['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Silmek istediğinize emin misiniz?');">Sil</a>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+        <div class="d-flex justify-content-end mb-2">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#companyModal">Firma Ekle</button>
+        </div>
 
-    <hr>
-    <h2><?= $editCompany ? 'Firma Düzenle' : 'Firma Ekle' ?></h2>
-    <form method="post" action="company?action=<?= $editCompany ? 'edit&id=' . $editCompany['id'] : 'add' ?>">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Firma Adı</label>
-                <input type="text" name="firma_adi" class="form-control" value="<?= htmlspecialchars($editCompany['firma_adi'] ?? '') ?>" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Yetkili Adı</label>
-                <input type="text" name="yetkili_adi" class="form-control" value="<?= htmlspecialchars($editCompany['yetkili_adi'] ?? '') ?>">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Firma Adı</th>
+                    <th>Yetkili Adı</th>
+                    <th>Telefon</th>
+                    <th>Adres</th>
+                    <th>Eposta</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($companies as $c): ?>
+                    <tr>
+                        <td><?= $c['id'] ?></td>
+                        <td><?= htmlspecialchars($c['firma_adi']) ?></td>
+                        <td><?= htmlspecialchars($c['yetkili_adi']) ?></td>
+                        <td><?= htmlspecialchars($c['telefon']) ?></td>
+                        <td><?= htmlspecialchars($c['adres']) ?></td>
+                        <td><?= htmlspecialchars($c['eposta']) ?></td>
+                        <td>
+                            <a href="company?action=edit&id=<?= $c['id'] ?>" class="btn btn-sm btn-warning">Düzenle</a>
+                            <a href="company?action=delete&id=<?= $c['id'] ?>" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Silmek istediğinize emin misiniz?');">Sil</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="companyModal" tabindex="-1" aria-labelledby="companyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="post"
+                        action="company?action=<?= $editCompany ? 'edit&id=' . $editCompany['id'] : 'add' ?>">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="companyModalLabel">
+                                <?= $editCompany ? 'Firma Düzenle' : 'Firma Ekle' ?>
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Firma Adı</label>
+                                    <input type="text" name="firma_adi" class="form-control"
+                                        value="<?= htmlspecialchars($editCompany['firma_adi'] ?? '') ?>" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Yetkili Adı</label>
+                                    <input type="text" name="yetkili_adi" class="form-control"
+                                        value="<?= htmlspecialchars($editCompany['yetkili_adi'] ?? '') ?>">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Telefon</label>
+                                    <input type="text" name="telefon" class="form-control"
+                                        value="<?= htmlspecialchars($editCompany['telefon'] ?? '') ?>">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Eposta</label>
+                                    <input type="email" name="eposta" class="form-control"
+                                        value="<?= htmlspecialchars($editCompany['eposta'] ?? '') ?>">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Adres</label>
+                                    <input type="text" name="adres" class="form-control"
+                                        value="<?= htmlspecialchars($editCompany['adres'] ?? '') ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Kaydet</button>
+                            <?php if ($editCompany): ?>
+                                <a href="company" class="btn btn-secondary">İptal</a>
+                            <?php else: ?>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="form-label">Telefon</label>
-                <input type="text" name="telefon" class="form-control" value="<?= htmlspecialchars($editCompany['telefon'] ?? '') ?>">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Eposta</label>
-                <input type="email" name="eposta" class="form-control" value="<?= htmlspecialchars($editCompany['eposta'] ?? '') ?>">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Adres</label>
-                <input type="text" name="adres" class="form-control" value="<?= htmlspecialchars($editCompany['adres'] ?? '') ?>">
-            </div>
-        </div>
-        <button type="submit" class="btn btn-success">Kaydet</button>
-        <?php if ($editCompany): ?>
-            <a href="company" class="btn btn-secondary">İptal</a>
-        <?php endif; ?>
-    </form>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+        <hr>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
+            </script>
 </body>
+
 </html>
