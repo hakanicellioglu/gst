@@ -18,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $adres = trim($_POST['adres'] ?? '');
 
     if ($id) {
-        $stmt = $conn->prepare('UPDATE yetkililer SET isim=?, soyisim=?, hitap=?, eposta=?, telefon=?, adres=? WHERE id=?');
+        $stmt = $conn->prepare('UPDATE musteriler SET isim=?, soyisim=?, hitap=?, eposta=?, telefon=?, adres=? WHERE id=?');
         $stmt->bind_param('ssssssi', $isim, $soyisim, $hitap, $eposta, $telefon, $adres, $id);
         $stmt->execute();
     } else {
-        $stmt = $conn->prepare('INSERT INTO yetkililer (firma_id, isim, soyisim, hitap, eposta, telefon, adres) VALUES (NULL,?,?,?,?,?,?)');
+        $stmt = $conn->prepare('INSERT INTO musteriler (firma_id, isim, soyisim, hitap, eposta, telefon, adres) VALUES (NULL,?,?,?,?,?,?)');
         $stmt->bind_param('ssssss', $isim, $soyisim, $hitap, $eposta, $telefon, $adres);
         $stmt->execute();
     }
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Handle delete
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    $stmt = $conn->prepare('DELETE FROM yetkililer WHERE id=?');
+    $stmt = $conn->prepare('DELETE FROM musteriler WHERE id=?');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     header('Location: auth');
@@ -61,7 +61,7 @@ switch ($sort) {
         $order = 'id DESC';
 }
 
-$sql = 'SELECT * FROM yetkililer';
+$sql = 'SELECT * FROM musteriler';
 $params = [];
 $types = '';
 if ($search !== '') {
