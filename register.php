@@ -1,3 +1,36 @@
+<?php
+require_once 'config.php';
+$error = '';
+$success = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+
+    if ($password !== $confirm) {
+        $error = 'Şifreler eşleşmiyor.';
+    } else {
+        $stmt = $conn->prepare('SELECT id FROM kullanicilar WHERE eposta = ?');
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $error = 'Bu email zaten kullanılıyor.';
+        } else {
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare('INSERT INTO kullanicilar (isim, kullanici_adi, parola, eposta, rol_id) VALUES (?, ?, ?, ?, 1)');
+            $stmt->bind_param('ssss', $name, $email, $hashed, $email);
+            if ($stmt->execute()) {
+                $success = true;
+            } else {
+                $error = 'Kayıt sırasında hata oluştu.';
+            }
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +42,15 @@
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
     <div class="card shadow p-4" style="min-width: 350px;">
         <h2 class="text-center mb-4">Kayıt Ol</h2>
+        <?php if ($error): ?>
+            <div class="alert alert-danger" role="alert">
+                <?= htmlspecialchars($error) ?>
+            </div>
+        <?php elseif ($success): ?>
+            <div class="alert alert-success" role="alert">
+                Kayıt başarılı!
+            </div>
+        <?php endif; ?>
         <form action="register" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">Adınız</label>
