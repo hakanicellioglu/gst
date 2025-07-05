@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param('ssss', $name, $email, $hashed, $email);
             if ($stmt->execute()) {
                 $success = true;
-                header('Location: login.php');
+                header('Location: login');
                 exit;
             } else {
                 $error = 'Kayıt sırasında hata oluştu.';
