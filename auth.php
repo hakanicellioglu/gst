@@ -74,6 +74,9 @@ if ($search !== '') {
 $sql .= ' ORDER BY ' . $order;
 
 $stmt = $conn->prepare($sql);
+if ($stmt === false) {
+    die('Prepare failed: ' . $conn->error);
+}
 if ($params) {
     $stmt->bind_param($types, ...$params);
 }
