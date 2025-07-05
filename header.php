@@ -4,6 +4,19 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once 'config.php';
 
+$path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+
+// helper for determining active link
+function nav_active(string $target): string {
+    global $path;
+    return $path === $target ? 'active border-primary border-bottom border-2' : '';
+}
+
+function nav_active_prefix(string $prefix): string {
+    global $path;
+    return strpos($path, $prefix) === 0 ? 'active border-primary border-bottom border-2' : '';
+}
+
 $userName = 'Kullanıcı';
 if (isset($_SESSION['user_id'])) {
     $stmt = $conn->prepare('SELECT isim, kullanici_adi FROM kullanicilar WHERE id = ?');
@@ -17,23 +30,23 @@ if (isset($_SESSION['user_id'])) {
 ?>
 <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="dashboard">Teklif Pro</a>
+        <a class="navbar-brand <?php echo nav_active('dashboard'); ?>" href="dashboard">Teklif Pro</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
             aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="company">Firmalar</a></li>
-                <li class="nav-item"><a class="nav-link" href="auth">Müşteriler</a></li>
-                <li class="nav-item"><a class="nav-link" href="product">Ürünler</a></li>
+                <li class="nav-item"><a class="nav-link <?php echo nav_active('company'); ?>" href="company">Firmalar</a></li>
+                <li class="nav-item"><a class="nav-link <?php echo nav_active('auth'); ?>" href="auth">Müşteriler</a></li>
+                <li class="nav-item"><a class="nav-link <?php echo nav_active('product'); ?>" href="product">Ürünler</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="teklifDropdown" role="button"
+                    <a class="nav-link dropdown-toggle <?php echo nav_active_prefix('offer'); ?>" href="#" id="teklifDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Teklifler</a>
                     <ul class="dropdown-menu" aria-labelledby="teklifDropdown">
-                        <li><a class="dropdown-item" href="offer/genel">Genel</a></li>
-                        <li><a class="dropdown-item" href="offer/giyotin">Giyotin</a></li>
-                        <li><a class="dropdown-item" href="offer/surme">Sürme</a></li>
+                        <li><a class="dropdown-item <?php echo nav_active('offer/genel'); ?>" href="offer/genel">Genel</a></li>
+                        <li><a class="dropdown-item <?php echo nav_active('offer/giyotin'); ?>" href="offer/giyotin">Giyotin</a></li>
+                        <li><a class="dropdown-item <?php echo nav_active('offer/surme'); ?>" href="offer/surme">Sürme</a></li>
                     </ul>
                 </li>
             </ul>
