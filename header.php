@@ -58,26 +58,34 @@ if (isset($_SESSION['user_id'])) {
     </div>
 </nav>
 <script>
-    // basit tema değiştirici
-    const toggleBtn = document.getElementById('themeToggle');
-    const navbar = document.getElementById('mainNavbar');
+// tema değiştirici - seçimi sakla
+const toggleBtn = document.getElementById('themeToggle');
+const navbar = document.getElementById('mainNavbar');
 
-    function applyTheme(mode) {
-        if (mode === 'dark') {
-            document.body.classList.add('bg-dark', 'text-white');
-            if (navbar) {
-                navbar.classList.remove('navbar-light', 'bg-light');
-                navbar.classList.add('navbar-dark', 'bg-dark');
-            }
-        } else {
-            document.body.classList.remove('bg-dark', 'text-white');
-            if (navbar) {
-                navbar.classList.remove('navbar-dark', 'bg-dark');
-                navbar.classList.add('navbar-light', 'bg-light');
-            }
+function applyTheme(mode) {
+    if (mode === 'dark') {
+        document.body.classList.add('bg-dark', 'text-white');
+        if (navbar) {
+            navbar.classList.remove('navbar-light', 'bg-light');
+            navbar.classList.add('navbar-dark', 'bg-dark');
+        }
+    } else {
+        document.body.classList.remove('bg-dark', 'text-white');
+        if (navbar) {
+            navbar.classList.remove('navbar-dark', 'bg-dark');
+            navbar.classList.add('navbar-light', 'bg-light');
         }
     }
+}
 
-    const saved = localStorage.getItem('theme') || 'light';
-    applyTheme(saved);
+const saved = localStorage.getItem('theme') || 'light';
+applyTheme(saved);
+
+if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+        const newTheme = document.body.classList.contains('bg-dark') ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+}
 </script>
