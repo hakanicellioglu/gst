@@ -523,6 +523,67 @@ ALTER TABLE `surmeteklifkalemler`
 --
 ALTER TABLE `yetkiler`
   ADD CONSTRAINT `yetkiler_ibfk_1` FOREIGN KEY (`rol_id`) REFERENCES `roller` (`id`) ON DELETE CASCADE;
+-- BEGIN custom tables
+-- --------------------------------------------------------
+--
+-- Tablo için tablo yapısı `firmalar`
+--
+CREATE TABLE `firmalar` (
+  `id` int(11) NOT NULL,
+  `firma_adi` varchar(150) NOT NULL,
+  `eposta` varchar(150) DEFAULT NULL,
+  `telefon` varchar(30) DEFAULT NULL,
+  `adres` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+--
+-- Tablo için tablo yapısı `yetkililer`
+--
+CREATE TABLE `yetkililer` (
+  `id` int(11) NOT NULL,
+  `firma_id` int(11) DEFAULT NULL,
+  `isim` varchar(100) NOT NULL,
+  `soyisim` varchar(100) DEFAULT NULL,
+  `hitap` enum('bey','hanımefendi') DEFAULT 'bey',
+  `eposta` varchar(150) DEFAULT NULL,
+  `telefon` varchar(30) DEFAULT NULL,
+  `adres` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Tablo için indeksler `firmalar`
+--
+ALTER TABLE `firmalar`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Tablo için indeksler `yetkililer`
+--
+ALTER TABLE `yetkililer`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `firma_id` (`firma_id`);
+
+--
+-- Tablo için AUTO_INCREMENT değeri `firmalar`
+--
+ALTER TABLE `firmalar`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `yetkililer`
+--
+ALTER TABLE `yetkililer`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo kısıtlamaları `yetkililer`
+--
+ALTER TABLE `yetkililer`
+  ADD CONSTRAINT `yetkililer_ibfk_1` FOREIGN KEY (`firma_id`) REFERENCES `firmalar` (`id`) ON DELETE SET NULL;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
