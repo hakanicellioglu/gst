@@ -195,10 +195,30 @@ $companies = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 </div>
             </div>
         </div>
-        <hr>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
-            </script>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Telefon</label>
+                <input type="text" name="telefon" class="form-control" value="<?= htmlspecialchars($editCompany['telefon'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Eposta</label>
+                <input type="email" name="eposta" class="form-control" value="<?= htmlspecialchars($editCompany['eposta'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Adres</label>
+                <input type="text" name="adres" class="form-control" value="<?= htmlspecialchars($editCompany['adres'] ?? '') ?>">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Kaydet</button>
+        <?php if ($editCompany): ?>
+            <a href="company" class="btn btn-secondary">İptal</a>
+        <?php endif; ?>
+    </form>
+</div>
+<script>
+console.log('Sayfa yüklendi. editCompany durumu:', <?= json_encode((bool)$editCompany) ?>);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>
 
 </html>
