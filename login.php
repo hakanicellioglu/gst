@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($row = $result->fetch_assoc()) {
         if (password_verify($password, $row['parola'])) {
             $_SESSION['user_id'] = $row['id'];
-            header('Location: index.php');
+            header('Location: dashboard');
             exit;
         } else {
             $error = 'Şifre yanlış';
