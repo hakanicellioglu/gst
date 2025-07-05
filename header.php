@@ -59,7 +59,10 @@ if (isset($_SESSION['user_id'])) {
                 </li>
             </ul>
             <div class="d-flex align-items-center">
-                <button class="btn btn-outline-secondary me-3" id="themeToggle">Tema</button>
+                <button class="btn btn-outline-secondary me-3 d-flex align-items-center" id="themeToggle">
+                    <i class="bi bi-moon-fill me-1" id="themeIcon"></i>
+                    Tema
+                </button>
                 <div class="dropdown">
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,6 +85,7 @@ if (isset($_SESSION['user_id'])) {
     // tema değiştirici - seçimi sakla
     const toggleBtn = document.getElementById('themeToggle');
     const navbar = document.getElementById('mainNavbar');
+    const themeIcon = document.getElementById('themeIcon');
 
     function applyTheme(mode) {
         if (mode === 'dark') {
@@ -90,11 +94,19 @@ if (isset($_SESSION['user_id'])) {
                 navbar.classList.remove('navbar-light', 'bg-light');
                 navbar.classList.add('navbar-dark', 'bg-dark');
             }
+            if (themeIcon) {
+                themeIcon.classList.remove('bi-moon-fill');
+                themeIcon.classList.add('bi-sun-fill');
+            }
         } else {
             document.body.classList.remove('bg-dark', 'text-white');
             if (navbar) {
                 navbar.classList.remove('navbar-dark', 'bg-dark');
                 navbar.classList.add('navbar-light', 'bg-light');
+            }
+            if (themeIcon) {
+                themeIcon.classList.remove('bi-sun-fill');
+                themeIcon.classList.add('bi-moon-fill');
             }
         }
     }
