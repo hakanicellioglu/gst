@@ -2,6 +2,11 @@
 session_start();
 require 'config.php';
 
+$message = $_SESSION['message'] ?? '';
+if (isset($_SESSION['message'])) {
+    unset($_SESSION['message']);
+}
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: login');
     exit;
@@ -15,6 +20,7 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare('INSERT INTO musteriler (firma_adi, yetkili_adi, telefon, adres, eposta) VALUES (?, ?, ?, ?, ?)');
     $stmt->bind_param('sssss', $_POST['firma_adi'], $_POST['yetkili_adi'], $_POST['telefon'], $_POST['adres'], $_POST['eposta']);
     $stmt->execute();
+    $_SESSION['message'] = 'Firma eklendi.';
     header('Location: company');
     exit;
 }
@@ -24,6 +30,7 @@ if ($action === 'edit' && $id && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare('UPDATE musteriler SET firma_adi=?, yetkili_adi=?, telefon=?, adres=?, eposta=? WHERE id=?');
     $stmt->bind_param('sssssi', $_POST['firma_adi'], $_POST['yetkili_adi'], $_POST['telefon'], $_POST['adres'], $_POST['eposta'], $id);
     $stmt->execute();
+    $_SESSION['message'] = 'Firma güncellendi.';
     header('Location: company');
     exit;
 }
@@ -33,6 +40,7 @@ if ($action === 'delete' && $id) {
     $stmt = $conn->prepare('DELETE FROM musteriler WHERE id=?');
     $stmt->bind_param('i', $id);
     $stmt->execute();
+    $_SESSION['message'] = 'Firma silindi.';
     header('Location: company');
     exit;
 }
@@ -83,6 +91,12 @@ $companies = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <?php include 'header.php'; ?>
     <div class="container mt-4">
         <h1 class="mb-4">Firmalar</h1>
+        <?php if ($message): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($message) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
         <form class="row mb-4" method="get" action="company">
             <div class="col-md-4">
@@ -197,7 +211,14 @@ $companies = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         </div>
     </div>
     <script>
-        console.log('Sayfa yüklendi. editCompany durumu:', <?= json_encode((bool) $editCompany) ?>);
+        document.addEventListener('DOMContentLoaded', function () {
+            const editing = <?= json_encode((bool) $editCompany) ?>;
+            console.log('Sayfa yüklendi. editCompany durumu:', editing);
+            if (editing) {
+                const modal = new bootstrap.Modal(document.getElementById('companyModal'));
+                modal.show();
+            }
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
