@@ -165,6 +165,9 @@ $companies = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         <?php endif; ?>
     </form>
 </div>
+<script>
+console.log('Sayfa yüklendi. editCompany durumu:', <?= json_encode((bool)$editCompany) ?>);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>
 </html>
