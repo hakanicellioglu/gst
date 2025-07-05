@@ -61,7 +61,6 @@ if (isset($_SESSION['user_id'])) {
             <div class="d-flex align-items-center">
                 <button class="btn btn-outline-secondary me-3 d-flex align-items-center" id="themeToggle">
                     <i class="bi bi-moon-fill me-1" id="themeIcon"></i>
-                    Tema
                 </button>
                 <div class="dropdown">
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu"
