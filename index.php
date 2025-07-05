@@ -14,8 +14,8 @@
         <h1 class="text-center mb-3">Hoşgeldiniz</h1>
         <p class="text-center">Sitemize giriş yapabilir veya kayıt olabilirsiniz.</p>
         <div class="d-flex justify-content-around mt-4">
-            <a href="#" class="btn btn-primary">Giriş Yap</a>
-            <a href="#" class="btn btn-secondary">Kayıt Ol</a>
+            <a href="login" class="btn btn-primary">Giriş Yap</a>
+            <a href="register" class="btn btn-secondary">Kayıt Ol</a>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
