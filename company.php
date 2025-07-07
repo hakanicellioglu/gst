@@ -46,8 +46,8 @@ $companies = $stmt->fetchAll();
 <div class="container py-4">
     <h2 class="mb-4">Firmalar</h2>
     <div class="row mb-3">
-        <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+        <div class="col-12 text-end">
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
                 Filtrele
             </button>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Firma
