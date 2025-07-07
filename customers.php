@@ -55,9 +55,9 @@ $customers = $stmt->fetchAll();
     <div class="row mb-3">
 
         <div class="col-12 text-end">
-            <button type="button" class="btn btn-<?php echo get_color(); ?> me-2" data-bs-toggle="modal"
+            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
                 data-bs-target="#filterModal">Filtrele</button>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
+            <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
                 Ekle</button>
         </div>
     </div>
