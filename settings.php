@@ -52,7 +52,7 @@ $color = get_color();
                             <div class="mb-3">
                                 <label for="color" class="form-label">Renk</label>
                                 <select id="color" name="color" class="form-select">
-                                    <?php foreach (['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'] as $c): ?>
+                                    <?php foreach (['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as $c): ?>
                                         <option value="<?php echo $c; ?>" <?php echo $color === $c ? 'selected' : ''; ?>>
                                             <?php echo ucfirst($c); ?></option>
                                     <?php endforeach; ?>
