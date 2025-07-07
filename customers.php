@@ -41,9 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
 
-$query = "SELECT * FROM customers WHERE first_name LIKE :search OR last_name LIKE :search ORDER BY first_name $sort, last_name $sort";
+$query = "SELECT * FROM customers WHERE first_name LIKE :search1 OR last_name LIKE :search2 ORDER BY first_name $sort, last_name $sort";
 $stmt = $pdo->prepare($query);
-$stmt->execute([':search' => "%$search%"]);
+$stmt->execute([
+    ':search1' => "%$search%",
+    ':search2' => "%$search%"
+]);
 $customers = $stmt->fetchAll();
 ?>
 
