@@ -52,11 +52,14 @@ $customers = $stmt->fetchAll();
 
 <div class="container py-4">
     <h2 class="mb-4">Müşteriler</h2>
-    <div class="d-flex justify-content-between mb-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-            data-bs-target="#filterModal">Filtrele</button>
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
-            Ekle</button>
+    <div class="row mb-3">
+
+        <div class="col-12 text-end">
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
+                data-bs-target="#filterModal">Filtrele</button>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
+                Ekle</button>
+        </div>
     </div>
 
     <table class="table table-bordered table-striped">
