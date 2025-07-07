@@ -2,31 +2,38 @@
 require_once 'config.php';
 include 'includes/header.php';
 
+// Load companies for dropdowns
+$companyStmt = $pdo->query("SELECT id, name FROM companies ORDER BY name");
+$companies = $companyStmt->fetchAll();
+$canAddCustomer = count($companies) > 0;
+
 // CRUD Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     if ($action === 'add') {
-        $stmt = $pdo->prepare("INSERT INTO customers (first_name, last_name, title, email, phone, address) VALUES (:first, :last, :title, :email, :phone, :address)");
+        $stmt = $pdo->prepare("INSERT INTO customers (company_id, first_name, last_name, title, email, phone, address) VALUES (:company, :first, :last, :title, :email, :phone, :address)");
         $stmt->execute([
-            ':first' => $_POST['first_name'],
-            ':last' => $_POST['last_name'],
-            ':title' => $_POST['title'],
-            ':email' => $_POST['email'],
-            ':phone' => $_POST['phone'],
+            ':company' => $_POST['company_id'],
+            ':first'   => $_POST['first_name'],
+            ':last'    => $_POST['last_name'],
+            ':title'   => $_POST['title'],
+            ':email'   => $_POST['email'],
+            ':phone'   => $_POST['phone'],
             ':address' => $_POST['address']
         ]);
         header('Location: auth.php');
         exit;
     } elseif ($action === 'edit') {
-        $stmt = $pdo->prepare("UPDATE customers SET first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE customers SET company_id = :company, first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
         $stmt->execute([
-            ':first' => $_POST['first_name'],
-            ':last' => $_POST['last_name'],
-            ':title' => $_POST['title'],
-            ':email' => $_POST['email'],
-            ':phone' => $_POST['phone'],
+            ':company' => $_POST['company_id'],
+            ':first'   => $_POST['first_name'],
+            ':last'    => $_POST['last_name'],
+            ':title'   => $_POST['title'],
+            ':email'   => $_POST['email'],
+            ':phone'   => $_POST['phone'],
             ':address' => $_POST['address'],
-            ':id' => $_POST['id']
+            ':id'      => $_POST['id']
         ]);
         header('Location: auth.php');
         exit;
@@ -41,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
 
-$query = "SELECT * FROM customers WHERE first_name LIKE :search1 OR last_name LIKE :search2 ORDER BY first_name $sort, last_name $sort";
+$query = "SELECT c.*, co.name AS company_name FROM customers c LEFT JOIN companies co ON c.company_id = co.id WHERE c.first_name LIKE :search1 OR c.last_name LIKE :search2 ORDER BY c.first_name $sort, c.last_name $sort";
 $stmt = $pdo->prepare($query);
 $stmt->execute([
     ':search1' => "%$search%",
@@ -52,13 +59,23 @@ $customers = $stmt->fetchAll();
 
 <div class="container py-4">
     <h2 class="mb-4">Müşteriler</h2>
+    <?php if (!$canAddCustomer): ?>
+        <div class="alert alert-warning">
+            Müşteri ekleyebilmek için önce
+            <a href="company.php" class="alert-link">firma</a> eklemelisiniz.
+        </div>
+    <?php endif; ?>
     <div class="row mb-3">
 
         <div class="col-12 text-end">
             <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
                 data-bs-target="#filterModal">Filtrele</button>
-            <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
-                Ekle</button>
+            <?php if ($canAddCustomer): ?>
+                <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
+                    Ekle</button>
+            <?php else: ?>
+                <a href="company.php" class="btn btn-<?php echo get_color(); ?>">Firma Ekle</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -67,6 +84,7 @@ $customers = $stmt->fetchAll();
             <tr>
                 <th>İsim</th>
                 <th>Soyisim</th>
+                <th>Firma</th>
                 <th>Ünvan</th>
                 <th>Email</th>
                 <th>Telefon</th>
@@ -79,6 +97,7 @@ $customers = $stmt->fetchAll();
                 <tr>
                     <td><?php echo htmlspecialchars($customer['first_name']); ?></td>
                     <td><?php echo htmlspecialchars($customer['last_name']); ?></td>
+                    <td><?php echo htmlspecialchars($customer['company_name']); ?></td>
                     <td><?php echo htmlspecialchars($customer['title']); ?></td>
                     <td><?php echo htmlspecialchars($customer['email']); ?></td>
                     <td><?php echo htmlspecialchars($customer['phone']); ?></td>
@@ -118,6 +137,16 @@ $customers = $stmt->fetchAll();
                                         <input type="text" name="last_name"
                                             value="<?php echo htmlspecialchars($customer['last_name']); ?>"
                                             class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Firma</label>
+                                        <select name="company_id" class="form-select" required>
+                                            <?php foreach ($companies as $co): ?>
+                                                <option value="<?php echo $co['id']; ?>" <?php echo ($customer['company_id'] == $co['id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($co['name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Ünvan</label>
@@ -207,6 +236,16 @@ $customers = $stmt->fetchAll();
                     <div class="mb-3">
                         <label class="form-label">Soyisim</label>
                         <input type="text" name="last_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Firma</label>
+                        <select name="company_id" class="form-select" required>
+                            <?php foreach ($companies as $co): ?>
+                                <option value="<?php echo $co['id']; ?>">
+                                    <?php echo htmlspecialchars($co['name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ünvan</label>
