@@ -105,7 +105,6 @@ CREATE TABLE audit_logs (
 CREATE TABLE products (
   id        INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   name      VARCHAR(100) NOT NULL,
-  stock_qty INT UNSIGNED DEFAULT 0,
   category  VARCHAR(50)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
