@@ -45,25 +45,15 @@ $companies = $stmt->fetchAll();
 
 <div class="container py-4">
     <h2 class="mb-4">Firmalar</h2>
-    <form class="row mb-3" method="get">
-        <div class="col-md-4">
-            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control"
-                placeholder="Firma ara">
-        </div>
-        <div class="col-md-3">
-            <select name="sort" class="form-select" onchange="this.form.submit()">
-                <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
-                <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Filtrele</button>
-        </div>
+    <div class="row mb-3">
         <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+                Filtrele
+            </button>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Firma
                 Ekle</button>
         </div>
-    </form>
+    </div>
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -141,7 +131,37 @@ $companies = $stmt->fetchAll();
         </tbody>
     </table>
 </div>
-
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtrele</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="get" action="company.php">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Firma ara</label>
+                        <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                            class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sıralama</label>
+                        <select name="sort" class="form-select">
+                            <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                            <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Uygula</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
