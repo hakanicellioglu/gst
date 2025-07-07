@@ -47,7 +47,7 @@ $companies = $stmt->fetchAll();
     <h2 class="mb-4">Firmalar</h2>
     <div class="row mb-3">
         <div class="col-12 text-end">
-            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
+            <button type="button" class="btn btn-<?php echo get_color(); ?> me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
                 Filtrele
             </button>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Firma
@@ -73,7 +73,7 @@ $companies = $stmt->fetchAll();
                     <td><?php echo htmlspecialchars($company['address']); ?></td>
                     <td><?php echo htmlspecialchars($company['email']); ?></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                        <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $company['id']; ?>">Düzenle</button>
                         <form method="post" action="company.php" style="display:inline-block"
                             onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
@@ -121,7 +121,7 @@ $companies = $stmt->fetchAll();
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
                                 </div>
                             </form>
                         </div>
@@ -156,7 +156,7 @@ $companies = $stmt->fetchAll();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                    <button type="submit" class="btn btn-primary">Uygula</button>
+                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Uygula</button>
                 </div>
             </form>
         </div>
@@ -192,7 +192,7 @@ $companies = $stmt->fetchAll();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                    <button type="submit" class="btn btn-primary">Ekle</button>
+                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
                 </div>
             </form>
         </div>

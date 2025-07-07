@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'helpers/theme.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -45,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
 
 <body class="bg-light d-flex align-items-center" style="min-height:100vh;">
@@ -74,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     placeholder="Parola">
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Oturum Aç</button>
-                                <a href="register.php" class="btn btn-link">Hesabın yok mu? Hemen kayıt ol</a>
+                                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Oturum Aç</button>
+                                <a href="register.php" class="btn btn-link text-<?php echo get_color(); ?>">Hesabın yok mu? Hemen kayıt ol</a>
                             </div>
                         </form>
                     </div>

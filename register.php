@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once 'helpers/theme.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kayıt Ol</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -85,11 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Kayıt Ol</button>
+                            <button type="submit" class="btn btn-<?php echo get_color(); ?> w-100">Kayıt Ol</button>
                         </form>
                         
                         <div class="text-center mt-3">
-                            <a href="login.php">Hesabın var mı? Giriş yap</a>
+                            <a href="login.php" class="link-<?php echo get_color(); ?>">Hesabın var mı? Giriş yap</a>
                         </div>
                     </div>
                 </div>
