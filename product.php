@@ -41,23 +41,16 @@ $products = $stmt->fetchAll();
 
 <div class="container py-4">
     <h2 class="mb-4">Ürünler</h2>
-    <form class="row mb-3" method="get">
-        <div class="col-md-4">
-            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Ürün ara">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#filterModal">Filtrele</button>
         </div>
-        <div class="col-md-3">
-            <select name="sort" class="form-select" onchange="this.form.submit()">
-                <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
-                <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
-            </select>
+        <div class="col-md-6 text-end">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Ürün
+                Ekle</button>
         </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Filtrele</button>
-        </div>
-        <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Ürün Ekle</button>
-        </div>
-    </form>
+    </div>  
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -73,8 +66,10 @@ $products = $stmt->fetchAll();
                     <td><?php echo htmlspecialchars($product['name']); ?></td>
                     <td><?php echo htmlspecialchars($product['code']); ?></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
-                        <form method="post" action="product.php" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
+                        <form method="post" action="product.php" style="display:inline-block"
+                            onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
                             <button type="submit" class="btn btn-sm btn-danger">Sil</button>
@@ -96,11 +91,15 @@ $products = $stmt->fetchAll();
                                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
                                     <div class="mb-3">
                                         <label class="form-label">Ad</label>
-                                        <input type="text" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" class="form-control" required>
+                                        <input type="text" name="name"
+                                            value="<?php echo htmlspecialchars($product['name']); ?>" class="form-control"
+                                            required>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Kod</label>
-                                        <input type="text" name="code" value="<?php echo htmlspecialchars($product['code']); ?>" class="form-control" required>
+                                        <input type="text" name="code"
+                                            value="<?php echo htmlspecialchars($product['code']); ?>" class="form-control"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -115,7 +114,35 @@ $products = $stmt->fetchAll();
         </tbody>
     </table>
 </div>
-
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="get" action="product.php">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtrele</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Ara</label>
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                        class="form-control" placeholder="Ürün ara">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sıralama</label>
+                    <select name="sort" class="form-select">
+                        <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                        <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="submit" class="btn btn-primary">Filtrele</button>
+            </div>
+        </form>
+    </div>
+</div>
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
