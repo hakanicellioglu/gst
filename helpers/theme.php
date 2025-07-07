@@ -35,3 +35,26 @@ function get_color(): string
 {
     return $_SESSION['color'] ?? 'primary';
 }
+
+/**
+ * Load theme and color settings from the database if not already in session.
+ */
+function load_theme_settings(PDO $pdo): void
+{
+    $query = "SELECT key_name, value FROM settings
+              WHERE group_name = 'ui' AND key_name IN ('theme','color')";
+    try {
+        $stmt = $pdo->query($query);
+        foreach ($stmt as $row) {
+            $value = json_decode($row['value'], true);
+            if ($row['key_name'] === 'theme' && !isset($_SESSION['theme'])) {
+                set_theme($value);
+            }
+            if ($row['key_name'] === 'color' && !isset($_SESSION['color'])) {
+                set_color($value);
+            }
+        }
+    } catch (PDOException $e) {
+        // Silently ignore if settings table or query fails
+    }
+}

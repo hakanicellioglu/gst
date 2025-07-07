@@ -4,6 +4,7 @@ require_once 'helpers/theme.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+load_theme_settings($pdo);
 
 $errors = [];
 $username = '';
