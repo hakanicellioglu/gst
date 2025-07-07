@@ -42,15 +42,13 @@ $products = $stmt->fetchAll();
 <div class="container py-4">
     <h2 class="mb-4">Ürünler</h2>
     <div class="row mb-3">
-        <div class="col-md-6">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+        <div class="col-12 text-end">
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
                 data-bs-target="#filterModal">Filtrele</button>
-        </div>
-        <div class="col-md-6 text-end">
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Ürün
                 Ekle</button>
         </div>
-    </div>  
+    </div>
 
     <table class="table table-bordered table-striped">
         <thead>
