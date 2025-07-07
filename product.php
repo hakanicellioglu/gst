@@ -43,9 +43,9 @@ $products = $stmt->fetchAll();
     <h2 class="mb-4">Ürünler</h2>
     <div class="row mb-3">
         <div class="col-12 text-end">
-            <button type="button" class="btn btn-<?php echo get_color(); ?> me-2" data-bs-toggle="modal"
+            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
                 data-bs-target="#filterModal">Filtrele</button>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">Ürün
+            <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Ürün
                 Ekle</button>
         </div>
     </div>
