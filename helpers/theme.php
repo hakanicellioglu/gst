@@ -19,3 +19,19 @@ function theme_css(): string
         ? 'https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css'
         : 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css';
 }
+
+/**
+ * Store the preferred UI color in the session.
+ */
+function set_color(string $color): void
+{
+    $_SESSION['color'] = $color;
+}
+
+/**
+ * Get the preferred UI color.
+ */
+function get_color(): string
+{
+    return $_SESSION['color'] ?? 'primary';
+}
