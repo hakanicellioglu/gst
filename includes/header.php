@@ -36,6 +36,7 @@ if (session_status() === PHP_SESSION_NONE) {
                         <?php echo isset($_SESSION['user']['username']) ? htmlspecialchars($_SESSION['user']['username']) : 'Kullanıcı'; ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="profile.php">Profili Düzenle</a></li>
                         <li><a class="dropdown-item" href="settings.php">Ayarlar</a></li>
                         <li>
                             <hr class="dropdown-divider">
