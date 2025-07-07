@@ -1,4 +1,12 @@
-<?php include 'includes/header.php'; ?>
+<?php
+require_once 'config.php';
+require_once 'helpers/theme.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+load_theme_settings($pdo);
+include 'includes/header.php';
+?>
 <div class="container py-5 h-min">
     <div class="row justify-content-center">
         <div class="col-md-8 text-center">
