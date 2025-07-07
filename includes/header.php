@@ -2,9 +2,10 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/../helpers/theme.php';
 ?>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<link href="<?php echo theme_css(); ?>" rel="stylesheet">
+<nav class="navbar navbar-expand-lg <?php echo get_theme(); ?>">
     <div class="container">
         <a class="navbar-brand" href="dashboard">GST
         </a>
