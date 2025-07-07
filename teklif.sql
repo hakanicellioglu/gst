@@ -105,10 +105,10 @@ CREATE TABLE audit_logs (
 CREATE TABLE products (
   id        INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   name      VARCHAR(100) NOT NULL,
-  code      VARCHAR(50)  NOT NULL UNIQUE,
-  measure   VARCHAR(50),   -- Ölçü
-  stock_qty INT UNSIGNED DEFAULT 0
+  stock_qty INT UNSIGNED DEFAULT 0,
+  category  VARCHAR(50)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
 
 /* ------------------------------------------------------------------ */
 /* 5 | GİYOTİN TEKLİF                                                 */
