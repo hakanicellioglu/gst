@@ -17,7 +17,17 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li class="nav-item"><a class="nav-link" href="company.php">Firmalar</a></li>
                 <li class="nav-item"><a class="nav-link" href="customers.php">Müşteriler</a></li>
                 <li class="nav-item"><a class="nav-link" href="product.php">Ürünler</a></li>
-                <li class="nav-item"><a class="nav-link" href="offer/general.php">Teklifler</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="offerDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Teklifler
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="offerDropdown">
+                        <li><a class="dropdown-item" href="offer/giyotin.php">Giyotin</a></li>
+                        <li><a class="dropdown-item" href="offer/surme.php">Sürme</a></li>
+                        <li><a class="dropdown-item" href="offer/general.php">Genel</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
