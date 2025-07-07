@@ -5,13 +5,51 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+$errors = [];
 $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme = $_POST['theme'] ?? 'light';
     $color = $_POST['color'] ?? 'primary';
+
     set_theme($theme);
     set_color($color);
-    $success = 'Ayarlar kaydedildi.';
+
+    try {
+        $stmt = $pdo->prepare(
+            "INSERT INTO settings (group_name, key_name, value)
+             VALUES ('ui', 'theme', ?)
+             ON DUPLICATE KEY UPDATE value = VALUES(value)"
+        );
+        $stmt->execute([json_encode($theme)]);
+
+        $stmt = $pdo->prepare(
+            "INSERT INTO settings (group_name, key_name, value)
+             VALUES ('ui', 'color', ?)
+             ON DUPLICATE KEY UPDATE value = VALUES(value)"
+        );
+        $stmt->execute([json_encode($color)]);
+
+        $success = 'Ayarlar kaydedildi.';
+    } catch (PDOException $e) {
+        $errors[] = 'Ayarlar kaydedilemedi: ' . $e->getMessage();
+    }
+}
+
+$loadQuery = "SELECT key_name, value FROM settings
+               WHERE group_name = 'ui' AND key_name IN ('theme','color')";
+try {
+    $stmt = $pdo->query($loadQuery);
+    foreach ($stmt as $row) {
+        $value = json_decode($row['value'], true);
+        if ($row['key_name'] === 'theme' && !isset($_SESSION['theme'])) {
+            set_theme($value);
+        }
+        if ($row['key_name'] === 'color' && !isset($_SESSION['color'])) {
+            set_color($value);
+        }
+    }
+} catch (PDOException $e) {
+    $errors[] = 'Ayarlar yüklenemedi: ' . $e->getMessage();
 }
 
 $theme = get_theme();
@@ -35,7 +73,11 @@ $color = get_color();
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Tema Ayarları</h5>
-                        <?php if ($success): ?>
+                        <?php if ($errors): ?>
+                            <div class="alert alert-danger">
+                                <?php echo implode('<br>', array_map('htmlspecialchars', $errors)); ?>
+                            </div>
+                        <?php elseif ($success): ?>
                             <div class="alert alert-success">
                                 <?php echo htmlspecialchars($success); ?>
                             </div>
