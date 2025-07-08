@@ -28,6 +28,9 @@ load_theme_settings($pdo);
                 <form>
                     <div id="rows"></div>
                 </form>
+                <div class="mt-3 text-end">
+                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                    </div>
             </div>
         </div>
     </div>
