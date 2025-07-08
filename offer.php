@@ -83,9 +83,9 @@ load_theme_settings($pdo);
                         <label class="form-label">Yükseklik</label>
                         <input type="number" name="height[]" class="form-control">
                     </div>
-                    <div class="col-md-1">
-                        <label class="form-label">Adet</label>
-                        <input type="number" name="qty[]" class="form-control">
+                    <div class="col-md-2">
+                        <label class="form-label">Sistem Adedi</label>
+                        <input type="number" name="system_qty[]" class="form-control">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Motor Sistemi</label>
@@ -102,10 +102,6 @@ load_theme_settings($pdo);
                     <div class="col-md-2">
                         <label class="form-label">RAL Kodu</label>
                         <input type="text" name="ral[]" class="form-control">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Sistem Adedi</label>
-                        <input type="number" name="system_qty[]" class="form-control">
                     </div>
                 </div>
             </fieldset>
@@ -137,6 +133,10 @@ load_theme_settings($pdo);
                 </div>
             </div>
             </fieldset>`;
+                row.querySelector('.remove-row').addEventListener('click', () => {
+                    row.remove();
+                    toggleSaveButton();
+                });
                 row.querySelector('.remove-row').addEventListener('click', () => row.remove());
                 container.appendChild(row);
             }
