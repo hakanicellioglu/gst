@@ -27,10 +27,10 @@ load_theme_settings($pdo);
             <div class="card-body">
                 <form>
                     <div id="rows"></div>
-                    <div class="mt-3 text-end">
-                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-                    </div>
                 </form>
+                <div id="saveContainer" class="mt-3 text-end d-none">
+                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                </div>
 
             </div>
         </div>
@@ -39,6 +39,15 @@ load_theme_settings($pdo);
         document.addEventListener('DOMContentLoaded', function () {
             const addRowBtn = document.getElementById('addRow');
             const rowsDiv = document.getElementById('rows');
+            const saveContainer = document.getElementById('saveContainer');
+
+            function toggleSaveButton() {
+                if (rowsDiv.childElementCount > 0) {
+                    saveContainer.classList.remove('d-none');
+                } else {
+                    saveContainer.classList.add('d-none');
+                }
+            }
 
             function createRow() {
                 const row = document.createElement('div');
@@ -58,9 +67,9 @@ load_theme_settings($pdo);
                         <label class="form-label">Yükseklik</label>
                         <input type="number" name="height[]" class="form-control">
                     </div>
-                    <div class="col-md-1">
-                        <label class="form-label">Adet</label>
-                        <input type="number" name="qty[]" class="form-control">
+                    <div class="col-md-2">
+                        <label class="form-label">Sistem Adedi</label>
+                        <input type="number" name="system_qty[]" class="form-control">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Motor Sistemi</label>
@@ -78,10 +87,6 @@ load_theme_settings($pdo);
                         <label class="form-label">RAL Kodu</label>
                         <input type="text" name="ral[]" class="form-control">
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Sistem Adedi</label>
-                        <input type="number" name="system_qty[]" class="form-control">
-                    </div>
                 </div>
             </fieldset>
             <fieldset class="mt-3">
@@ -95,28 +100,22 @@ load_theme_settings($pdo);
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Cam Genişlik</label>
-                        <input type="number" name="glass_width[]" class="form-control">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Cam Yükseklik</label>
-                        <input type="number" name="glass_height[]" class="form-control">
-                    </div>
-                    <div class="col-md-1">
-                        <label class="form-label">Cam Adedi</label>
-                        <input type="number" name="glass_qty[]" class="form-control">
-                    </div>
-                    <div class="col-md-2">
                         <label class="form-label">Cam Rengi</label>
                         <input type="text" name="glass_color[]" class="form-control">
                     </div>
                 </div>
             </fieldset>`;
+                row.querySelector('.remove-row').addEventListener('click', () => {
+                    row.remove();
+                    toggleSaveButton();
+                });
                 row.querySelector('.remove-row').addEventListener('click', () => row.remove());
                 rowsDiv.appendChild(row);
+                toggleSaveButton();
             }
 
             addRowBtn.addEventListener('click', createRow);
+            toggleSaveButton();
             createRow();
         });
     </script>
