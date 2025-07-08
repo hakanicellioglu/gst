@@ -25,6 +25,10 @@ require_once __DIR__ . '/../helpers/theme.php';
                         Teklifler
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="offerDropdown">
+                        <li><a href="offer.php" class="dropdown-item">Yeni Teklif Oluştur</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="offer/giyotin.php">Giyotin</a></li>
                         <li><a class="dropdown-item" href="offer/surme.php">Sürme</a></li>
                         <li><a class="dropdown-item" href="offer/general.php">Genel</a></li>
