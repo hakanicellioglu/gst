@@ -20,18 +20,41 @@ load_theme_settings($pdo);
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Giyotin</span>
-                <button type="button" id="addRow" class="btn btn-success btn-sm">+</button>
+            <div class="card-header p-0">
+                <ul class="nav nav-tabs card-header-tabs" id="offerTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="giyotin-tab" data-bs-toggle="tab" data-bs-target="#giyotin" type="button" role="tab" aria-controls="giyotin" aria-selected="true">Giyotin</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="surme-tab" data-bs-toggle="tab" data-bs-target="#surme" type="button" role="tab" aria-controls="surme" aria-selected="false">Sürme</button>
+                    </li>
+                </ul>
             </div>
-            <div class="card-body">
-                <form>
-                    <div id="rows"></div>
-                    <div class="mt-3 text-end">
-                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+            <div class="card-body tab-content">
+                <div class="tab-pane fade show active" id="giyotin" role="tabpanel" aria-labelledby="giyotin-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Giyotin</span>
+                        <button type="button" id="addRow" class="btn btn-success btn-sm">+</button>
                     </div>
-                </form>
-
+                    <form>
+                        <div id="rows"></div>
+                        <div class="mt-3 text-end">
+                            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="surme" role="tabpanel" aria-labelledby="surme-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Sürme</span>
+                        <button type="button" id="addSurmeRow" class="btn btn-success btn-sm">+</button>
+                    </div>
+                    <form>
+                        <div id="surmeRows"></div>
+                        <div class="mt-3 text-end">
+                            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -39,8 +62,10 @@ load_theme_settings($pdo);
         document.addEventListener('DOMContentLoaded', function () {
             const addRowBtn = document.getElementById('addRow');
             const rowsDiv = document.getElementById('rows');
+            const addSurmeRowBtn = document.getElementById('addSurmeRow');
+            const surmeRowsDiv = document.getElementById('surmeRows');
 
-            function createRow() {
+            function createRow(container) {
                 const row = document.createElement('div');
                 row.className = 'border rounded p-3 mb-3';
                 row.innerHTML = `
@@ -106,18 +131,23 @@ load_theme_settings($pdo);
                         <label class="form-label">Cam Adedi</label>
                         <input type="number" name="glass_qty[]" class="form-control">
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Cam Rengi</label>
-                        <input type="text" name="glass_color[]" class="form-control">
-                    </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cam Rengi</label>
+                    <input type="text" name="glass_color[]" class="form-control">
                 </div>
+            </div>
             </fieldset>`;
                 row.querySelector('.remove-row').addEventListener('click', () => row.remove());
-                rowsDiv.appendChild(row);
+                container.appendChild(row);
             }
-
-            addRowBtn.addEventListener('click', createRow);
-            createRow();
+            if (addRowBtn) {
+                addRowBtn.addEventListener('click', function () { createRow(rowsDiv); });
+            }
+            if (addSurmeRowBtn) {
+                addSurmeRowBtn.addEventListener('click', function () { createRow(surmeRowsDiv); });
+            }
+            if (rowsDiv) createRow(rowsDiv);
+            if (surmeRowsDiv) createRow(surmeRowsDiv);
         });
     </script>
     <?php include 'includes/footer.php'; ?>
