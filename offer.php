@@ -27,10 +27,11 @@ load_theme_settings($pdo);
             <div class="card-body">
                 <form>
                     <div id="rows"></div>
-                </form>
-                <div class="mt-3 text-end">
+                    <div class="mt-3 text-end">
                         <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
                     </div>
+                </form>
+
             </div>
         </div>
     </div>
