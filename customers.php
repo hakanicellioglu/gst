@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
+    header('Location: /login');
     exit;
 }
 load_theme_settings($pdo);
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':phone'   => $_POST['phone'],
             ':address' => $_POST['address']
         ]);
-        header('Location: auth.php');
+        header('Location: auth');
         exit;
     } elseif ($action === 'edit') {
         $stmt = $pdo->prepare("UPDATE customers SET company_id = :company, first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
@@ -44,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':address' => $_POST['address'],
             ':id'      => $_POST['id']
         ]);
-        header('Location: auth.php');
+        header('Location: auth');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM customers WHERE id = :id");
         $stmt->execute([':id' => $_POST['id']]);
-        header('Location: auth.php');
+        header('Location: auth');
         exit;
     }
 }
@@ -71,7 +71,7 @@ $customers = $stmt->fetchAll();
     <?php if (!$canAddCustomer): ?>
         <div class="alert alert-warning">
             Müşteri ekleyebilmek için önce
-            <a href="company.php" class="alert-link">firma</a> eklemelisiniz.
+            <a href="company" class="alert-link">firma</a> eklemelisiniz.
         </div>
     <?php endif; ?>
     <div class="row mb-3">
@@ -83,7 +83,7 @@ $customers = $stmt->fetchAll();
                 <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
                     Ekle</button>
             <?php else: ?>
-                <a href="company.php" class="btn btn-<?php echo get_color(); ?>">Firma Ekle</a>
+                <a href="company" class="btn btn-<?php echo get_color(); ?>">Firma Ekle</a>
             <?php endif; ?>
         </div>
     </div>
@@ -114,7 +114,7 @@ $customers = $stmt->fetchAll();
                     <td class="text-center">
                         <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $customer['id']; ?>">Düzenle</button>
-                        <form method="post" action="auth.php" style="display:inline-block"
+                        <form method="post" action="auth" style="display:inline-block"
                             onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
@@ -131,7 +131,7 @@ $customers = $stmt->fetchAll();
                                 <h5 class="modal-title">Müşteri Düzenle</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="post" action="auth.php">
+                            <form method="post" action="auth">
                                 <div class="modal-body">
                                     <input type="hidden" name="action" value="edit">
                                     <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
@@ -235,7 +235,7 @@ $customers = $stmt->fetchAll();
                 <h5 class="modal-title">Müşteri Ekle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="auth.php">
+            <form method="post" action="auth">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
                     <div class="mb-3">

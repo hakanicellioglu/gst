@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
+    header('Location: /login');
     exit;
 }
 load_theme_settings($pdo);

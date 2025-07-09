@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
+    header('Location: /login');
     exit;
 }
 load_theme_settings($pdo);
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':address' => $_POST['address'],
             ':email' => $_POST['email']
         ]);
-        header('Location: company.php');
+        header('Location: company');
         exit;
     } elseif ($action === 'edit') {
         $stmt = $pdo->prepare("UPDATE companies SET name = :name, phone = :phone, address = :address, email = :email WHERE id = :id");
@@ -33,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':email' => $_POST['email'],
             ':id' => $_POST['id']
         ]);
-        header('Location: company.php');
+        header('Location: company');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM companies WHERE id = :id");
         $stmt->execute([':id' => $_POST['id']]);
-        header('Location: company.php');
+        header('Location: company');
         exit;
     }
 }
@@ -84,7 +84,7 @@ $companies = $stmt->fetchAll();
                     <td class="text-center">
                         <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $company['id']; ?>">Düzenle</button>
-                        <form method="post" action="company.php" style="display:inline-block"
+                        <form method="post" action="company" style="display:inline-block"
                             onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
@@ -101,7 +101,7 @@ $companies = $stmt->fetchAll();
                                 <h5 class="modal-title">Firma Düzenle</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="post" action="company.php">
+                            <form method="post" action="company">
                                 <div class="modal-body">
                                     <input type="hidden" name="action" value="edit">
                                     <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
@@ -148,7 +148,7 @@ $companies = $stmt->fetchAll();
                 <h5 class="modal-title">Filtrele</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="get" action="company.php">
+            <form method="get" action="company">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Firma ara</label>
@@ -179,7 +179,7 @@ $companies = $stmt->fetchAll();
                 <h5 class="modal-title">Firma Ekle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="company.php">
+            <form method="post" action="company">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
                     <div class="mb-3">

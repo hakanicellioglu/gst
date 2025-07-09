@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user'])) {
-    header('Location: login.php');
+    header('Location: /login');
     exit;
 }
 load_theme_settings($pdo);
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':name' => $_POST['name'],
             ':code' => $_POST['code']
         ]);
-        header('Location: product.php');
+        header('Location: product');
         exit;
     } elseif ($action === 'edit') {
         $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code WHERE id = :id");
@@ -29,12 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':code' => $_POST['code'],
             ':id' => $_POST['id']
         ]);
-        header('Location: product.php');
+        header('Location: product');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM products WHERE id = :id");
         $stmt->execute([':id' => $_POST['id']]);
-        header('Location: product.php');
+        header('Location: product');
         exit;
     }
 }
@@ -75,7 +75,7 @@ $products = $stmt->fetchAll();
                     <td class="text-center">
                         <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
-                        <form method="post" action="product.php" style="display:inline-block"
+                        <form method="post" action="product" style="display:inline-block"
                             onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
@@ -92,7 +92,7 @@ $products = $stmt->fetchAll();
                                 <h5 class="modal-title">Ürün Düzenle</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="post" action="product.php">
+                            <form method="post" action="product">
                                 <div class="modal-body">
                                     <input type="hidden" name="action" value="edit">
                                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
@@ -124,7 +124,7 @@ $products = $stmt->fetchAll();
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form class="modal-content" method="get" action="product.php">
+        <form class="modal-content" method="get" action="product">
             <div class="modal-header">
                 <h5 class="modal-title">Filtrele</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -158,7 +158,7 @@ $products = $stmt->fetchAll();
                 <h5 class="modal-title">Ürün Ekle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="product.php">
+            <form method="post" action="product">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
                     <div class="mb-3">

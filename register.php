@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </form>
                         
                         <div class="text-center mt-3">
-                            <a href="login.php" class="link-<?php echo get_color(); ?>">Hesabın var mı? Giriş yap</a>
+                            <a href="login" class="link-<?php echo get_color(); ?>">Hesabın var mı? Giriş yap</a>
                         </div>
                     </div>
                 </div>

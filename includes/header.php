@@ -16,10 +16,10 @@ require_once __DIR__ . '/../helpers/theme.php';
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="company.php">Firmalar</a></li>
-                <li class="nav-item"><a class="nav-link" href="customers.php">Müşteriler</a></li>
-                <li class="nav-item"><a class="nav-link" href="product.php">Ürünler</a></li>
-                <li class="nav-item"><a class="nav-link" href="offer.php">Teklifler</a></li>
+                <li class="nav-item"><a class="nav-link" href="company">Firmalar</a></li>
+                <li class="nav-item"><a class="nav-link" href="customers">Müşteriler</a></li>
+                <li class="nav-item"><a class="nav-link" href="product">Ürünler</a></li>
+                <li class="nav-item"><a class="nav-link" href="offer">Teklifler</a></li>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
@@ -28,12 +28,12 @@ require_once __DIR__ . '/../helpers/theme.php';
                         <?php echo isset($_SESSION['user']['username']) ? htmlspecialchars($_SESSION['user']['username']) : 'Kullanıcı'; ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="profile.php">Profili Düzenle</a></li>
-                        <li><a class="dropdown-item" href="settings.php">Ayarlar</a></li>
+                        <li><a class="dropdown-item" href="profile">Profili Düzenle</a></li>
+                        <li><a class="dropdown-item" href="settings">Ayarlar</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="logout.php">Çıkış Yap</a></li>
+                        <li><a class="dropdown-item" href="logout">Çıkış Yap</a></li>
                     </ul>
                 </li>
             </ul>

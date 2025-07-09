@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'last_name' => $user['last_name'],
                     'email' => $user['email']
                 ];
-                header('Location: dashboard.php');
+                header('Location: dashboard');
                 exit;
             } else {
                 $errors[] = 'Hatalı kullanıcı adı veya parola.';
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-<?php echo get_color(); ?>">Oturum Aç</button>
-                                <a href="register.php" class="btn btn-link text-<?php echo get_color(); ?>">Hesabın yok mu? Hemen kayıt ol</a>
+                                <a href="register" class="btn btn-link text-<?php echo get_color(); ?>">Hesabın yok mu? Hemen kayıt ol</a>
                             </div>
                         </form>
                     </div>
