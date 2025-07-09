@@ -139,6 +139,8 @@ CREATE TABLE `guillotine_quotes` (
   `width_mm` decimal(10,2) NOT NULL,
   `height_mm` decimal(10,2) NOT NULL,
   `system_qty` int(10) UNSIGNED NOT NULL,
+  `glass_type` varchar(50) DEFAULT NULL,
+  `glass_color` varchar(50) DEFAULT NULL,
   `motor_system` varchar(50) DEFAULT NULL,
   `remote_system` varchar(50) DEFAULT NULL,
   `remote_qty` int(10) UNSIGNED DEFAULT NULL,

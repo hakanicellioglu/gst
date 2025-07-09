@@ -38,7 +38,28 @@ if ($id) {
     $sStmt = $pdo->prepare("SELECT * FROM sliding_quotes WHERE master_quote_id = :id");
     $sStmt->execute([':id' => $id]);
     $slidings = $sStmt->fetchAll();
-} 
+}
+
+// Handle adding guillotine quote rows
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && $id) {
+    $stmt = $pdo->prepare(
+        "INSERT INTO guillotine_quotes (master_quote_id, system_type, width_mm, height_mm, system_qty, glass_type, glass_color, motor_system, remote_qty, ral_code) " .
+        "VALUES (:master, 'Giyotin', :width, :height, :qty, :glass, :color, :motor, :remote_qty, :ral)"
+    );
+    $stmt->execute([
+        ':master'     => $id,
+        ':width'      => $_POST['width_mm'],
+        ':height'     => $_POST['height_mm'],
+        ':qty'        => $_POST['system_qty'],
+        ':glass'      => $_POST['glass_type'],
+        ':color'      => $_POST['glass_color'],
+        ':motor'      => $_POST['motor_system'],
+        ':remote_qty' => $_POST['remote_qty'],
+        ':ral'        => $_POST['ral_code']
+    ]);
+    header('Location: offer_form?id=' . $id);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     $data = [
@@ -133,18 +154,54 @@ include 'includes/header.php';
         <!-- Giyotin Modal -->
         <div class="modal fade" id="giyotinModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <form class="modal-content" method="post" action="offer_form?id=<?php echo $id; ?>">
                     <div class="modal-header">
-                        <h5 class="modal-title">Giyotin</h5>
+                        <h5 class="modal-title">Giyotin Teklifi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Giyotin seçildi.
+                        <input type="hidden" name="add_guillotine" value="1">
+                        <div class="mb-3">
+                            <label class="form-label">Genişlik (mm)</label>
+                            <input type="number" step="0.01" name="width_mm" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Yükseklik (mm)</label>
+                            <input type="number" step="0.01" name="height_mm" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Adet</label>
+                            <input type="number" name="system_qty" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cam</label>
+                            <select name="glass_type" class="form-select">
+                                <option value="Isıcam">Isıcam</option>
+                                <option value="Tek Cam">Tek Cam</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cam Rengi</label>
+                            <input type="text" name="glass_color" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Motor Sistemi</label>
+                            <input type="text" name="motor_system" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kumanda Adedi</label>
+                            <input type="number" name="remote_qty" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">RAL Kod</label>
+                            <input type="text" name="ral_code" class="form-control">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <div class="mb-3 d-flex">
@@ -188,6 +245,8 @@ include 'includes/header.php';
                             <th>En (mm)</th>
                             <th>Boy (mm)</th>
                             <th>Adet</th>
+                            <th>Cam</th>
+                            <th>Cam Rengi</th>
                             <th>Motor</th>
                             <th>Uzaktan</th>
                             <th>Adet</th>
@@ -201,6 +260,8 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($g['width_mm']); ?></td>
                                 <td><?php echo htmlspecialchars($g['height_mm']); ?></td>
                                 <td><?php echo htmlspecialchars($g['system_qty']); ?></td>
+                                <td><?php echo htmlspecialchars($g['glass_type']); ?></td>
+                                <td><?php echo htmlspecialchars($g['glass_color']); ?></td>
                                 <td><?php echo htmlspecialchars($g['motor_system']); ?></td>
                                 <td><?php echo htmlspecialchars($g['remote_system']); ?></td>
                                 <td><?php echo htmlspecialchars($g['remote_qty']); ?></td>
