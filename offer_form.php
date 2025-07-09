@@ -61,6 +61,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
     exit;
 }
 
+// Handle adding sliding quote rows
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sliding']) && $id) {
+    $stmt = $pdo->prepare(
+        "INSERT INTO sliding_quotes (master_quote_id, system_type, width_mm, height_mm, wing_type, fastening_type, glass_type, glass_color, system_qty, ral_code, locking) " .
+        "VALUES (:master, :system, :width, :height, :wing, :fastening, :glass, :color, :qty, :ral, :locking)"
+    );
+    $stmt->execute([
+        ':master'    => $id,
+        ':system'    => $_POST['system_type'],
+        ':width'     => $_POST['width_mm'],
+        ':height'    => $_POST['height_mm'],
+        ':wing'      => $_POST['wing_type'],
+        ':fastening' => $_POST['fastening_type'],
+        ':glass'     => $_POST['glass_type'],
+        ':color'     => $_POST['glass_color'],
+        ':qty'       => $_POST['system_qty'],
+        ':ral'       => $_POST['ral_code'],
+        ':locking'   => $_POST['locking']
+    ]);
+    header('Location: offer_form?id=' . $id);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     $data = [
         ':company' => $_POST['company_id'],
@@ -220,18 +243,69 @@ include 'includes/header.php';
         <!-- Sürme Modal -->
         <div class="modal fade" id="surmeModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <form class="modal-content" method="post" action="offer_form?id=<?php echo $id; ?>">
                     <div class="modal-header">
-                        <h5 class="modal-title">Sürme</h5>
+                        <h5 class="modal-title">Sürme Teklifi</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Sürme seçildi.
+                        <input type="hidden" name="add_sliding" value="1">
+                        <div class="mb-3">
+                            <label class="form-label">Sürme Sistemi</label>
+                            <select name="system_type" class="form-select">
+                                <option value="Sistem 1">Sistem 1</option>
+                                <option value="Sistem 2">Sistem 2</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Genişlik (mm)</label>
+                            <input type="number" step="0.01" name="width_mm" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Yükseklik (mm)</label>
+                            <input type="number" step="0.01" name="height_mm" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kanat Tipi</label>
+                            <input type="text" name="wing_type" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sistem Adedi</label>
+                            <input type="number" name="system_qty" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">RAL Kod</label>
+                            <input type="text" name="ral_code" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kenet</label>
+                            <select name="fastening_type" class="form-select">
+                                <option value="Takviyesiz">Takviyesiz</option>
+                                <option value="Takviyeli Yarım">Takviyeli Yarım</option>
+                                <option value="Takviyeli Tam">Takviyeli Tam</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cam</label>
+                            <select name="glass_type" class="form-select">
+                                <option value="Isıcam">Isıcam</option>
+                                <option value="Tek Cam">Tek Cam</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cam Rengi</label>
+                            <input type="text" name="glass_color" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kilit</label>
+                            <input type="text" name="locking" class="form-control">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -280,7 +354,10 @@ include 'includes/header.php';
                             <th>Sistem Tipi</th>
                             <th>En (mm)</th>
                             <th>Boy (mm)</th>
-                            <th>Montaj</th>
+                            <th>Kanat Tipi</th>
+                            <th>Kenet</th>
+                            <th>Cam</th>
+                            <th>Cam Rengi</th>
                             <th>Adet</th>
                             <th>RAL Kod</th>
                             <th>Kilit</th>
@@ -292,7 +369,10 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($s['system_type']); ?></td>
                                 <td><?php echo htmlspecialchars($s['width_mm']); ?></td>
                                 <td><?php echo htmlspecialchars($s['height_mm']); ?></td>
+                                <td><?php echo htmlspecialchars($s['wing_type']); ?></td>
                                 <td><?php echo htmlspecialchars($s['fastening_type']); ?></td>
+                                <td><?php echo htmlspecialchars($s['glass_type']); ?></td>
+                                <td><?php echo htmlspecialchars($s['glass_color']); ?></td>
                                 <td><?php echo htmlspecialchars($s['system_qty']); ?></td>
                                 <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
                                 <td><?php echo htmlspecialchars($s['locking']); ?></td>
