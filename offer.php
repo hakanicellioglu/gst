@@ -126,45 +126,53 @@ include 'includes/header.php';
                                 <div class="modal-body">
                                     <input type="hidden" name="action" value="edit">
                                     <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
-                                    <div class="mb-3">
-                                        <label class="form-label">Firma</label>
-                                        <select name="company_id" class="form-select" required>
-                                            <?php foreach ($companies as $co): ?>
-                                                <option value="<?php echo $co['id']; ?>" <?php echo ($q['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Firma</label>
+                                            <select name="company_id" class="form-select" required>
+                                                <?php foreach ($companies as $co): ?>
+                                                    <option value="<?php echo $co['id']; ?>" <?php echo ($q['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Müşteri</label>
+                                            <select name="contact_id" class="form-select" required>
+                                                <?php foreach ($customers as $cu): ?>
+                                                    <option value="<?php echo $cu['id']; ?>" <?php echo ($q['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Müşteri</label>
-                                        <select name="contact_id" class="form-select" required>
-                                            <?php foreach ($customers as $cu): ?>
-                                                <option value="<?php echo $cu['id']; ?>" <?php echo ($q['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tarih</label>
+                                            <input type="date" name="quote_date" class="form-control" value="<?php echo htmlspecialchars($q['quote_date']); ?>" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Teslimat Süresi</label>
+                                            <input type="text" name="delivery_term" class="form-control" value="<?php echo htmlspecialchars($q['delivery_term']); ?>">
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Tarih</label>
-                                        <input type="date" name="quote_date" class="form-control" value="<?php echo htmlspecialchars($q['quote_date']); ?>" required>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Ödeme Yöntemi</label>
+                                            <input type="text" name="payment_method" class="form-control" value="<?php echo htmlspecialchars($q['payment_method']); ?>">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Ödeme Süresi</label>
+                                            <input type="text" name="payment_due" class="form-control" value="<?php echo htmlspecialchars($q['payment_due']); ?>">
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Teslimat Süresi</label>
-                                        <input type="text" name="delivery_term" class="form-control" value="<?php echo htmlspecialchars($q['delivery_term']); ?>">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Ödeme Yöntemi</label>
-                                        <input type="text" name="payment_method" class="form-control" value="<?php echo htmlspecialchars($q['payment_method']); ?>">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Ödeme Süresi</label>
-                                        <input type="text" name="payment_due" class="form-control" value="<?php echo htmlspecialchars($q['payment_due']); ?>">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Teklif Süresi</label>
-                                        <input type="text" name="quote_validity" class="form-control" value="<?php echo htmlspecialchars($q['quote_validity']); ?>">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Vade</label>
-                                        <input type="text" name="maturity" class="form-control" value="<?php echo htmlspecialchars($q['maturity']); ?>">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Teklif Süresi</label>
+                                            <input type="text" name="quote_validity" class="form-control" value="<?php echo htmlspecialchars($q['quote_validity']); ?>">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Vade</label>
+                                            <input type="text" name="maturity" class="form-control" value="<?php echo htmlspecialchars($q['maturity']); ?>">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -190,45 +198,53 @@ include 'includes/header.php';
             <form method="post" action="offer">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
-                    <div class="mb-3">
-                        <label class="form-label">Firma</label>
-                        <select name="company_id" class="form-select" required>
-                            <?php foreach ($companies as $co): ?>
-                                <option value="<?php echo $co['id']; ?>"><?php echo htmlspecialchars($co['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Firma</label>
+                            <select name="company_id" class="form-select" required>
+                                <?php foreach ($companies as $co): ?>
+                                    <option value="<?php echo $co['id']; ?>"><?php echo htmlspecialchars($co['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Müşteri</label>
+                            <select name="contact_id" class="form-select" required>
+                                <?php foreach ($customers as $cu): ?>
+                                    <option value="<?php echo $cu['id']; ?>"><?php echo htmlspecialchars($cu['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Müşteri</label>
-                        <select name="contact_id" class="form-select" required>
-                            <?php foreach ($customers as $cu): ?>
-                                <option value="<?php echo $cu['id']; ?>"><?php echo htmlspecialchars($cu['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tarih</label>
+                            <input type="date" name="quote_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Teslimat Süresi</label>
+                            <input type="text" name="delivery_term" class="form-control">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tarih</label>
-                        <input type="date" name="quote_date" class="form-control" required>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ödeme Yöntemi</label>
+                            <input type="text" name="payment_method" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ödeme Süresi</label>
+                            <input type="text" name="payment_due" class="form-control">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Teslimat Süresi</label>
-                        <input type="text" name="delivery_term" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ödeme Yöntemi</label>
-                        <input type="text" name="payment_method" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ödeme Süresi</label>
-                        <input type="text" name="payment_due" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Teklif Süresi</label>
-                        <input type="text" name="quote_validity" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Vade</label>
-                        <input type="text" name="maturity" class="form-control">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Teklif Süresi</label>
+                            <input type="text" name="quote_validity" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Vade</label>
+                            <input type="text" name="maturity" class="form-control">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
