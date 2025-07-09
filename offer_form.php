@@ -19,6 +19,8 @@ $canAdd = count($companies) > 0 && count($customers) > 0;
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $quote = null;
+$guillotines = [];
+$slidings = [];
 if ($id) {
     $stmt = $pdo->prepare("SELECT * FROM master_quotes WHERE id = :id");
     $stmt->execute([':id' => $id]);
@@ -27,7 +29,16 @@ if ($id) {
         header('Location: offer');
         exit;
     }
-}
+
+    // Fetch related guillotine and sliding quotes
+    $gStmt = $pdo->prepare("SELECT * FROM guillotine_quotes WHERE master_quote_id = :id");
+    $gStmt->execute([':id' => $id]);
+    $guillotines = $gStmt->fetchAll();
+
+    $sStmt = $pdo->prepare("SELECT * FROM sliding_quotes WHERE master_quote_id = :id");
+    $sStmt->execute([':id' => $id]);
+    $slidings = $sStmt->fetchAll();
+} 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     $data = [
@@ -166,6 +177,70 @@ include 'includes/header.php';
                 </div>
             </div>
         </div>
+
+        <?php if ($id): ?>
+            <?php if ($guillotines): ?>
+                <h4 class="mt-4">Giyotin Teklifleri</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sistem Tipi</th>
+                            <th>En (mm)</th>
+                            <th>Boy (mm)</th>
+                            <th>Adet</th>
+                            <th>Motor</th>
+                            <th>Uzaktan</th>
+                            <th>Adet</th>
+                            <th>RAL Kod</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($guillotines as $g): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($g['system_type']); ?></td>
+                                <td><?php echo htmlspecialchars($g['width_mm']); ?></td>
+                                <td><?php echo htmlspecialchars($g['height_mm']); ?></td>
+                                <td><?php echo htmlspecialchars($g['system_qty']); ?></td>
+                                <td><?php echo htmlspecialchars($g['motor_system']); ?></td>
+                                <td><?php echo htmlspecialchars($g['remote_system']); ?></td>
+                                <td><?php echo htmlspecialchars($g['remote_qty']); ?></td>
+                                <td><?php echo htmlspecialchars($g['ral_code']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+
+            <?php if ($slidings): ?>
+                <h4 class="mt-4">Sürme Teklifleri</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sistem Tipi</th>
+                            <th>En (mm)</th>
+                            <th>Boy (mm)</th>
+                            <th>Montaj</th>
+                            <th>Adet</th>
+                            <th>RAL Kod</th>
+                            <th>Kilit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($slidings as $s): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($s['system_type']); ?></td>
+                                <td><?php echo htmlspecialchars($s['width_mm']); ?></td>
+                                <td><?php echo htmlspecialchars($s['height_mm']); ?></td>
+                                <td><?php echo htmlspecialchars($s['fastening_type']); ?></td>
+                                <td><?php echo htmlspecialchars($s['system_qty']); ?></td>
+                                <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
+                                <td><?php echo htmlspecialchars($s['locking']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        <?php endif; ?>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const rowsContainer = document.getElementById("quoteRows");
