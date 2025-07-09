@@ -118,7 +118,9 @@ include 'includes/header.php';
         </div>
     <?php else: ?>
         <form method="post">
-            <div class="row">
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2">Firma ve Müşteri</legend>
+                <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Firma</label>
                     <select name="company_id" class="form-select" required>
@@ -135,8 +137,11 @@ include 'includes/header.php';
                         <?php endforeach; ?>
                     </select>
                 </div>
-            </div>
-            <div class="row">
+                </div>
+            </fieldset>
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2">Teslimat Bilgileri</legend>
+                <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Tarih</label>
                     <input type="date" name="quote_date" class="form-control"
@@ -146,9 +151,12 @@ include 'includes/header.php';
                     <label class="form-label">Teslimat Süresi</label>
                     <input type="text" name="delivery_term" class="form-control"
                         value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
+            </fieldset>
+            <fieldset class="border p-3 mb-4">
+                <legend class="w-auto px-2">Ödeme Bilgileri</legend>
+                <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Ödeme Yöntemi</label>
                     <input type="text" name="payment_method" class="form-control"
@@ -159,8 +167,8 @@ include 'includes/header.php';
                     <input type="text" name="payment_due" class="form-control"
                         value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
                 </div>
-            </div>
-            <div class="row">
+                </div>
+                <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Teklif Süresi</label>
                     <input type="text" name="quote_validity" class="form-control"
@@ -170,8 +178,9 @@ include 'includes/header.php';
                     <label class="form-label">Vade</label>
                     <input type="text" name="maturity" class="form-control"
                         value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
+                    </div>
                 </div>
-            </div>
+            </fieldset>
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
         </form>
         <!-- Giyotin Modal -->
