@@ -18,5 +18,4 @@ include 'includes/header.php';
                 <?php echo isset($_SESSION['user']['first_name']) ? htmlspecialchars($_SESSION['user']['first_name']) : "Kullanıcı!"; ?>
             </h1>
         </div>
-    </div>
-</div><?php include 'includes/footer.php'; ?>
+    </div></div>
