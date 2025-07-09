@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Tem 2025, 07:43:14
+-- Üretim Zamanı: 09 Tem 2025, 08:01:50
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -24,20 +24,42 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Tablo için tablo yapısı `actions`
+--
+
+CREATE TABLE `actions` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+--
+-- Tablo döküm verisi `actions`
+--
+
+INSERT INTO `actions` (`id`, `name`) VALUES
+(1, 'login'),
+(2, 'logout'),
+(3, 'create'),
+(4, 'update'),
+(5, 'delete');
+
+-- --------------------------------------------------------
+
+--
 -- Tablo için tablo yapısı `audit_logs`
 --
 
 CREATE TABLE `audit_logs` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `action_type` enum('INSERT','UPDATE','DELETE') NOT NULL,
   `action_time` datetime NOT NULL DEFAULT current_timestamp(),
   `table_name` varchar(50) NOT NULL,
   `column_name` varchar(50) DEFAULT NULL,
   `record_id` bigint(20) UNSIGNED DEFAULT NULL,
   `old_value` text DEFAULT NULL,
   `new_value` text DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL
+  `description` varchar(255) DEFAULT NULL,
+  `action_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -107,20 +129,6 @@ CREATE TABLE `guillotine_quotes` (
 -- --------------------------------------------------------
 
 --
--- Tablo için tablo yapısı `guillotine_quote_items`
---
-
-CREATE TABLE `guillotine_quote_items` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `quote_id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `dimension` varchar(50) DEFAULT NULL,
-  `quantity` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
--- --------------------------------------------------------
-
---
 -- Tablo için tablo yapısı `master_quotes`
 --
 
@@ -146,22 +154,6 @@ CREATE TABLE `master_quotes` (
   `taxes_included` tinyint(1) DEFAULT 0,
   `notes` text DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
--- --------------------------------------------------------
-
---
--- Tablo için tablo yapısı `master_quote_items`
---
-
-CREATE TABLE `master_quote_items` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `master_id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `quantity` decimal(12,2) DEFAULT NULL,
-  `unit_price` decimal(14,2) DEFAULT NULL,
-  `total_price` decimal(14,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -240,50 +232,6 @@ CREATE TABLE `settings` (
 -- --------------------------------------------------------
 
 --
--- Tablo için tablo yapısı `sliding_quotes`
---
-
-CREATE TABLE `sliding_quotes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `system_type` varchar(50) NOT NULL,
-  `width_mm` decimal(10,2) NOT NULL,
-  `height_mm` decimal(10,2) NOT NULL,
-  `system_name` varchar(50) DEFAULT NULL,
-  `system_qty` int(10) UNSIGNED NOT NULL,
-  `ral_code` varchar(50) DEFAULT NULL,
-  `fastening_type` varchar(30) DEFAULT NULL,
-  `glass_inner_mm` decimal(6,2) DEFAULT NULL,
-  `glass_gap_mm` decimal(6,2) DEFAULT NULL,
-  `glass_outer_mm` decimal(6,2) DEFAULT NULL,
-  `tempered` tinyint(1) DEFAULT 0,
-  `glass_width_mm` decimal(10,2) DEFAULT NULL,
-  `glass_height_mm` decimal(10,2) DEFAULT NULL,
-  `glass_qty` int(10) UNSIGNED DEFAULT NULL,
-  `sqm_system` decimal(12,2) DEFAULT NULL,
-  `kg_aluminium` decimal(12,2) DEFAULT NULL,
-  `sqm_glass` decimal(12,2) DEFAULT NULL,
-  `delta` decimal(12,2) DEFAULT NULL,
-  `customer_id` int(10) UNSIGNED DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
--- --------------------------------------------------------
-
---
--- Tablo için tablo yapısı `sliding_quote_items`
---
-
-CREATE TABLE `sliding_quote_items` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `quote_id` bigint(20) UNSIGNED NOT NULL,
-  `product_id` int(10) UNSIGNED NOT NULL,
-  `dimension` varchar(50) DEFAULT NULL,
-  `quantity` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
--- --------------------------------------------------------
-
---
 -- Tablo için tablo yapısı `users`
 --
 
@@ -309,12 +257,19 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `password_hash
 --
 
 --
+-- Tablo için indeksler `actions`
+--
+ALTER TABLE `actions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Tablo için indeksler `audit_logs`
 --
 ALTER TABLE `audit_logs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_table_record` (`table_name`,`record_id`),
-  ADD KEY `idx_user_time` (`user_id`,`action_time`);
+  ADD KEY `idx_user_time` (`user_id`,`action_time`),
+  ADD KEY `fk_auditlogs_actions` (`action_id`);
 
 --
 -- Tablo için indeksler `companies`
@@ -337,27 +292,11 @@ ALTER TABLE `guillotine_quotes`
   ADD KEY `customer_id` (`customer_id`);
 
 --
--- Tablo için indeksler `guillotine_quote_items`
---
-ALTER TABLE `guillotine_quote_items`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `quote_id` (`quote_id`),
-  ADD KEY `product_id` (`product_id`);
-
---
 -- Tablo için indeksler `master_quotes`
 --
 ALTER TABLE `master_quotes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `company_id` (`company_id`);
-
---
--- Tablo için indeksler `master_quote_items`
---
-ALTER TABLE `master_quote_items`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `master_id` (`master_id`),
-  ADD KEY `product_id` (`product_id`);
 
 --
 -- Tablo için indeksler `permissions`
@@ -402,21 +341,6 @@ ALTER TABLE `settings`
   ADD KEY `fk_settings_users` (`user_id`);
 
 --
--- Tablo için indeksler `sliding_quotes`
---
-ALTER TABLE `sliding_quotes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`customer_id`);
-
---
--- Tablo için indeksler `sliding_quote_items`
---
-ALTER TABLE `sliding_quote_items`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `quote_id` (`quote_id`),
-  ADD KEY `product_id` (`product_id`);
-
---
 -- Tablo için indeksler `users`
 --
 ALTER TABLE `users`
@@ -427,6 +351,12 @@ ALTER TABLE `users`
 --
 -- Dökümü yapılmış tablolar için AUTO_INCREMENT değeri
 --
+
+--
+-- Tablo için AUTO_INCREMENT değeri `actions`
+--
+ALTER TABLE `actions`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `audit_logs`
@@ -453,21 +383,9 @@ ALTER TABLE `guillotine_quotes`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- Tablo için AUTO_INCREMENT değeri `guillotine_quote_items`
---
-ALTER TABLE `guillotine_quote_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- Tablo için AUTO_INCREMENT değeri `master_quotes`
 --
 ALTER TABLE `master_quotes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- Tablo için AUTO_INCREMENT değeri `master_quote_items`
---
-ALTER TABLE `master_quote_items`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -495,18 +413,6 @@ ALTER TABLE `settings`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- Tablo için AUTO_INCREMENT değeri `sliding_quotes`
---
-ALTER TABLE `sliding_quotes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- Tablo için AUTO_INCREMENT değeri `sliding_quote_items`
---
-ALTER TABLE `sliding_quote_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
@@ -520,7 +426,8 @@ ALTER TABLE `users`
 -- Tablo kısıtlamaları `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  ADD CONSTRAINT `audit_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `audit_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_auditlogs_actions` FOREIGN KEY (`action_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE;
 
 --
 -- Tablo kısıtlamaları `customers`
@@ -535,24 +442,10 @@ ALTER TABLE `guillotine_quotes`
   ADD CONSTRAINT `guillotine_quotes_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Tablo kısıtlamaları `guillotine_quote_items`
---
-ALTER TABLE `guillotine_quote_items`
-  ADD CONSTRAINT `guillotine_quote_items_ibfk_1` FOREIGN KEY (`quote_id`) REFERENCES `guillotine_quotes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `guillotine_quote_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON UPDATE CASCADE;
-
---
 -- Tablo kısıtlamaları `master_quotes`
 --
 ALTER TABLE `master_quotes`
   ADD CONSTRAINT `master_quotes_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON UPDATE CASCADE;
-
---
--- Tablo kısıtlamaları `master_quote_items`
---
-ALTER TABLE `master_quote_items`
-  ADD CONSTRAINT `master_quote_items_ibfk_1` FOREIGN KEY (`master_id`) REFERENCES `master_quotes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `master_quote_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Tablo kısıtlamaları `permission_role`
@@ -573,19 +466,6 @@ ALTER TABLE `role_user`
 --
 ALTER TABLE `settings`
   ADD CONSTRAINT `fk_settings_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Tablo kısıtlamaları `sliding_quotes`
---
-ALTER TABLE `sliding_quotes`
-  ADD CONSTRAINT `sliding_quotes_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Tablo kısıtlamaları `sliding_quote_items`
---
-ALTER TABLE `sliding_quote_items`
-  ADD CONSTRAINT `sliding_quote_items_ibfk_1` FOREIGN KEY (`quote_id`) REFERENCES `sliding_quotes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `sliding_quote_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
