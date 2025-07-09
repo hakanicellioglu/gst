@@ -17,7 +17,7 @@ $customerStmt = $pdo->query("SELECT id, CONCAT(first_name,' ',last_name) AS name
 $customers = $customerStmt->fetchAll();
 $canAdd = count($companies) > 0 && count($customers) > 0;
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $quote = null;
 if ($id) {
     $stmt = $pdo->prepare("SELECT * FROM master_quotes WHERE id = :id");
@@ -31,15 +31,15 @@ if ($id) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     $data = [
-        ':company'   => $_POST['company_id'],
-        ':contact'   => $_POST['contact_id'],
-        ':date'      => $_POST['quote_date'],
-        ':prepared'  => $_SESSION['user']['id'] ?? null,
-        ':delivery'  => $_POST['delivery_term'],
-        ':method'    => $_POST['payment_method'],
-        ':due'       => $_POST['payment_due'],
-        ':validity'  => $_POST['quote_validity'],
-        ':maturity'  => $_POST['maturity']
+        ':company' => $_POST['company_id'],
+        ':contact' => $_POST['contact_id'],
+        ':date' => $_POST['quote_date'],
+        ':prepared' => $_SESSION['user']['id'] ?? null,
+        ':delivery' => $_POST['delivery_term'],
+        ':method' => $_POST['payment_method'],
+        ':due' => $_POST['payment_due'],
+        ':validity' => $_POST['quote_validity'],
+        ':maturity' => $_POST['maturity']
     ];
     if ($id) {
         $data[':id'] = $id;
@@ -56,136 +56,139 @@ include 'includes/header.php';
 ?>
 <div class="container py-4">
     <h2 class="mb-4">Teklif <?php echo $id ? 'Düzenle' : 'Ekle'; ?></h2>
-    <div class="mb-3">
-        <div class="dropdown">
-            <button class="btn btn-<?php echo get_color(); ?> dropdown-toggle" type="button" id="offerDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Teklif Ekle
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="offerDropdown">
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#giyotinModal">Giyotin</a></li>
-                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#surmeModal">Sürme</a></li>
-            </ul>
-        </div>
-    </div>
     <?php if (!$canAdd): ?>
         <div class="alert alert-warning">
-            Teklif ekleyebilmek için önce <a href="company" class="alert-link">firma</a> ve <a href="customers" class="alert-link">müşteri</a> eklemelisiniz.
+            Teklif ekleyebilmek için önce <a href="company" class="alert-link">firma</a> ve <a href="customers"
+                class="alert-link">müşteri</a> eklemelisiniz.
         </div>
     <?php else: ?>
-    <form method="post">
-        </div>
-        <div class="text-end mt-2">
-            <button type="button" id="addRow" class="btn btn-secondary btn-sm">Satır Ekle</button>
-        </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Firma</label>
-                <select name="company_id" class="form-select" required>
-                    <?php foreach ($companies as $co): ?>
-                        <option value="<?php echo $co['id']; ?>" <?php echo ($quote && $quote['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Müşteri</label>
-                <select name="contact_id" class="form-select" required>
-                    <?php foreach ($customers as $cu): ?>
-                        <option value="<?php echo $cu['id']; ?>" <?php echo ($quote && $quote['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Tarih</label>
-                <input type="date" name="quote_date" class="form-control" value="<?php echo $quote ? htmlspecialchars($quote['quote_date']) : ''; ?>" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Teslimat Süresi</label>
-                <input type="text" name="delivery_term" class="form-control" value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Ödeme Yöntemi</label>
-                <input type="text" name="payment_method" class="form-control" value="<?php echo $quote ? htmlspecialchars($quote['payment_method']) : ''; ?>">
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Ödeme Süresi</label>
-                <input type="text" name="payment_due" class="form-control" value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Teklif Süresi</label>
-                <input type="text" name="quote_validity" class="form-control" value="<?php echo $quote ? htmlspecialchars($quote['quote_validity']) : ''; ?>">
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Vade</label>
-                <input type="text" name="maturity" class="form-control" value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
-            </div>
-        </div>
-        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-    </form>
-    <!-- Giyotin Modal -->
-    <div class="modal fade" id="giyotinModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Giyotin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Firma</label>
+                    <select name="company_id" class="form-select" required>
+                        <?php foreach ($companies as $co): ?>
+                            <option value="<?php echo $co['id']; ?>" <?php echo ($quote && $quote['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-                <div class="modal-body">
-                    Giyotin seçildi.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Müşteri</label>
+                    <select name="contact_id" class="form-select" required>
+                        <?php foreach ($customers as $cu): ?>
+                            <option value="<?php echo $cu['id']; ?>" <?php echo ($quote && $quote['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Sürme Modal -->
-    <div class="modal fade" id="surmeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Sürme</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tarih</label>
+                    <input type="date" name="quote_date" class="form-control"
+                        value="<?php echo $quote ? htmlspecialchars($quote['quote_date']) : ''; ?>" required>
                 </div>
-                <div class="modal-body">
-                    Sürme seçildi.
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Teslimat Süresi</label>
+                    <input type="text" name="delivery_term" class="form-control"
+                        value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ödeme Yöntemi</label>
+                    <input type="text" name="payment_method" class="form-control"
+                        value="<?php echo $quote ? htmlspecialchars($quote['payment_method']) : ''; ?>">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ödeme Süresi</label>
+                    <input type="text" name="payment_due" class="form-control"
+                        value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Teklif Süresi</label>
+                    <input type="text" name="quote_validity" class="form-control"
+                        value="<?php echo $quote ? htmlspecialchars($quote['quote_validity']) : ''; ?>">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Vade</label>
+                    <input type="text" name="maturity" class="form-control"
+                        value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+        </form>
+        <!-- Giyotin Modal -->
+        <div class="modal fade" id="giyotinModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Giyotin</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Giyotin seçildi.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const rowsContainer = document.getElementById("quoteRows");
-    const addRowBtn = document.getElementById("addRow");
+        <div class="mb-3 d-flex">
+            <div class="dropdown ms-auto">
+                <button class="btn btn-<?php echo get_color(); ?> dropdown-toggle" type="button" id="offerDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Teklif Ekle
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="offerDropdown">
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#giyotinModal">Giyotin</a>
+                    </li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#surmeModal">Sürme</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- Sürme Modal -->
+        <div class="modal fade" id="surmeModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Sürme</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Sürme seçildi.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const rowsContainer = document.getElementById("quoteRows");
+                const addRowBtn = document.getElementById("addRow");
 
-    addRowBtn.addEventListener("click", function () {
-        const firstRow = rowsContainer.querySelector(".form-row");
-        const newRow = firstRow.cloneNode(true);
-        newRow.querySelectorAll("input").forEach(input => input.value = "");
-        rowsContainer.appendChild(newRow);
-    });
+                addRowBtn.addEventListener("click", function () {
+                    const firstRow = rowsContainer.querySelector(".form-row");
+                    const newRow = firstRow.cloneNode(true);
+                    newRow.querySelectorAll("input").forEach(input => input.value = "");
+                    rowsContainer.appendChild(newRow);
+                });
 
-    rowsContainer.addEventListener("click", function (e) {
-        if (e.target.classList.contains("delete-row")) {
-            const rows = rowsContainer.querySelectorAll(".form-row");
-            if (rows.length === 1) {
-                alert("En az bir satır kalmalıdır.");
-                return;
-            }
-            e.target.closest(".form-row").remove();
-        }
-    });
-});
-</script>
+                rowsContainer.addEventListener("click", function (e) {
+                    if (e.target.classList.contains("delete-row")) {
+                        const rows = rowsContainer.querySelectorAll(".form-row");
+                        if (rows.length === 1) {
+                            alert("En az bir satır kalmalıdır.");
+                            return;
+                        }
+                        e.target.closest(".form-row").remove();
+                    }
+                });
+            });
+        </script>
     <?php endif; ?>
 </div>
-<?php include 'includes/footer.php'; ?>
