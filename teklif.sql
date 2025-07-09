@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Tem 2025, 08:01:50
+-- Üretim Zamanı: 09 Tem 2025, 08:05:20
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -246,13 +246,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
--- Tablo döküm verisi `users`
---
-
-INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `password_hash`, `email`, `created_at`) VALUES
-(1, 'Hakan Berke', 'İÇELLİOĞLU', 'test', '$2y$10$4gYfzNT4FUNgO7ntWIhW9.CopzdGqofl.Si2iAG48I7mMFShDIhSi', 'hakanicellioglu@gmail.com', '2025-07-07 10:58:17');
-
---
 -- Dökümü yapılmış tablolar için indeksler
 --
 
@@ -368,7 +361,7 @@ ALTER TABLE `audit_logs`
 -- Tablo için AUTO_INCREMENT değeri `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `customers`
@@ -398,7 +391,7 @@ ALTER TABLE `permissions`
 -- Tablo için AUTO_INCREMENT değeri `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roles`
@@ -416,7 +409,7 @@ ALTER TABLE `settings`
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar
