@@ -62,6 +62,45 @@ include 'includes/header.php';
         </div>
     <?php else: ?>
     <form method="post">
+        <ul class="nav nav-tabs align-items-center border-bottom-0 mb-4">
+            <li class="nav-item">
+                <span class="nav-link active bg-warning text-dark fw-bold">Giyotin</span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link text-muted">Sürme</span>
+            </li>
+            <li class="ms-auto">
+                <span class="fs-5 text-muted">&#9662;</span>
+            </li>
+        </ul>
+        <div class="border rounded p-3 mb-4">
+            <div class="row g-3 text-center">
+                <div class="col-md-2">
+                    <label class="form-label">Genişlik</label>
+                    <input type="text" name="genislik" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Yükseklik</label>
+                    <input type="text" name="yukseklik" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Motor</label>
+                    <input type="text" name="motor" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Kumanda</label>
+                    <input type="text" name="kumanda" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cam</label>
+                    <input type="text" name="cam" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Renk</label>
+                    <input type="text" name="renk" class="form-control form-control-sm">
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Firma</label>
@@ -111,15 +150,6 @@ include 'includes/header.php';
             </div>
         </div>
         <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-        <div class="dropdown d-inline ms-2">
-            <button class="btn btn-<?php echo get_color(); ?> dropdown-toggle" type="button" id="offerTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Model Seç
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="offerTypeDropdown">
-                <li><a class="dropdown-item" href="#">Giyotin</a></li>
-                <li><a class="dropdown-item" href="#">Sürme</a></li>
-            </ul>
-        </div>
     </form>
     <?php endif; ?>
 </div>
