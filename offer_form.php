@@ -84,6 +84,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sliding']) && $id
     exit;
 }
 
+// Handle editing guillotine quotes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) && $id) {
+    $stmt = $pdo->prepare(
+        "UPDATE guillotine_quotes SET width_mm=:width, height_mm=:height, system_qty=:qty, glass_type=:glass, glass_color=:color, motor_system=:motor, remote_qty=:remote_qty, ral_code=:ral WHERE id=:gid AND master_quote_id=:master"
+    );
+    $stmt->execute([
+        ':width'       => $_POST['width_mm'],
+        ':height'      => $_POST['height_mm'],
+        ':qty'         => $_POST['system_qty'],
+        ':glass'       => $_POST['glass_type'],
+        ':color'       => $_POST['glass_color'],
+        ':motor'       => $_POST['motor_system'],
+        ':remote_qty'  => $_POST['remote_qty'],
+        ':ral'         => $_POST['ral_code'],
+        ':gid'         => $_POST['gid'],
+        ':master'      => $id
+    ]);
+    header('Location: offer_form?id=' . $id);
+    exit;
+}
+
+// Handle deleting guillotine quotes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_guillotine']) && $id) {
+    $stmt = $pdo->prepare("DELETE FROM guillotine_quotes WHERE id=:gid AND master_quote_id=:master");
+    $stmt->execute([
+        ':gid'    => $_POST['gid'],
+        ':master' => $id
+    ]);
+    header('Location: offer_form?id=' . $id);
+    exit;
+}
+
+// Handle editing sliding quotes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $id) {
+    $stmt = $pdo->prepare(
+        "UPDATE sliding_quotes SET system_type=:system, width_mm=:width, height_mm=:height, wing_type=:wing, fastening_type=:fastening, glass_type=:glass, glass_color=:color, system_qty=:qty, ral_code=:ral, locking=:locking WHERE id=:sid AND master_quote_id=:master"
+    );
+    $stmt->execute([
+        ':system'    => $_POST['system_type'],
+        ':width'     => $_POST['width_mm'],
+        ':height'    => $_POST['height_mm'],
+        ':wing'      => $_POST['wing_type'],
+        ':fastening' => $_POST['fastening_type'],
+        ':glass'     => $_POST['glass_type'],
+        ':color'     => $_POST['glass_color'],
+        ':qty'       => $_POST['system_qty'],
+        ':ral'       => $_POST['ral_code'],
+        ':locking'   => $_POST['locking'],
+        ':sid'       => $_POST['sid'],
+        ':master'    => $id
+    ]);
+    header('Location: offer_form?id=' . $id);
+    exit;
+}
+
+// Handle deleting sliding quotes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_sliding']) && $id) {
+    $stmt = $pdo->prepare("DELETE FROM sliding_quotes WHERE id=:sid AND master_quote_id=:master");
+    $stmt->execute([
+        ':sid'    => $_POST['sid'],
+        ':master' => $id
+    ]);
+    header('Location: offer_form?id=' . $id);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     $data = [
         ':company' => $_POST['company_id'],
@@ -352,6 +418,7 @@ include 'includes/header.php';
                             <th>Uzaktan</th>
                             <th>Adet</th>
                             <th>RAL Kod</th>
+                            <th class="text-center" style="width:150px;">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -367,7 +434,75 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($g['remote_system']); ?></td>
                                 <td><?php echo htmlspecialchars($g['remote_qty']); ?></td>
                                 <td><?php echo htmlspecialchars($g['ral_code']); ?></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editG<?php echo $g['id']; ?>">Düzenle</button>
+                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                        <input type="hidden" name="delete_guillotine" value="1">
+                                        <input type="hidden" name="gid" value="<?php echo $g['id']; ?>">
+                                        <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                                    </form>
+                                </td>
                             </tr>
+
+                            <!-- Edit Guillotine Modal -->
+                            <div class="modal fade" id="editG<?php echo $g['id']; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form class="modal-content" method="post" action="offer_form?id=<?php echo $id; ?>">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Giyotin Düzenle</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="edit_guillotine" value="1">
+                                            <input type="hidden" name="gid" value="<?php echo $g['id']; ?>">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Genişlik (mm)</label>
+                                                    <input type="number" step="0.01" name="width_mm" class="form-control" value="<?php echo htmlspecialchars($g['width_mm']); ?>" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Yükseklik (mm)</label>
+                                                    <input type="number" step="0.01" name="height_mm" class="form-control" value="<?php echo htmlspecialchars($g['height_mm']); ?>" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Adet</label>
+                                                    <input type="number" name="system_qty" class="form-control" value="<?php echo htmlspecialchars($g['system_qty']); ?>" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Motor Sistemi</label>
+                                                    <input type="text" name="motor_system" class="form-control" value="<?php echo htmlspecialchars($g['motor_system']); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Cam</label>
+                                                    <input type="text" name="glass_type" class="form-control" value="<?php echo htmlspecialchars($g['glass_type']); ?>">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Cam Rengi</label>
+                                                    <input type="text" name="glass_color" class="form-control" value="<?php echo htmlspecialchars($g['glass_color']); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Kumanda Adedi</label>
+                                                    <input type="number" name="remote_qty" class="form-control" value="<?php echo htmlspecialchars($g['remote_qty']); ?>">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">RAL Kod</label>
+                                                    <input type="text" name="ral_code" class="form-control" value="<?php echo htmlspecialchars($g['ral_code']); ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -388,6 +523,7 @@ include 'includes/header.php';
                             <th>Adet</th>
                             <th>RAL Kod</th>
                             <th>Kilit</th>
+                            <th class="text-center" style="width:150px;">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -403,7 +539,85 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($s['system_qty']); ?></td>
                                 <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
                                 <td><?php echo htmlspecialchars($s['locking']); ?></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editS<?php echo $s['id']; ?>">Düzenle</button>
+                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                        <input type="hidden" name="delete_sliding" value="1">
+                                        <input type="hidden" name="sid" value="<?php echo $s['id']; ?>">
+                                        <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                                    </form>
+                                </td>
                             </tr>
+
+                            <!-- Edit Sliding Modal -->
+                            <div class="modal fade" id="editS<?php echo $s['id']; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form class="modal-content" method="post" action="offer_form?id=<?php echo $id; ?>">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Sürme Düzenle</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="edit_sliding" value="1">
+                                            <input type="hidden" name="sid" value="<?php echo $s['id']; ?>">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Sürme Sistemi</label>
+                                                    <input type="text" name="system_type" class="form-control" value="<?php echo htmlspecialchars($s['system_type']); ?>">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Kanat Tipi</label>
+                                                    <input type="text" name="wing_type" class="form-control" value="<?php echo htmlspecialchars($s['wing_type']); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Genişlik (mm)</label>
+                                                    <input type="number" step="0.01" name="width_mm" class="form-control" value="<?php echo htmlspecialchars($s['width_mm']); ?>" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Yükseklik (mm)</label>
+                                                    <input type="number" step="0.01" name="height_mm" class="form-control" value="<?php echo htmlspecialchars($s['height_mm']); ?>" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Sistem Adedi</label>
+                                                    <input type="number" name="system_qty" class="form-control" value="<?php echo htmlspecialchars($s['system_qty']); ?>" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">RAL Kod</label>
+                                                    <input type="text" name="ral_code" class="form-control" value="<?php echo htmlspecialchars($s['ral_code']); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Kenet</label>
+                                                    <input type="text" name="fastening_type" class="form-control" value="<?php echo htmlspecialchars($s['fastening_type']); ?>">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Cam</label>
+                                                    <input type="text" name="glass_type" class="form-control" value="<?php echo htmlspecialchars($s['glass_type']); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Cam Rengi</label>
+                                                    <input type="text" name="glass_color" class="form-control" value="<?php echo htmlspecialchars($s['glass_color']); ?>">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Kilit</label>
+                                                    <input type="text" name="locking" class="form-control" value="<?php echo htmlspecialchars($s['locking']); ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
