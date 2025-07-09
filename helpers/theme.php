@@ -41,16 +41,20 @@ function get_color(): string
  */
 function load_theme_settings(PDO $pdo): void
 {
-    $query = "SELECT key_name, value FROM settings
-              WHERE group_name = 'ui' AND key_name IN ('theme','color')";
+    if (!isset($_SESSION['user']['id'])) {
+        return;
+    }
+    $query = "SELECT `key`, value FROM settings
+              WHERE user_id = ? AND `key` IN ('theme','color')";
     try {
-        $stmt = $pdo->query($query);
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$_SESSION['user']['id']]);
         foreach ($stmt as $row) {
             $value = json_decode($row['value'], true);
-            if ($row['key_name'] === 'theme' && !isset($_SESSION['theme'])) {
+            if ($row['key'] === 'theme' && !isset($_SESSION['theme'])) {
                 set_theme($value);
             }
-            if ($row['key_name'] === 'color' && !isset($_SESSION['color'])) {
+            if ($row['key'] === 'color' && !isset($_SESSION['color'])) {
                 set_color($value);
             }
         }
