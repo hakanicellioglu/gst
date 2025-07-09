@@ -4,6 +4,10 @@ require_once 'helpers/theme.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}
 load_theme_settings($pdo);
 include 'includes/header.php';
 ?>
@@ -15,5 +19,4 @@ include 'includes/header.php';
             </h1>
         </div>
     </div>
-</div>
-<?php include 'includes/footer.php'; ?>
+</div><?php include 'includes/footer.php'; ?>

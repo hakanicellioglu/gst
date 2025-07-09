@@ -4,6 +4,10 @@ require_once 'helpers/theme.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}
 
 $errors = [];
 $success = '';
