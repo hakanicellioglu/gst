@@ -75,7 +75,7 @@ include 'includes/header.php';
     <div class="row mb-3">
         <div class="col-12 text-end">
             <?php if ($canAdd): ?>
-                <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Teklif Ekle</button>
+                <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
             <?php endif; ?>
         </div>
     </div>
@@ -105,7 +105,7 @@ include 'includes/header.php';
                     <td><?php echo htmlspecialchars($q['quote_validity']); ?></td>
                     <td><?php echo htmlspecialchars($q['maturity']); ?></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $q['id']; ?>">Düzenle</button>
+                        <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm btn-<?php echo get_color(); ?>">Düzenle</a>
                         <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
@@ -113,146 +113,8 @@ include 'includes/header.php';
                         </form>
                     </td>
                 </tr>
-
-                <!-- Edit Modal -->
-                <div class="modal fade" id="editModal<?php echo $q['id']; ?>" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Teklif Düzenle</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <form method="post" action="offer">
-                                <div class="modal-body">
-                                    <input type="hidden" name="action" value="edit">
-                                    <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Firma</label>
-                                            <select name="company_id" class="form-select" required>
-                                                <?php foreach ($companies as $co): ?>
-                                                    <option value="<?php echo $co['id']; ?>" <?php echo ($q['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Müşteri</label>
-                                            <select name="contact_id" class="form-select" required>
-                                                <?php foreach ($customers as $cu): ?>
-                                                    <option value="<?php echo $cu['id']; ?>" <?php echo ($q['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Tarih</label>
-                                            <input type="date" name="quote_date" class="form-control" value="<?php echo htmlspecialchars($q['quote_date']); ?>" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Teslimat Süresi</label>
-                                            <input type="text" name="delivery_term" class="form-control" value="<?php echo htmlspecialchars($q['delivery_term']); ?>">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Ödeme Yöntemi</label>
-                                            <input type="text" name="payment_method" class="form-control" value="<?php echo htmlspecialchars($q['payment_method']); ?>">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Ödeme Süresi</label>
-                                            <input type="text" name="payment_due" class="form-control" value="<?php echo htmlspecialchars($q['payment_due']); ?>">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Teklif Süresi</label>
-                                            <input type="text" name="quote_validity" class="form-control" value="<?php echo htmlspecialchars($q['quote_validity']); ?>">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Vade</label>
-                                            <input type="text" name="maturity" class="form-control" value="<?php echo htmlspecialchars($q['maturity']); ?>">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             <?php endforeach; ?>
         </tbody>
     </table>
-</div>
-<!-- Add Modal -->
-<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Teklif Ekle</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post" action="offer">
-                <div class="modal-body">
-                    <input type="hidden" name="action" value="add">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Firma</label>
-                            <select name="company_id" class="form-select" required>
-                                <?php foreach ($companies as $co): ?>
-                                    <option value="<?php echo $co['id']; ?>"><?php echo htmlspecialchars($co['name']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Müşteri</label>
-                            <select name="contact_id" class="form-select" required>
-                                <?php foreach ($customers as $cu): ?>
-                                    <option value="<?php echo $cu['id']; ?>"><?php echo htmlspecialchars($cu['name']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tarih</label>
-                            <input type="date" name="quote_date" class="form-control" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Teslimat Süresi</label>
-                            <input type="text" name="delivery_term" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Ödeme Yöntemi</label>
-                            <input type="text" name="payment_method" class="form-control">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Ödeme Süresi</label>
-                            <input type="text" name="payment_due" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Teklif Süresi</label>
-                            <input type="text" name="quote_validity" class="form-control">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Vade</label>
-                            <input type="text" name="maturity" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 <?php include 'includes/footer.php'; ?>
