@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':phone'   => $_POST['phone'],
             ':address' => $_POST['address']
         ]);
-        header('Location: auth');
+        header('Location: customer');
         exit;
     } elseif ($action === 'edit') {
         $stmt = $pdo->prepare("UPDATE customers SET company_id = :company, first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
@@ -44,12 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':address' => $_POST['address'],
             ':id'      => $_POST['id']
         ]);
-        header('Location: auth');
+        header('Location: customer');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM customers WHERE id = :id");
         $stmt->execute([':id' => $_POST['id']]);
-        header('Location: auth');
+        header('Location: customer');
         exit;
     }
 }
@@ -114,7 +114,7 @@ $customers = $stmt->fetchAll();
                     <td class="text-center">
                         <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $customer['id']; ?>">Düzenle</button>
-                        <form method="post" action="auth" style="display:inline-block"
+                        <form method="post" action="customer" style="display:inline-block"
                             onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
@@ -131,7 +131,7 @@ $customers = $stmt->fetchAll();
                                 <h5 class="modal-title">Müşteri Düzenle</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form method="post" action="auth">
+                            <form method="post" action="customer">
                                 <div class="modal-body">
                                     <input type="hidden" name="action" value="edit">
                                     <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
@@ -235,7 +235,7 @@ $customers = $stmt->fetchAll();
                 <h5 class="modal-title">Müşteri Ekle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="auth">
+            <form method="post" action="customer">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
                     <div class="mb-3">
