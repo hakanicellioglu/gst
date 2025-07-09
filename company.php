@@ -208,4 +208,3 @@ $companies = $stmt->fetchAll();
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>

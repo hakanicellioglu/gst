@@ -188,4 +188,4 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
     <?php endif; ?>
 </div>
-<?php include 'includes/footer.php'; ?>
+

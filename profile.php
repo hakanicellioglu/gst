@@ -119,6 +119,4 @@ $current = $_SESSION['user'];
             </div>
         </div>
     </div>
-    <?php include 'includes/footer.php'; ?>
-</body>
-</html>
+</body></html>
