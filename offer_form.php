@@ -333,44 +333,45 @@ include 'includes/header.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="add_sliding" value="1">
+                        <input type="hidden" name="add_sliding" value="1" id="surmeAction">
+                        <input type="hidden" name="sid" id="surmeId" value="">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Sürme Sistemi</label>
-                                <select name="system_type" class="form-select">
+                                <select name="system_type" id="surmeSystem" class="form-select">
                                     <option value="Sistem 1">Sistem 1</option>
                                     <option value="Sistem 2">Sistem 2</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Kanat Tipi</label>
-                                <input type="text" name="wing_type" class="form-control">
+                                <input type="text" name="wing_type" id="surmeWing" class="form-control">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Genişlik (mm)</label>
-                                <input type="number" step="0.01" name="width_mm" class="form-control" required>
+                                <input type="number" step="0.01" name="width_mm" id="surmeWidth" class="form-control" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Yükseklik (mm)</label>
-                                <input type="number" step="0.01" name="height_mm" class="form-control" required>
+                                <input type="number" step="0.01" name="height_mm" id="surmeHeight" class="form-control" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Sistem Adedi</label>
-                                <input type="number" name="system_qty" class="form-control" required>
+                                <input type="number" name="system_qty" id="surmeQty" class="form-control" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">RAL Kod</label>
-                                <input type="text" name="ral_code" class="form-control">
+                                <input type="text" name="ral_code" id="surmeRal" class="form-control">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Kenet</label>
-                                <select name="fastening_type" class="form-select">
+                                <select name="fastening_type" id="surmeFastening" class="form-select">
                                     <option value="Takviyesiz">Takviyesiz</option>
                                     <option value="Takviyeli Yarım">Takviyeli Yarım</option>
                                     <option value="Takviyeli Tam">Takviyeli Tam</option>
@@ -378,7 +379,7 @@ include 'includes/header.php';
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Cam</label>
-                                <select name="glass_type" class="form-select">
+                                <select name="glass_type" id="surmeGlass" class="form-select">
                                     <option value="Isıcam">Isıcam</option>
                                     <option value="Tek Cam">Tek Cam</option>
                                 </select>
@@ -387,17 +388,17 @@ include 'includes/header.php';
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Cam Rengi</label>
-                                <input type="text" name="glass_color" class="form-control">
+                                <input type="text" name="glass_color" id="surmeColor" class="form-control">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Kilit</label>
-                                <input type="text" name="locking" class="form-control">
+                                <input type="text" name="locking" id="surmeLocking" class="form-control">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
+                        <button type="submit" id="surmeSubmit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
                     </div>
                 </form>
             </div>
@@ -493,7 +494,21 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
                                 <td><?php echo htmlspecialchars($s['locking']); ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editS<?php echo $s['id']; ?>">Düzenle</button>
+                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-sliding-btn"
+                                        data-bs-toggle="modal" data-bs-target="#surmeModal"
+                                        data-id="<?php echo $s['id']; ?>"
+                                        data-system="<?php echo htmlspecialchars($s['system_type']); ?>"
+                                        data-wing="<?php echo htmlspecialchars($s['wing_type']); ?>"
+                                        data-width="<?php echo htmlspecialchars($s['width_mm']); ?>"
+                                        data-height="<?php echo htmlspecialchars($s['height_mm']); ?>"
+                                        data-qty="<?php echo htmlspecialchars($s['system_qty']); ?>"
+                                        data-ral="<?php echo htmlspecialchars($s['ral_code']); ?>"
+                                        data-fastening="<?php echo htmlspecialchars($s['fastening_type']); ?>"
+                                        data-glass="<?php echo htmlspecialchars($s['glass_type']); ?>"
+                                        data-color="<?php echo htmlspecialchars($s['glass_color']); ?>"
+                                        data-locking="<?php echo htmlspecialchars($s['locking']); ?>">
+                                        Düzenle
+                                    </button>
                                     <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="delete_sliding" value="1">
                                         <input type="hidden" name="sid" value="<?php echo $s['id']; ?>">
@@ -501,76 +516,6 @@ include 'includes/header.php';
                                     </form>
                                 </td>
                             </tr>
-
-                            <!-- Edit Sliding Modal -->
-                            <div class="modal fade" id="editS<?php echo $s['id']; ?>" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <form class="modal-content" method="post" action="offer_form?id=<?php echo $id; ?>">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Sürme Düzenle</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" name="edit_sliding" value="1">
-                                            <input type="hidden" name="sid" value="<?php echo $s['id']; ?>">
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Sürme Sistemi</label>
-                                                    <input type="text" name="system_type" class="form-control" value="<?php echo htmlspecialchars($s['system_type']); ?>">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Kanat Tipi</label>
-                                                    <input type="text" name="wing_type" class="form-control" value="<?php echo htmlspecialchars($s['wing_type']); ?>">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Genişlik (mm)</label>
-                                                    <input type="number" step="0.01" name="width_mm" class="form-control" value="<?php echo htmlspecialchars($s['width_mm']); ?>" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Yükseklik (mm)</label>
-                                                    <input type="number" step="0.01" name="height_mm" class="form-control" value="<?php echo htmlspecialchars($s['height_mm']); ?>" required>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Sistem Adedi</label>
-                                                    <input type="number" name="system_qty" class="form-control" value="<?php echo htmlspecialchars($s['system_qty']); ?>" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">RAL Kod</label>
-                                                    <input type="text" name="ral_code" class="form-control" value="<?php echo htmlspecialchars($s['ral_code']); ?>">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Kenet</label>
-                                                    <input type="text" name="fastening_type" class="form-control" value="<?php echo htmlspecialchars($s['fastening_type']); ?>">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Cam</label>
-                                                    <input type="text" name="glass_type" class="form-control" value="<?php echo htmlspecialchars($s['glass_type']); ?>">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Cam Rengi</label>
-                                                    <input type="text" name="glass_color" class="form-control" value="<?php echo htmlspecialchars($s['glass_color']); ?>">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Kilit</label>
-                                                    <input type="text" name="locking" class="form-control" value="<?php echo htmlspecialchars($s['locking']); ?>">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -644,6 +589,57 @@ include 'includes/header.php';
                     ralInput.value = '';
                     submitBtn.textContent = 'Ekle';
                     giyotinModal.querySelector('.modal-title').textContent = 'Giyotin Teklifi';
+                });
+
+                const surmeModal = document.getElementById('surmeModal');
+                const surmeAction = document.getElementById('surmeAction');
+                const surmeId = document.getElementById('surmeId');
+                const surmeSystem = document.getElementById('surmeSystem');
+                const surmeWing = document.getElementById('surmeWing');
+                const surmeWidth = document.getElementById('surmeWidth');
+                const surmeHeight = document.getElementById('surmeHeight');
+                const surmeQty = document.getElementById('surmeQty');
+                const surmeRal = document.getElementById('surmeRal');
+                const surmeFastening = document.getElementById('surmeFastening');
+                const surmeGlass = document.getElementById('surmeGlass');
+                const surmeColor = document.getElementById('surmeColor');
+                const surmeLocking = document.getElementById('surmeLocking');
+                const surmeSubmit = document.getElementById('surmeSubmit');
+
+                document.querySelectorAll('.edit-sliding-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        surmeAction.name = 'edit_sliding';
+                        surmeId.value = this.dataset.id;
+                        surmeSystem.value = this.dataset.system;
+                        surmeWing.value = this.dataset.wing;
+                        surmeWidth.value = this.dataset.width;
+                        surmeHeight.value = this.dataset.height;
+                        surmeQty.value = this.dataset.qty;
+                        surmeRal.value = this.dataset.ral;
+                        surmeFastening.value = this.dataset.fastening;
+                        surmeGlass.value = this.dataset.glass;
+                        surmeColor.value = this.dataset.color;
+                        surmeLocking.value = this.dataset.locking;
+                        surmeSubmit.textContent = 'Kaydet';
+                        surmeModal.querySelector('.modal-title').textContent = 'Sürme Düzenle';
+                    });
+                });
+
+                surmeModal.addEventListener('hidden.bs.modal', function () {
+                    surmeAction.name = 'add_sliding';
+                    surmeId.value = '';
+                    surmeSystem.value = 'Sistem 1';
+                    surmeWing.value = '';
+                    surmeWidth.value = '';
+                    surmeHeight.value = '';
+                    surmeQty.value = '';
+                    surmeRal.value = '';
+                    surmeFastening.value = 'Takviyesiz';
+                    surmeGlass.value = 'Isıcam';
+                    surmeColor.value = '';
+                    surmeLocking.value = '';
+                    surmeSubmit.textContent = 'Ekle';
+                    surmeModal.querySelector('.modal-title').textContent = 'Sürme Teklifi';
                 });
             });
         </script>
