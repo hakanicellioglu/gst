@@ -257,7 +257,10 @@ CREATE TABLE `sliding_quotes` (
   `system_type` varchar(50) NOT NULL,
   `width_mm` decimal(10,2) NOT NULL,
   `height_mm` decimal(10,2) NOT NULL,
+  `wing_type` varchar(20) DEFAULT NULL,
   `fastening_type` varchar(30) DEFAULT NULL,
+  `glass_type` varchar(50) DEFAULT NULL,
+  `glass_color` varchar(50) DEFAULT NULL,
   `system_qty` int(10) UNSIGNED NOT NULL,
   `ral_code` varchar(50) DEFAULT NULL,
   `locking` varchar(30) DEFAULT NULL
