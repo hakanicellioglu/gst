@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 08 Tem 2025, 13:41:20
+-- Üretim Zamanı: 09 Tem 2025, 07:43:14
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -231,19 +231,11 @@ CREATE TABLE `role_user` (
 --
 
 CREATE TABLE `settings` (
-  `id` tinyint(3) UNSIGNED NOT NULL,
-  `group_name` varchar(30) NOT NULL,
-  `key_name` varchar(50) NOT NULL,
-  `value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`value`))
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `value` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- Tablo döküm verisi `settings`
---
-
-INSERT INTO `settings` (`id`, `group_name`, `key_name`, `value`) VALUES
-(1, 'ui', 'theme', '\"light\"'),
-(2, 'ui', 'color', '\"success\"');
 
 -- --------------------------------------------------------
 
@@ -407,7 +399,7 @@ ALTER TABLE `role_user`
 --
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_group_key` (`group_name`,`key_name`);
+  ADD KEY `fk_settings_users` (`user_id`);
 
 --
 -- Tablo için indeksler `sliding_quotes`
@@ -500,7 +492,7 @@ ALTER TABLE `roles`
 -- Tablo için AUTO_INCREMENT değeri `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `sliding_quotes`
@@ -575,6 +567,12 @@ ALTER TABLE `permission_role`
 ALTER TABLE `role_user`
   ADD CONSTRAINT `role_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `role_user_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON UPDATE CASCADE;
+
+--
+-- Tablo kısıtlamaları `settings`
+--
+ALTER TABLE `settings`
+  ADD CONSTRAINT `fk_settings_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Tablo kısıtlamaları `sliding_quotes`
