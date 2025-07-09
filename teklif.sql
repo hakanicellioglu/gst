@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Tem 2025, 08:05:20
+-- Üretim Zamanı: 09 Tem 2025, 08:46:48
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -31,17 +31,6 @@ CREATE TABLE `actions` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
-
---
--- Tablo döküm verisi `actions`
---
-
-INSERT INTO `actions` (`id`, `name`) VALUES
-(1, 'login'),
-(2, 'logout'),
-(3, 'create'),
-(4, 'update'),
-(5, 'delete');
 
 -- --------------------------------------------------------
 
@@ -79,6 +68,50 @@ CREATE TABLE `companies` (
 -- --------------------------------------------------------
 
 --
+-- Tablo için tablo yapısı `company_employees`
+--
+
+CREATE TABLE `company_employees` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `company_name` varchar(255) NOT NULL,
+  `address` varchar(500) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `website` varchar(100) DEFAULT NULL,
+  `tax_number` varchar(50) DEFAULT NULL,
+  `trade_registry_number` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `company_employee_banks`
+--
+
+CREATE TABLE `company_employee_banks` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `company_employee_id` bigint(20) UNSIGNED NOT NULL,
+  `bank_name` varchar(100) NOT NULL,
+  `account_name` varchar(100) DEFAULT NULL,
+  `iban` varchar(34) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tablo için tablo yapısı `company_employee_notes`
+--
+
+CREATE TABLE `company_employee_notes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `company_employee_id` bigint(20) UNSIGNED NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tablo için tablo yapısı `customers`
 --
 
@@ -101,6 +134,7 @@ CREATE TABLE `customers` (
 
 CREATE TABLE `guillotine_quotes` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `master_quote_id` bigint(20) UNSIGNED NOT NULL,
   `system_type` varchar(50) NOT NULL,
   `width_mm` decimal(10,2) NOT NULL,
   `height_mm` decimal(10,2) NOT NULL,
@@ -108,22 +142,7 @@ CREATE TABLE `guillotine_quotes` (
   `motor_system` varchar(50) DEFAULT NULL,
   `remote_system` varchar(50) DEFAULT NULL,
   `remote_qty` int(10) UNSIGNED DEFAULT NULL,
-  `ral_code` varchar(50) DEFAULT NULL,
-  `glass_inner_mm` decimal(6,2) DEFAULT NULL,
-  `glass_gap_mm` decimal(6,2) DEFAULT NULL,
-  `glass_outer_mm` decimal(6,2) DEFAULT NULL,
-  `tempered` tinyint(1) DEFAULT 0,
-  `gap_type` varchar(20) DEFAULT NULL,
-  `glass_width_mm` decimal(10,2) DEFAULT NULL,
-  `glass_height_mm` decimal(10,2) DEFAULT NULL,
-  `glass_qty` int(10) UNSIGNED DEFAULT NULL,
-  `glass_color` varchar(30) DEFAULT NULL,
-  `sqm_system` decimal(12,2) DEFAULT NULL,
-  `kg_aluminium` decimal(12,2) DEFAULT NULL,
-  `sqm_glass` decimal(12,2) DEFAULT NULL,
-  `delta` decimal(12,2) DEFAULT NULL,
-  `customer_id` int(10) UNSIGNED DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -135,12 +154,9 @@ CREATE TABLE `guillotine_quotes` (
 CREATE TABLE `master_quotes` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `company_id` int(10) UNSIGNED NOT NULL,
-  `contact_person` varchar(100) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
+  `contact_id` int(10) UNSIGNED NOT NULL,
   `quote_date` date NOT NULL,
-  `prepared_by` varchar(100) DEFAULT NULL,
-  `email` varchar(100) DEFAULT 'satis@alumann.com.tr',
+  `prepared_by` int(10) UNSIGNED DEFAULT NULL,
   `delivery_term` varchar(50) DEFAULT NULL,
   `payment_method` varchar(50) DEFAULT NULL,
   `payment_due` varchar(50) DEFAULT NULL,
@@ -151,9 +167,7 @@ CREATE TABLE `master_quotes` (
   `discount_amount` decimal(14,2) DEFAULT NULL,
   `vat_rate` decimal(5,2) DEFAULT NULL,
   `vat_amount` decimal(14,2) DEFAULT NULL,
-  `taxes_included` tinyint(1) DEFAULT 0,
-  `notes` text DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `taxes_included_total` decimal(14,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -232,6 +246,24 @@ CREATE TABLE `settings` (
 -- --------------------------------------------------------
 
 --
+-- Tablo için tablo yapısı `sliding_quotes`
+--
+
+CREATE TABLE `sliding_quotes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `master_quote_id` bigint(20) UNSIGNED NOT NULL,
+  `system_type` varchar(50) NOT NULL,
+  `width_mm` decimal(10,2) NOT NULL,
+  `height_mm` decimal(10,2) NOT NULL,
+  `fastening_type` varchar(30) DEFAULT NULL,
+  `system_qty` int(10) UNSIGNED NOT NULL,
+  `ral_code` varchar(50) DEFAULT NULL,
+  `locking` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tablo için tablo yapısı `users`
 --
 
@@ -271,6 +303,27 @@ ALTER TABLE `companies`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Tablo için indeksler `company_employees`
+--
+ALTER TABLE `company_employees`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_companyemployee_user` (`user_id`);
+
+--
+-- Tablo için indeksler `company_employee_banks`
+--
+ALTER TABLE `company_employee_banks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_banks_companyemployee` (`company_employee_id`);
+
+--
+-- Tablo için indeksler `company_employee_notes`
+--
+ALTER TABLE `company_employee_notes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_notes_companyemployee` (`company_employee_id`);
+
+--
 -- Tablo için indeksler `customers`
 --
 ALTER TABLE `customers`
@@ -282,14 +335,13 @@ ALTER TABLE `customers`
 --
 ALTER TABLE `guillotine_quotes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD KEY `fk_guillotine_master` (`master_quote_id`);
 
 --
 -- Tablo için indeksler `master_quotes`
 --
 ALTER TABLE `master_quotes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `company_id` (`company_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Tablo için indeksler `permissions`
@@ -334,6 +386,13 @@ ALTER TABLE `settings`
   ADD KEY `fk_settings_users` (`user_id`);
 
 --
+-- Tablo için indeksler `sliding_quotes`
+--
+ALTER TABLE `sliding_quotes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_sliding_master` (`master_quote_id`);
+
+--
 -- Tablo için indeksler `users`
 --
 ALTER TABLE `users`
@@ -349,7 +408,7 @@ ALTER TABLE `users`
 -- Tablo için AUTO_INCREMENT değeri `actions`
 --
 ALTER TABLE `actions`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `audit_logs`
@@ -362,6 +421,24 @@ ALTER TABLE `audit_logs`
 --
 ALTER TABLE `companies`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `company_employees`
+--
+ALTER TABLE `company_employees`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `company_employee_banks`
+--
+ALTER TABLE `company_employee_banks`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `company_employee_notes`
+--
+ALTER TABLE `company_employee_notes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `customers`
@@ -406,6 +483,12 @@ ALTER TABLE `settings`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- Tablo için AUTO_INCREMENT değeri `sliding_quotes`
+--
+ALTER TABLE `sliding_quotes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- Tablo için AUTO_INCREMENT değeri `users`
 --
 ALTER TABLE `users`
@@ -423,6 +506,24 @@ ALTER TABLE `audit_logs`
   ADD CONSTRAINT `fk_auditlogs_actions` FOREIGN KEY (`action_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE;
 
 --
+-- Tablo kısıtlamaları `company_employees`
+--
+ALTER TABLE `company_employees`
+  ADD CONSTRAINT `fk_companyemployee_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Tablo kısıtlamaları `company_employee_banks`
+--
+ALTER TABLE `company_employee_banks`
+  ADD CONSTRAINT `fk_banks_companyemployee` FOREIGN KEY (`company_employee_id`) REFERENCES `company_employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Tablo kısıtlamaları `company_employee_notes`
+--
+ALTER TABLE `company_employee_notes`
+  ADD CONSTRAINT `fk_notes_companyemployee` FOREIGN KEY (`company_employee_id`) REFERENCES `company_employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Tablo kısıtlamaları `customers`
 --
 ALTER TABLE `customers`
@@ -432,13 +533,7 @@ ALTER TABLE `customers`
 -- Tablo kısıtlamaları `guillotine_quotes`
 --
 ALTER TABLE `guillotine_quotes`
-  ADD CONSTRAINT `guillotine_quotes_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Tablo kısıtlamaları `master_quotes`
---
-ALTER TABLE `master_quotes`
-  ADD CONSTRAINT `master_quotes_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_guillotine_master` FOREIGN KEY (`master_quote_id`) REFERENCES `master_quotes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Tablo kısıtlamaları `permission_role`
@@ -459,6 +554,12 @@ ALTER TABLE `role_user`
 --
 ALTER TABLE `settings`
   ADD CONSTRAINT `fk_settings_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Tablo kısıtlamaları `sliding_quotes`
+--
+ALTER TABLE `sliding_quotes`
+  ADD CONSTRAINT `fk_sliding_master` FOREIGN KEY (`master_quote_id`) REFERENCES `master_quotes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
