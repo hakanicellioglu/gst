@@ -111,6 +111,15 @@ include 'includes/header.php';
             </div>
         </div>
         <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+        <div class="dropdown d-inline ms-2">
+            <button class="btn btn-<?php echo get_color(); ?> dropdown-toggle" type="button" id="offerTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Model Seç
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="offerTypeDropdown">
+                <li><a class="dropdown-item" href="#">Giyotin</a></li>
+                <li><a class="dropdown-item" href="#">Sürme</a></li>
+            </ul>
+        </div>
     </form>
     <?php endif; ?>
 </div>
