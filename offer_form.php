@@ -191,4 +191,9 @@ include 'includes/header.php';
             });
         </script>
     <?php endif; ?>
+<<<<<<< HEAD
 </div>
+=======
+</div>
+
+>>>>>>> a2e3831b99b03fbce54027b1316445fe2af4e218
