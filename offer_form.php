@@ -56,6 +56,17 @@ include 'includes/header.php';
 ?>
 <div class="container py-4">
     <h2 class="mb-4">Teklif <?php echo $id ? 'Düzenle' : 'Ekle'; ?></h2>
+    <div class="mb-3">
+        <div class="dropdown">
+            <button class="btn btn-<?php echo get_color(); ?> dropdown-toggle" type="button" id="offerDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Teklif Ekle
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="offerDropdown">
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#giyotinModal">Giyotin</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#surmeModal">Sürme</a></li>
+            </ul>
+        </div>
+    </div>
     <?php if (!$canAdd): ?>
         <div class="alert alert-warning">
             Teklif ekleyebilmek için önce <a href="company" class="alert-link">firma</a> ve <a href="customers" class="alert-link">müşteri</a> eklemelisiniz.
@@ -117,6 +128,40 @@ include 'includes/header.php';
         </div>
         <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
     </form>
+    <!-- Giyotin Modal -->
+    <div class="modal fade" id="giyotinModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Giyotin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Giyotin seçildi.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sürme Modal -->
+    <div class="modal fade" id="surmeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sürme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Sürme seçildi.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const rowsContainer = document.getElementById("quoteRows");
