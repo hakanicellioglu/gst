@@ -64,7 +64,7 @@ include 'includes/header.php';
     <form method="post">
         <ul class="nav nav-tabs align-items-center border-bottom-0 mb-4">
             <li class="nav-item">
-                <span class="nav-link active bg-warning text-dark fw-bold">Giyotin</span>
+                <span class="nav-link active text-dark fw-bold">Giyotin</span>
             </li>
             <li class="nav-item">
                 <span class="nav-link text-muted">Sürme</span>
@@ -74,7 +74,8 @@ include 'includes/header.php';
             </li>
         </ul>
         <div class="border rounded p-3 mb-4">
-            <div class="row g-3 text-center">
+        <div id="quoteRows">
+            <div class="form-row row g-3 text-center align-items-end">
                 <div class="col-md-2">
                     <label class="form-label">Genişlik</label>
                     <input type="text" name="genislik" class="form-control form-control-sm">
@@ -99,7 +100,14 @@ include 'includes/header.php';
                     <label class="form-label">Renk</label>
                     <input type="text" name="renk" class="form-control form-control-sm">
                 </div>
+                <div class="col-md-auto">
+                    <button type="button" class="btn btn-danger btn-sm delete-row">Sil</button>
+                </div>
             </div>
+        </div>
+        <div class="text-end mt-2">
+            <button type="button" id="addRow" class="btn btn-secondary btn-sm">Satır Ekle</button>
+        </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -151,6 +159,30 @@ include 'includes/header.php';
         </div>
         <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
     </form>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const rowsContainer = document.getElementById("quoteRows");
+    const addRowBtn = document.getElementById("addRow");
+
+    addRowBtn.addEventListener("click", function () {
+        const firstRow = rowsContainer.querySelector(".form-row");
+        const newRow = firstRow.cloneNode(true);
+        newRow.querySelectorAll("input").forEach(input => input.value = "");
+        rowsContainer.appendChild(newRow);
+    });
+
+    rowsContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("delete-row")) {
+            const rows = rowsContainer.querySelectorAll(".form-row");
+            if (rows.length === 1) {
+                alert("En az bir satır kalmalıdır.");
+                return;
+            }
+            e.target.closest(".form-row").remove();
+        }
+    });
+});
+</script>
     <?php endif; ?>
 </div>
 <?php include 'includes/footer.php'; ?>
