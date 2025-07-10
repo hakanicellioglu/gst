@@ -290,7 +290,12 @@ include 'includes/header.php';
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Cam Rengi</label>
-                                <input type="text" name="glass_color" id="giyotinColor" class="form-control">
+                                <select name="glass_color" id="giyotinColor" class="form-select">
+                                    <option value="Şeffaf">Şeffaf</option>
+                                    <option value="Füme">Füme</option>
+                                    <option value="Mavi">Mavi</option>
+                                    <option value="Yeşil">Yeşil</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
@@ -388,7 +393,12 @@ include 'includes/header.php';
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Cam Rengi</label>
-                                <input type="text" name="glass_color" id="surmeColor" class="form-control">
+                                <select name="glass_color" id="surmeColor" class="form-select">
+                                    <option value="Şeffaf">Şeffaf</option>
+                                    <option value="Füme">Füme</option>
+                                    <option value="Mavi">Mavi</option>
+                                    <option value="Yeşil">Yeşil</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Kilit</label>
@@ -584,7 +594,7 @@ include 'includes/header.php';
                     qtyInput.value = '';
                     motorInput.value = '';
                     glassInput.value = 'Isıcam';
-                    colorInput.value = '';
+                    colorInput.value = 'Şeffaf';
                     remoteInput.value = '';
                     ralInput.value = '';
                     submitBtn.textContent = 'Ekle';
@@ -636,7 +646,7 @@ include 'includes/header.php';
                     surmeRal.value = '';
                     surmeFastening.value = 'Takviyesiz';
                     surmeGlass.value = 'Isıcam';
-                    surmeColor.value = '';
+                    surmeColor.value = 'Şeffaf';
                     surmeLocking.value = '';
                     surmeSubmit.textContent = 'Ekle';
                     surmeModal.querySelector('.modal-title').textContent = 'Sürme Teklifi';
