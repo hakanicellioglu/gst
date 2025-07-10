@@ -160,9 +160,9 @@ $products = $stmt->fetchAll();
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
+                                    <div class="mb-3" id="unitWrapper<?php echo $product['id']; ?>">
                                         <label class="form-label">Ölçü Birimi</label>
-                                        <select name="unit" id="unit<?php echo $product['id']; ?>" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" required>
+                                        <select name="unit" id="unit<?php echo $product['id']; ?>" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" data-wrapper="unitWrapper<?php echo $product['id']; ?>" required>
                                             <?php foreach ($units as $unitOption): ?>
                                                 <option value="<?php echo $unitOption; ?>" <?php echo ($product['unit'] === $unitOption) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($unitOption); ?>
@@ -263,9 +263,9 @@ $products = $stmt->fetchAll();
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="addUnitWrapper">
                         <label class="form-label">Ölçü Birimi</label>
-                        <select name="unit" id="addUnit" class="form-select unit-select" data-target="addMeasure" required>
+                        <select name="unit" id="addUnit" class="form-select unit-select" data-target="addMeasure" data-wrapper="addUnitWrapper" required>
                             <?php foreach ($units as $unit): ?>
                                 <option value="<?php echo $unit; ?>">
                                     <?php echo htmlspecialchars($unit); ?>
@@ -306,8 +306,16 @@ function updateUnitFromCategory(catSel) {
     var unitSelect = document.getElementById(catSel.getAttribute('data-unit'));
     if (!unitSelect) return;
     var targetUnit = categoryUnits[catSel.value];
+    var unitWrapper = document.getElementById(unitSelect.getAttribute('data-wrapper'));
     if (targetUnit) {
         unitSelect.value = targetUnit;
+    }
+    if (catSel.value === 'Aksesuar' || catSel.value === 'Fitil') {
+        if (unitWrapper) unitWrapper.style.display = 'none';
+        unitSelect.removeAttribute('required');
+    } else {
+        if (unitWrapper) unitWrapper.style.display = '';
+        unitSelect.setAttribute('required', 'required');
     }
     var measure = document.getElementById(unitSelect.getAttribute('data-target'));
     var wrapper = document.getElementById(unitSelect.getAttribute('data-target') + 'Wrapper');
