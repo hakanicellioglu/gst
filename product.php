@@ -10,6 +10,8 @@ if (!isset($_SESSION['user'])) {
 }
 load_theme_settings($pdo);
 include 'includes/header.php';
+$categories = ['Alüminyum', 'Aksesuar', 'Fitil'];
+
 
 // CRUD Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -49,6 +51,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
+$categoryFilter = $_GET['category'] ?? '';
+
+$query = "SELECT * FROM products WHERE name LIKE :search";
+$params = [':search' => "%$search%"];
+if ($categoryFilter !== '') {
+    $query .= " AND category = :category";
+    $params[':category'] = $categoryFilter;
+}
+$query .= " ORDER BY name $sort";
+$stmt = $pdo->prepare($query);
+$stmt->execute($params);
+
 
 $query = "SELECT * FROM products WHERE name LIKE :search ORDER BY name $sort";
 $stmt = $pdo->prepare($query);
@@ -134,19 +148,24 @@ $products = $stmt->fetchAll();
                                     <div class="mb-3">
                                         <label class="form-label">Ölçü Değeri</label>
                                         <input type="number" step="0.001" name="measure_value"
-                                            value="<?php echo htmlspecialchars($product['measure_value']); ?>" class="form-control"
-                                            required>
+                                            value="<?php echo htmlspecialchars($product['measure_value']); ?>"
+                                            class="form-control" required>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Birim Fiyat</label>
-                                        <input type="number" step="0.01" name="unit_price"
-                                            value="<?php echo htmlspecialchars($product['unit_price']); ?>" class="form-control"
-                                            required>
+                                        <select name="category" class="form-select">
+                                            <?php foreach ($categories as $cat): ?>
+                                                <option value="<?php echo $cat; ?>" <?php echo ($product['category'] === $cat) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($cat); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Kategori</label>
                                         <input type="text" name="category"
-                                            value="<?php echo htmlspecialchars($product['category']); ?>" class="form-control">
+                                            value="<?php echo htmlspecialchars($product['category']); ?>"
+                                            class="form-control">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -180,6 +199,17 @@ $products = $stmt->fetchAll();
                     <select name="sort" class="form-select">
                         <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
                         <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Kategori</label>
+                    <select name="category" class="form-select">
+                        <option value="">Hepsi</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?php echo $cat; ?>" <?php echo ($categoryFilter === $cat) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($cat); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
@@ -223,7 +253,13 @@ $products = $stmt->fetchAll();
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Kategori</label>
-                        <input type="text" name="category" class="form-control">
+                        <select name="category" class="form-select">
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?php echo $cat; ?>">
+                                    <?php echo htmlspecialchars($cat); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
