@@ -152,22 +152,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_sliding']) && 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     $data = [
-        ':company' => $_POST['company_id'],
-        ':contact' => $_POST['contact_id'],
-        ':date' => $_POST['quote_date'],
-        ':prepared' => $_SESSION['user']['id'] ?? null,
-        ':delivery' => $_POST['delivery_term'],
-        ':method' => $_POST['payment_method'],
-        ':due' => $_POST['payment_due'],
-        ':validity' => $_POST['quote_validity'],
-        ':maturity' => $_POST['maturity']
+        ':company'   => $_POST['company_id'],
+        ':contact'   => $_POST['contact_id'],
+        ':date'      => $_POST['quote_date'],
+        ':delivery'  => $_POST['delivery_term'],
+        ':method'    => $_POST['payment_method'],
+        ':due'       => $_POST['payment_due'],
+        ':validity'  => $_POST['quote_validity'],
+        ':maturity'  => $_POST['maturity']
     ];
+
     if ($id) {
         $data[':id'] = $id;
-        $stmt = $pdo->prepare("UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id");
+        $stmt = $pdo->prepare(
+            "UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id"
+        );
     } else {
-        $stmt = $pdo->prepare("INSERT INTO master_quotes (company_id, contact_id, quote_date, prepared_by, delivery_term, payment_method, payment_due, quote_validity, maturity) VALUES (:company, :contact, :date, :prepared, :delivery, :method, :due, :validity, :maturity)");
+        $data[':prepared'] = $_SESSION['user']['id'] ?? null;
+        $stmt = $pdo->prepare(
+            "INSERT INTO master_quotes (company_id, contact_id, quote_date, prepared_by, delivery_term, payment_method, payment_due, quote_validity, maturity) VALUES (:company, :contact, :date, :prepared, :delivery, :method, :due, :validity, :maturity)"
+        );
     }
+
     $stmt->execute($data);
     header('Location: offer');
     exit;
