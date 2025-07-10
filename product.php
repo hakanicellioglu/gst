@@ -11,18 +11,25 @@ if (!isset($_SESSION['user'])) {
 load_theme_settings($pdo);
 include 'includes/header.php';
 $categories = ['Alüminyum', 'Aksesuar', 'Fitil'];
+$units = ['adet', 'metre', 'kg'];
+$noMeasureUnits = ['adet', 'metre'];
 
 
 // CRUD Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
+    $unit = $_POST['unit'] ?? '';
+    $measureValue = $_POST['measure_value'] ?? 1;
+    if (in_array($unit, $noMeasureUnits, true)) {
+        $measureValue = 1;
+    }
     if ($action === 'add') {
         $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category)");
         $stmt->execute([
             ':name' => $_POST['name'],
             ':code' => $_POST['code'],
-            ':unit' => $_POST['unit'],
-            ':measure_value' => $_POST['measure_value'],
+            ':unit' => $unit,
+            ':measure_value' => $measureValue,
             ':unit_price' => $_POST['unit_price'],
             ':category' => $_POST['category']
         ]);
@@ -33,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([
             ':name' => $_POST['name'],
             ':code' => $_POST['code'],
-            ':unit' => $_POST['unit'],
-            ':measure_value' => $_POST['measure_value'],
+            ':unit' => $unit,
+            ':measure_value' => $measureValue,
             ':unit_price' => $_POST['unit_price'],
             ':category' => $_POST['category'],
             ':id' => $_POST['id']
@@ -141,13 +148,17 @@ $products = $stmt->fetchAll();
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Ölçü Birimi</label>
-                                        <input type="text" name="unit"
-                                            value="<?php echo htmlspecialchars($product['unit']); ?>" class="form-control"
-                                            required>
+                                        <select name="unit" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" required>
+                                            <?php foreach ($units as $unitOption): ?>
+                                                <option value="<?php echo $unitOption; ?>" <?php echo ($product['unit'] === $unitOption) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($unitOption); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
-                                    <div class="mb-3">
+                                    <div class="mb-3" id="measureWrapper<?php echo $product['id']; ?>">
                                         <label class="form-label">Ölçü Değeri</label>
-                                        <input type="number" step="0.001" name="measure_value"
+                                        <input type="number" step="0.001" name="measure_value" id="measure<?php echo $product['id']; ?>"
                                             value="<?php echo htmlspecialchars($product['measure_value']); ?>"
                                             class="form-control" required>
                                     </div>
@@ -173,9 +184,9 @@ $products = $stmt->fetchAll();
                                     <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
             <?php endforeach; ?>
         </tbody>
     </table>
@@ -220,6 +231,7 @@ $products = $stmt->fetchAll();
         </form>
     </div>
 </div>
+
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -241,11 +253,17 @@ $products = $stmt->fetchAll();
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ölçü Birimi</label>
-                        <input type="text" name="unit" class="form-control" required>
+                        <select name="unit" class="form-select unit-select" data-target="addMeasure" required>
+                            <?php foreach ($units as $unit): ?>
+                                <option value="<?php echo $unit; ?>">
+                                    <?php echo htmlspecialchars($unit); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3" id="addMeasureWrapper">
                         <label class="form-label">Ölçü Değeri</label>
-                        <input type="number" step="0.001" name="measure_value" class="form-control" required>
+                        <input type="number" step="0.001" name="measure_value" id="addMeasure" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Birim Fiyat</label>
@@ -270,3 +288,27 @@ $products = $stmt->fetchAll();
         </div>
     </div>
 </div>
+<script>
+function updateMeasure(selectEl, measureInput, wrapper) {
+    if (selectEl.value === 'adet' || selectEl.value === 'metre') {
+        measureInput.value = 1;
+        if (wrapper) wrapper.style.display = 'none';
+        measureInput.removeAttribute('required');
+    } else {
+        if (wrapper) wrapper.style.display = '';
+        measureInput.setAttribute('required', 'required');
+    }
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.unit-select').forEach(function (sel) {
+        var targetId = sel.getAttribute('data-target');
+        var measure = document.getElementById(targetId);
+        var wrapper = document.getElementById(targetId + 'Wrapper');
+        updateMeasure(sel, measure, wrapper);
+        sel.addEventListener('change', function () {
+            updateMeasure(sel, measure, wrapper);
+        });
+    });
+});
+</script>
+
