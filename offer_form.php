@@ -326,6 +326,7 @@ include 'includes/header.php';
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="button" class="btn btn-info" onclick="openOptimization()">Hesapla</button>
                         <button type="submit" id="giyotinSubmit" class="btn btn-<?php echo get_color(); ?>">Ekle</button>
                     </div>
                 </form>
@@ -549,6 +550,29 @@ include 'includes/header.php';
             <?php endif; ?>
         <?php endif; ?>
         <script>
+            function openOptimization() {
+                const width = document.getElementById('giyotinWidth').value;
+                const height = document.getElementById('giyotinHeight').value;
+                const quantity = document.getElementById('giyotinQty').value || 1;
+
+                if (!width || !height) {
+                    alert('Lütfen genişlik ve yükseklik giriniz.');
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '/optimization.php';
+                form.target = '_blank';
+                form.innerHTML =
+                    '<input type="hidden" name="width" value="' + width + '">' +
+                    '<input type="hidden" name="height" value="' + height + '">' +
+                    '<input type="hidden" name="quantity" value="' + quantity + '">';
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            }
+
             document.addEventListener("DOMContentLoaded", function () {
                 const rowsContainer = document.getElementById("quoteRows");
                 const addRowBtn = document.getElementById("addRow");
