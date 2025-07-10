@@ -13,12 +13,21 @@ include 'includes/header.php';
 $categories = ['Alüminyum', 'Aksesuar', 'Fitil'];
 $units = ['adet', 'metre', 'kg'];
 $noMeasureUnits = ['adet', 'metre'];
+$categoryUnitMap = [
+    'Aksesuar' => 'adet',
+    'Fitil' => 'metre',
+    'Alüminyum' => 'kg'
+];
 
 
 // CRUD Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
+    $category = $_POST['category'] ?? '';
     $unit = $_POST['unit'] ?? '';
+    if (isset($categoryUnitMap[$category])) {
+        $unit = $categoryUnitMap[$category];
+    }
     $measureValue = $_POST['measure_value'] ?? 1;
     if (in_array($unit, $noMeasureUnits, true)) {
         $measureValue = 1;
@@ -31,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':unit' => $unit,
             ':measure_value' => $measureValue,
             ':unit_price' => $_POST['unit_price'],
-            ':category' => $_POST['category']
+            ':category' => $category
         ]);
         header('Location: product');
         exit;
@@ -43,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':unit' => $unit,
             ':measure_value' => $measureValue,
             ':unit_price' => $_POST['unit_price'],
-            ':category' => $_POST['category'],
+            ':category' => $category,
             ':id' => $_POST['id']
         ]);
         header('Location: product');
@@ -69,11 +78,6 @@ if ($categoryFilter !== '') {
 $query .= " ORDER BY name $sort";
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
-
-
-$query = "SELECT * FROM products WHERE name LIKE :search ORDER BY name $sort";
-$stmt = $pdo->prepare($query);
-$stmt->execute([':search' => "%$search%"]);
 $products = $stmt->fetchAll();
 ?>
 
@@ -147,8 +151,18 @@ $products = $stmt->fetchAll();
                                             required>
                                     </div>
                                     <div class="mb-3">
+                                        <label class="form-label">Kategori</label>
+                                        <select name="category" class="form-select category-select" data-unit="unit<?php echo $product['id']; ?>">
+                                            <?php foreach ($categories as $cat): ?>
+                                                <option value="<?php echo $cat; ?>" <?php echo ($product['category'] === $cat) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($cat); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
                                         <label class="form-label">Ölçü Birimi</label>
-                                        <select name="unit" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" required>
+                                        <select name="unit" id="unit<?php echo $product['id']; ?>" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" required>
                                             <?php foreach ($units as $unitOption): ?>
                                                 <option value="<?php echo $unitOption; ?>" <?php echo ($product['unit'] === $unitOption) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($unitOption); ?>
@@ -164,19 +178,7 @@ $products = $stmt->fetchAll();
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Birim Fiyat</label>
-                                        <select name="category" class="form-select">
-                                            <?php foreach ($categories as $cat): ?>
-                                                <option value="<?php echo $cat; ?>" <?php echo ($product['category'] === $cat) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($cat); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Kategori</label>
-                                        <input type="text" name="category"
-                                            value="<?php echo htmlspecialchars($product['category']); ?>"
-                                            class="form-control">
+                                        <input type="number" step="0.01" name="unit_price" value="<?php echo htmlspecialchars($product['unit_price']); ?>" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -252,8 +254,18 @@ $products = $stmt->fetchAll();
                         <input type="text" name="code" class="form-control" required>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <select name="category" class="form-select category-select" data-unit="addUnit">
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?php echo $cat; ?>">
+                                    <?php echo htmlspecialchars($cat); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Ölçü Birimi</label>
-                        <select name="unit" class="form-select unit-select" data-target="addMeasure" required>
+                        <select name="unit" id="addUnit" class="form-select unit-select" data-target="addMeasure" required>
                             <?php foreach ($units as $unit): ?>
                                 <option value="<?php echo $unit; ?>">
                                     <?php echo htmlspecialchars($unit); ?>
@@ -268,16 +280,6 @@ $products = $stmt->fetchAll();
                     <div class="mb-3">
                         <label class="form-label">Birim Fiyat</label>
                         <input type="number" step="0.01" name="unit_price" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Kategori</label>
-                        <select name="category" class="form-select">
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?php echo $cat; ?>">
-                                    <?php echo htmlspecialchars($cat); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -299,6 +301,18 @@ function updateMeasure(selectEl, measureInput, wrapper) {
         measureInput.setAttribute('required', 'required');
     }
 }
+var categoryUnits = { 'Aksesuar': 'adet', 'Fitil': 'metre', 'Alüminyum': 'kg' };
+function updateUnitFromCategory(catSel) {
+    var unitSelect = document.getElementById(catSel.getAttribute('data-unit'));
+    if (!unitSelect) return;
+    var targetUnit = categoryUnits[catSel.value];
+    if (targetUnit) {
+        unitSelect.value = targetUnit;
+    }
+    var measure = document.getElementById(unitSelect.getAttribute('data-target'));
+    var wrapper = document.getElementById(unitSelect.getAttribute('data-target') + 'Wrapper');
+    updateMeasure(unitSelect, measure, wrapper);
+}
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.unit-select').forEach(function (sel) {
         var targetId = sel.getAttribute('data-target');
@@ -307,6 +321,12 @@ document.addEventListener('DOMContentLoaded', function () {
         updateMeasure(sel, measure, wrapper);
         sel.addEventListener('change', function () {
             updateMeasure(sel, measure, wrapper);
+        });
+    });
+    document.querySelectorAll('.category-select').forEach(function (cat) {
+        updateUnitFromCategory(cat);
+        cat.addEventListener('change', function () {
+            updateUnitFromCategory(cat);
         });
     });
 });
