@@ -171,7 +171,7 @@ $products = $stmt->fetchAll();
                                         </select>
                                     </div>
                                     <div class="mb-3" id="measureWrapper<?php echo $product['id']; ?>">
-                                        <label class="form-label">Ölçü Değeri</label>
+                                        <label class="form-label" id="measure<?php echo $product['id']; ?>Label">Ölçü Değeri</label>
                                         <input type="number" step="0.001" name="measure_value" id="measure<?php echo $product['id']; ?>"
                                             value="<?php echo htmlspecialchars($product['measure_value']); ?>"
                                             class="form-control" required>
@@ -274,7 +274,7 @@ $products = $stmt->fetchAll();
                         </select>
                     </div>
                     <div class="mb-3" id="addMeasureWrapper">
-                        <label class="form-label">Ölçü Değeri</label>
+                        <label class="form-label" id="addMeasureLabel">Ölçü Değeri</label>
                         <input type="number" step="0.001" name="measure_value" id="addMeasure" class="form-control" required>
                     </div>
                     <div class="mb-3">
@@ -310,7 +310,8 @@ function updateUnitFromCategory(catSel) {
     if (targetUnit) {
         unitSelect.value = targetUnit;
     }
-    if (catSel.value === 'Aksesuar' || catSel.value === 'Fitil') {
+    var hideUnit = (catSel.value === 'Aksesuar' || catSel.value === 'Fitil' || catSel.value === 'Alüminyum');
+    if (hideUnit) {
         if (unitWrapper) unitWrapper.style.display = 'none';
         unitSelect.removeAttribute('required');
     } else {
@@ -319,6 +320,10 @@ function updateUnitFromCategory(catSel) {
     }
     var measure = document.getElementById(unitSelect.getAttribute('data-target'));
     var wrapper = document.getElementById(unitSelect.getAttribute('data-target') + 'Wrapper');
+    var label = document.getElementById(unitSelect.getAttribute('data-target') + 'Label');
+    if (label) {
+        label.textContent = (catSel.value === 'Alüminyum') ? 'Gramaj' : 'Ölçü Değeri';
+    }
     updateMeasure(unitSelect, measure, wrapper);
 }
 document.addEventListener('DOMContentLoaded', function () {
