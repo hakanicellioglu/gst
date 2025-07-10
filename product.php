@@ -15,18 +15,26 @@ include 'includes/header.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     if ($action === 'add') {
-        $stmt = $pdo->prepare("INSERT INTO products (name, code) VALUES (:name, :code)");
+        $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category)");
         $stmt->execute([
             ':name' => $_POST['name'],
-            ':code' => $_POST['code']
+            ':code' => $_POST['code'],
+            ':unit' => $_POST['unit'],
+            ':measure_value' => $_POST['measure_value'],
+            ':unit_price' => $_POST['unit_price'],
+            ':category' => $_POST['category']
         ]);
         header('Location: product');
         exit;
     } elseif ($action === 'edit') {
-        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category WHERE id = :id");
         $stmt->execute([
             ':name' => $_POST['name'],
             ':code' => $_POST['code'],
+            ':unit' => $_POST['unit'],
+            ':measure_value' => $_POST['measure_value'],
+            ':unit_price' => $_POST['unit_price'],
+            ':category' => $_POST['category'],
             ':id' => $_POST['id']
         ]);
         header('Location: product');
@@ -54,7 +62,8 @@ $products = $stmt->fetchAll();
         <div class="col-12 text-end">
             <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
                 data-bs-target="#filterModal">Filtrele</button>
-            <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Ürün
+            <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
+                data-bs-target="#addModal">Ürün
                 Ekle</button>
         </div>
     </div>
@@ -64,6 +73,10 @@ $products = $stmt->fetchAll();
             <tr>
                 <th>Ad</th>
                 <th>Kod</th>
+                <th>Ölçü Birimi</th>
+                <th>Ölçü Değeri</th>
+                <th>Birim Fiyat</th>
+                <th>Kategori</th>
                 <th class="text-center" style="width:150px;">İşlemler</th>
             </tr>
         </thead>
@@ -72,6 +85,10 @@ $products = $stmt->fetchAll();
                 <tr>
                     <td><?php echo htmlspecialchars($product['name']); ?></td>
                     <td><?php echo htmlspecialchars($product['code']); ?></td>
+                    <td><?php echo htmlspecialchars($product['unit']); ?></td>
+                    <td><?php echo htmlspecialchars($product['measure_value']); ?></td>
+                    <td><?php echo htmlspecialchars($product['unit_price']); ?></td>
+                    <td><?php echo htmlspecialchars($product['category']); ?></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
@@ -107,6 +124,29 @@ $products = $stmt->fetchAll();
                                         <input type="text" name="code"
                                             value="<?php echo htmlspecialchars($product['code']); ?>" class="form-control"
                                             required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ölçü Birimi</label>
+                                        <input type="text" name="unit"
+                                            value="<?php echo htmlspecialchars($product['unit']); ?>" class="form-control"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Ölçü Değeri</label>
+                                        <input type="number" step="0.001" name="measure_value"
+                                            value="<?php echo htmlspecialchars($product['measure_value']); ?>" class="form-control"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Birim Fiyat</label>
+                                        <input type="number" step="0.01" name="unit_price"
+                                            value="<?php echo htmlspecialchars($product['unit_price']); ?>" class="form-control"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Kategori</label>
+                                        <input type="text" name="category"
+                                            value="<?php echo htmlspecialchars($product['category']); ?>" class="form-control">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -168,6 +208,22 @@ $products = $stmt->fetchAll();
                     <div class="mb-3">
                         <label class="form-label">Kod</label>
                         <input type="text" name="code" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ölçü Birimi</label>
+                        <input type="text" name="unit" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ölçü Değeri</label>
+                        <input type="number" step="0.001" name="measure_value" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Birim Fiyat</label>
+                        <input type="number" step="0.01" name="unit_price" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
+                        <input type="text" name="category" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
