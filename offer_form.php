@@ -47,15 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         "VALUES (:master, 'Giyotin', :width, :height, :qty, :glass, :color, :motor, :remote_qty, :ral)"
     );
     $stmt->execute([
-        ':master'     => $id,
-        ':width'      => $_POST['width_mm'],
-        ':height'     => $_POST['height_mm'],
-        ':qty'        => $_POST['system_qty'],
-        ':glass'      => $_POST['glass_type'],
-        ':color'      => $_POST['glass_color'],
-        ':motor'      => $_POST['motor_system'],
+        ':master' => $id,
+        ':width' => $_POST['width_mm'],
+        ':height' => $_POST['height_mm'],
+        ':qty' => $_POST['system_qty'],
+        ':glass' => $_POST['glass_type'],
+        ':color' => $_POST['glass_color'],
+        ':motor' => $_POST['motor_system'],
         ':remote_qty' => $_POST['remote_qty'],
-        ':ral'        => $_POST['ral_code']
+        ':ral' => $_POST['ral_code']
     ]);
     header('Location: offer_form?id=' . $id);
     exit;
@@ -68,17 +68,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sliding']) && $id
         "VALUES (:master, :system, :width, :height, :wing, :fastening, :glass, :color, :qty, :ral, :locking)"
     );
     $stmt->execute([
-        ':master'    => $id,
-        ':system'    => $_POST['system_type'],
-        ':width'     => $_POST['width_mm'],
-        ':height'    => $_POST['height_mm'],
-        ':wing'      => $_POST['wing_type'],
+        ':master' => $id,
+        ':system' => $_POST['system_type'],
+        ':width' => $_POST['width_mm'],
+        ':height' => $_POST['height_mm'],
+        ':wing' => $_POST['wing_type'],
         ':fastening' => $_POST['fastening_type'],
-        ':glass'     => $_POST['glass_type'],
-        ':color'     => $_POST['glass_color'],
-        ':qty'       => $_POST['system_qty'],
-        ':ral'       => $_POST['ral_code'],
-        ':locking'   => $_POST['locking']
+        ':glass' => $_POST['glass_type'],
+        ':color' => $_POST['glass_color'],
+        ':qty' => $_POST['system_qty'],
+        ':ral' => $_POST['ral_code'],
+        ':locking' => $_POST['locking']
     ]);
     header('Location: offer_form?id=' . $id);
     exit;
@@ -90,16 +90,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
         "UPDATE guillotine_quotes SET width_mm=:width, height_mm=:height, system_qty=:qty, glass_type=:glass, glass_color=:color, motor_system=:motor, remote_qty=:remote_qty, ral_code=:ral WHERE id=:gid AND master_quote_id=:master"
     );
     $stmt->execute([
-        ':width'       => $_POST['width_mm'],
-        ':height'      => $_POST['height_mm'],
-        ':qty'         => $_POST['system_qty'],
-        ':glass'       => $_POST['glass_type'],
-        ':color'       => $_POST['glass_color'],
-        ':motor'       => $_POST['motor_system'],
-        ':remote_qty'  => $_POST['remote_qty'],
-        ':ral'         => $_POST['ral_code'],
-        ':gid'         => $_POST['gid'],
-        ':master'      => $id
+        ':width' => $_POST['width_mm'],
+        ':height' => $_POST['height_mm'],
+        ':qty' => $_POST['system_qty'],
+        ':glass' => $_POST['glass_type'],
+        ':color' => $_POST['glass_color'],
+        ':motor' => $_POST['motor_system'],
+        ':remote_qty' => $_POST['remote_qty'],
+        ':ral' => $_POST['ral_code'],
+        ':gid' => $_POST['gid'],
+        ':master' => $id
     ]);
     header('Location: offer_form?id=' . $id);
     exit;
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_guillotine']) && $id) {
     $stmt = $pdo->prepare("DELETE FROM guillotine_quotes WHERE id=:gid AND master_quote_id=:master");
     $stmt->execute([
-        ':gid'    => $_POST['gid'],
+        ':gid' => $_POST['gid'],
         ':master' => $id
     ]);
     header('Location: offer_form?id=' . $id);
@@ -122,18 +122,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $i
         "UPDATE sliding_quotes SET system_type=:system, width_mm=:width, height_mm=:height, wing_type=:wing, fastening_type=:fastening, glass_type=:glass, glass_color=:color, system_qty=:qty, ral_code=:ral, locking=:locking WHERE id=:sid AND master_quote_id=:master"
     );
     $stmt->execute([
-        ':system'    => $_POST['system_type'],
-        ':width'     => $_POST['width_mm'],
-        ':height'    => $_POST['height_mm'],
-        ':wing'      => $_POST['wing_type'],
+        ':system' => $_POST['system_type'],
+        ':width' => $_POST['width_mm'],
+        ':height' => $_POST['height_mm'],
+        ':wing' => $_POST['wing_type'],
         ':fastening' => $_POST['fastening_type'],
-        ':glass'     => $_POST['glass_type'],
-        ':color'     => $_POST['glass_color'],
-        ':qty'       => $_POST['system_qty'],
-        ':ral'       => $_POST['ral_code'],
-        ':locking'   => $_POST['locking'],
-        ':sid'       => $_POST['sid'],
-        ':master'    => $id
+        ':glass' => $_POST['glass_type'],
+        ':color' => $_POST['glass_color'],
+        ':qty' => $_POST['system_qty'],
+        ':ral' => $_POST['ral_code'],
+        ':locking' => $_POST['locking'],
+        ':sid' => $_POST['sid'],
+        ':master' => $id
     ]);
     header('Location: offer_form?id=' . $id);
     exit;
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $i
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_sliding']) && $id) {
     $stmt = $pdo->prepare("DELETE FROM sliding_quotes WHERE id=:sid AND master_quote_id=:master");
     $stmt->execute([
-        ':sid'    => $_POST['sid'],
+        ':sid' => $_POST['sid'],
         ':master' => $id
     ]);
     header('Location: offer_form?id=' . $id);
@@ -187,63 +187,70 @@ include 'includes/header.php';
             <fieldset class="border p-3 mb-4">
                 <legend class="w-auto px-2">Firma ve Müşteri</legend>
                 <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Firma</label>
-                    <select name="company_id" class="form-select" required>
-                        <?php foreach ($companies as $co): ?>
-                            <option value="<?php echo $co['id']; ?>" <?php echo ($quote && $quote['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Müşteri</label>
-                    <select name="contact_id" class="form-select" required>
-                        <?php foreach ($customers as $cu): ?>
-                            <option value="<?php echo $cu['id']; ?>" <?php echo ($quote && $quote['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Firma</label>
+                        <select name="company_id" class="form-select" required>
+                            <?php foreach ($companies as $co): ?>
+                                <option value="<?php echo $co['id']; ?>" <?php echo ($quote && $quote['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Müşteri</label>
+                        <select name="contact_id" class="form-select" required>
+                            <?php foreach ($customers as $cu): ?>
+                                <option value="<?php echo $cu['id']; ?>" <?php echo ($quote && $quote['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
             </fieldset>
             <fieldset class="border p-3 mb-4">
                 <legend class="w-auto px-2">Teslimat Bilgileri</legend>
                 <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Tarih</label>
-                    <input type="date" name="quote_date" class="form-control"
-                        value="<?php echo $quote ? htmlspecialchars($quote['quote_date']) : ''; ?>" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Teslimat Süresi</label>
-                    <input type="text" name="delivery_term" class="form-control"
-                        value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Tarih</label>
+                        <input type="date" name="quote_date" class="form-control"
+                            value="<?php echo $quote ? htmlspecialchars($quote['quote_date']) : ''; ?>" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Teslimat Süresi</label>
+                        <input type="text" name="delivery_term" class="form-control"
+                            value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
                     </div>
                 </div>
             </fieldset>
             <fieldset class="border p-3 mb-4">
                 <legend class="w-auto px-2">Ödeme Bilgileri</legend>
                 <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Ödeme Yöntemi</label>
-                    <input type="text" name="payment_method" class="form-control"
-                        value="<?php echo $quote ? htmlspecialchars($quote['payment_method']) : ''; ?>">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Ödeme Süresi</label>
-                    <input type="text" name="payment_due" class="form-control"
-                        value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
-                </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ödeme Yöntemi</label>
+                        <select name="payment_method" class="form-select">
+                            <?php
+                            $methods = ['Nakit', 'Havale/EFT', 'Kredi Kartı', 'Çek', 'Senet'];
+                            $current = $quote['payment_method'] ?? '';
+                            foreach ($methods as $method): ?>
+                                <option value="<?php echo $method; ?>" <?php echo $current === $method ? 'selected' : ''; ?>>
+                                    <?php echo $method; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ödeme Süresi</label>
+                        <input type="text" name="payment_due" class="form-control"
+                            value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
+                    </div>
                 </div>
                 <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Teklif Süresi</label>
-                    <input type="text" name="quote_validity" class="form-control"
-                        value="<?php echo $quote ? htmlspecialchars($quote['quote_validity']) : ''; ?>">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Vade</label>
-                    <input type="text" name="maturity" class="form-control"
-                        value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Teklif Süresi</label>
+                        <input type="text" name="quote_validity" class="form-control"
+                            value="<?php echo $quote ? htmlspecialchars($quote['quote_validity']) : ''; ?>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Vade</label>
+                        <input type="text" name="maturity" class="form-control"
+                            value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
                     </div>
                 </div>
             </fieldset>
@@ -263,11 +270,13 @@ include 'includes/header.php';
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Genişlik (mm)</label>
-                                <input type="number" step="0.01" name="width_mm" id="giyotinWidth" class="form-control" required>
+                                <input type="number" step="0.01" name="width_mm" id="giyotinWidth" class="form-control"
+                                    required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Yükseklik (mm)</label>
-                                <input type="number" step="0.01" name="height_mm" id="giyotinHeight" class="form-control" required>
+                                <input type="number" step="0.01" name="height_mm" id="giyotinHeight" class="form-control"
+                                    required>
                             </div>
                         </div>
                         <div class="row">
@@ -356,11 +365,13 @@ include 'includes/header.php';
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Genişlik (mm)</label>
-                                <input type="number" step="0.01" name="width_mm" id="surmeWidth" class="form-control" required>
+                                <input type="number" step="0.01" name="width_mm" id="surmeWidth" class="form-control"
+                                    required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Yükseklik (mm)</label>
-                                <input type="number" step="0.01" name="height_mm" id="surmeHeight" class="form-control" required>
+                                <input type="number" step="0.01" name="height_mm" id="surmeHeight" class="form-control"
+                                    required>
                             </div>
                         </div>
                         <div class="row">
@@ -447,9 +458,8 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($g['remote_qty']); ?></td>
                                 <td><?php echo htmlspecialchars($g['ral_code']); ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-guillotine-btn"
-                                        data-bs-toggle="modal" data-bs-target="#giyotinModal"
-                                        data-id="<?php echo $g['id']; ?>"
+                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-guillotine-btn" data-bs-toggle="modal"
+                                        data-bs-target="#giyotinModal" data-id="<?php echo $g['id']; ?>"
                                         data-width="<?php echo htmlspecialchars($g['width_mm']); ?>"
                                         data-height="<?php echo htmlspecialchars($g['height_mm']); ?>"
                                         data-qty="<?php echo htmlspecialchars($g['system_qty']); ?>"
@@ -460,7 +470,8 @@ include 'includes/header.php';
                                         data-ral="<?php echo htmlspecialchars($g['ral_code']); ?>">
                                         Düzenle
                                     </button>
-                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block"
+                                        onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="delete_guillotine" value="1">
                                         <input type="hidden" name="gid" value="<?php echo $g['id']; ?>">
                                         <button type="submit" class="btn btn-sm btn-danger">Sil</button>
@@ -504,9 +515,8 @@ include 'includes/header.php';
                                 <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
                                 <td><?php echo htmlspecialchars($s['locking']); ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-sliding-btn"
-                                        data-bs-toggle="modal" data-bs-target="#surmeModal"
-                                        data-id="<?php echo $s['id']; ?>"
+                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-sliding-btn" data-bs-toggle="modal"
+                                        data-bs-target="#surmeModal" data-id="<?php echo $s['id']; ?>"
                                         data-system="<?php echo htmlspecialchars($s['system_type']); ?>"
                                         data-wing="<?php echo htmlspecialchars($s['wing_type']); ?>"
                                         data-width="<?php echo htmlspecialchars($s['width_mm']); ?>"
@@ -519,7 +529,8 @@ include 'includes/header.php';
                                         data-locking="<?php echo htmlspecialchars($s['locking']); ?>">
                                         Düzenle
                                     </button>
-                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block"
+                                        onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="delete_sliding" value="1">
                                         <input type="hidden" name="sid" value="<?php echo $s['id']; ?>">
                                         <button type="submit" class="btn btn-sm btn-danger">Sil</button>
