@@ -11,27 +11,15 @@ if (!isset($_SESSION['user'])) {
 load_theme_settings($pdo);
 include 'includes/header.php';
 $categories = ['Alüminyum', 'Aksesuar', 'Fitil'];
-$units = ['adet', 'metre', 'kg'];
-$noMeasureUnits = ['adet', 'metre'];
-$categoryUnitMap = [
-    'Aksesuar' => 'adet',
-    'Fitil' => 'metre',
-    'Alüminyum' => 'kg'
-];
+$defaultUnit = 'gr';
 
 
 // CRUD Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $category = $_POST['category'] ?? '';
-    $unit = $_POST['unit'] ?? '';
-    if (isset($categoryUnitMap[$category])) {
-        $unit = $categoryUnitMap[$category];
-    }
-    $measureValue = $_POST['measure_value'] ?? 1;
-    if (in_array($unit, $noMeasureUnits, true)) {
-        $measureValue = 1;
-    }
+    $unit = $defaultUnit;
+$measureValue = $_POST['measure_value'] ?? 0;
     if ($action === 'add') {
         $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category)");
         $stmt->execute([
@@ -98,8 +86,7 @@ $products = $stmt->fetchAll();
             <tr>
                 <th>Ad</th>
                 <th>Kod</th>
-                <th>Ölçü Birimi</th>
-                <th>Ölçü Değeri</th>
+                <th>Gramaj (gr)</th>
                 <th>Birim Fiyat</th>
                 <th>Kategori</th>
                 <th class="text-center" style="width:150px;">İşlemler</th>
@@ -110,7 +97,6 @@ $products = $stmt->fetchAll();
                 <tr>
                     <td><?php echo htmlspecialchars($product['name']); ?></td>
                     <td><?php echo htmlspecialchars($product['code']); ?></td>
-                    <td><?php echo htmlspecialchars($product['unit']); ?></td>
                     <td><?php echo htmlspecialchars($product['measure_value']); ?></td>
                     <td><?php echo htmlspecialchars($product['unit_price']); ?></td>
                     <td><?php echo htmlspecialchars($product['category']); ?></td>
@@ -152,7 +138,7 @@ $products = $stmt->fetchAll();
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Kategori</label>
-                                        <select name="category" class="form-select category-select" data-unit="unit<?php echo $product['id']; ?>">
+                                        <select name="category" class="form-select category-select">
                                             <?php foreach ($categories as $cat): ?>
                                                 <option value="<?php echo $cat; ?>" <?php echo ($product['category'] === $cat) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($cat); ?>
@@ -160,18 +146,9 @@ $products = $stmt->fetchAll();
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="mb-3" id="unitWrapper<?php echo $product['id']; ?>">
-                                        <label class="form-label">Ölçü Birimi</label>
-                                        <select name="unit" id="unit<?php echo $product['id']; ?>" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" data-wrapper="unitWrapper<?php echo $product['id']; ?>" required>
-                                            <?php foreach ($units as $unitOption): ?>
-                                                <option value="<?php echo $unitOption; ?>" <?php echo ($product['unit'] === $unitOption) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($unitOption); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
+                                    <input type="hidden" name="unit" value="<?php echo $defaultUnit; ?>">
                                     <div class="mb-3" id="measureWrapper<?php echo $product['id']; ?>">
-                                        <label class="form-label">Ölçü Değeri</label>
+                                        <label class="form-label">Gramaj (gr)</label>
                                         <input type="number" step="0.001" name="measure_value" id="measure<?php echo $product['id']; ?>"
                                             value="<?php echo htmlspecialchars($product['measure_value']); ?>"
                                             class="form-control" required>
@@ -255,7 +232,7 @@ $products = $stmt->fetchAll();
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Kategori</label>
-                        <select name="category" class="form-select category-select" data-unit="addUnit">
+                        <select name="category" class="form-select category-select">
                             <?php foreach ($categories as $cat): ?>
                                 <option value="<?php echo $cat; ?>">
                                     <?php echo htmlspecialchars($cat); ?>
@@ -263,18 +240,9 @@ $products = $stmt->fetchAll();
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3" id="addUnitWrapper">
-                        <label class="form-label">Ölçü Birimi</label>
-                        <select name="unit" id="addUnit" class="form-select unit-select" data-target="addMeasure" data-wrapper="addUnitWrapper" required>
-                            <?php foreach ($units as $unit): ?>
-                                <option value="<?php echo $unit; ?>">
-                                    <?php echo htmlspecialchars($unit); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                    <input type="hidden" name="unit" value="<?php echo $defaultUnit; ?>">
                     <div class="mb-3" id="addMeasureWrapper">
-                        <label class="form-label">Ölçü Değeri</label>
+                        <label class="form-label">Gramaj (gr)</label>
                         <input type="number" step="0.001" name="measure_value" id="addMeasure" class="form-control" required>
                     </div>
                     <div class="mb-3">
@@ -290,53 +258,5 @@ $products = $stmt->fetchAll();
         </div>
     </div>
 </div>
-<script>
-function updateMeasure(selectEl, measureInput, wrapper) {
-    if (selectEl.value === 'adet' || selectEl.value === 'metre') {
-        measureInput.value = 1;
-        if (wrapper) wrapper.style.display = 'none';
-        measureInput.removeAttribute('required');
-    } else {
-        if (wrapper) wrapper.style.display = '';
-        measureInput.setAttribute('required', 'required');
-    }
-}
-var categoryUnits = { 'Aksesuar': 'adet', 'Fitil': 'metre', 'Alüminyum': 'kg' };
-function updateUnitFromCategory(catSel) {
-    var unitSelect = document.getElementById(catSel.getAttribute('data-unit'));
-    if (!unitSelect) return;
-    var targetUnit = categoryUnits[catSel.value];
-    var unitWrapper = document.getElementById(unitSelect.getAttribute('data-wrapper'));
-    if (targetUnit) {
-        unitSelect.value = targetUnit;
-    }
-    if (catSel.value === 'Aksesuar' || catSel.value === 'Fitil') {
-        if (unitWrapper) unitWrapper.style.display = 'none';
-        unitSelect.removeAttribute('required');
-    } else {
-        if (unitWrapper) unitWrapper.style.display = '';
-        unitSelect.setAttribute('required', 'required');
-    }
-    var measure = document.getElementById(unitSelect.getAttribute('data-target'));
-    var wrapper = document.getElementById(unitSelect.getAttribute('data-target') + 'Wrapper');
-    updateMeasure(unitSelect, measure, wrapper);
-}
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.unit-select').forEach(function (sel) {
-        var targetId = sel.getAttribute('data-target');
-        var measure = document.getElementById(targetId);
-        var wrapper = document.getElementById(targetId + 'Wrapper');
-        updateMeasure(sel, measure, wrapper);
-        sel.addEventListener('change', function () {
-            updateMeasure(sel, measure, wrapper);
-        });
-    });
-    document.querySelectorAll('.category-select').forEach(function (cat) {
-        updateUnitFromCategory(cat);
-        cat.addEventListener('change', function () {
-            updateUnitFromCategory(cat);
-        });
-    });
-});
-</script>
+
 
