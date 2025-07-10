@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 09 Tem 2025, 08:46:48
+-- Üretim Zamanı: 10 Tem 2025, 09:05:44
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -139,12 +139,12 @@ CREATE TABLE `guillotine_quotes` (
   `width_mm` decimal(10,2) NOT NULL,
   `height_mm` decimal(10,2) NOT NULL,
   `system_qty` int(10) UNSIGNED NOT NULL,
-  `glass_type` varchar(50) DEFAULT NULL,
-  `glass_color` varchar(50) DEFAULT NULL,
   `motor_system` varchar(50) DEFAULT NULL,
   `remote_system` varchar(50) DEFAULT NULL,
   `remote_qty` int(10) UNSIGNED DEFAULT NULL,
-  `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL
+  `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `glass_type` varchar(50) DEFAULT NULL,
+  `glass_color` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -205,7 +205,9 @@ CREATE TABLE `products` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `code` varchar(50) NOT NULL,
-  `kgmt` decimal(10,3) NOT NULL,
+  `unit` varchar(20) NOT NULL,
+  `measure_value` decimal(10,3) NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
   `category` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
@@ -257,13 +259,13 @@ CREATE TABLE `sliding_quotes` (
   `system_type` varchar(50) NOT NULL,
   `width_mm` decimal(10,2) NOT NULL,
   `height_mm` decimal(10,2) NOT NULL,
-  `wing_type` varchar(20) DEFAULT NULL,
   `fastening_type` varchar(30) DEFAULT NULL,
-  `glass_type` varchar(50) DEFAULT NULL,
-  `glass_color` varchar(50) DEFAULT NULL,
   `system_qty` int(10) UNSIGNED NOT NULL,
   `ral_code` varchar(50) DEFAULT NULL,
-  `locking` varchar(30) DEFAULT NULL
+  `locking` varchar(30) DEFAULT NULL,
+  `wing_type` varchar(20) DEFAULT NULL,
+  `glass_type` varchar(50) DEFAULT NULL,
+  `glass_color` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -363,13 +365,6 @@ ALTER TABLE `permission_role`
   ADD KEY `permission_id` (`permission_id`);
 
 --
--- Tablo için indeksler `products`
---
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `code` (`code`);
-
---
 -- Tablo için indeksler `roles`
 --
 ALTER TABLE `roles`
@@ -388,7 +383,7 @@ ALTER TABLE `role_user`
 --
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_settings_users` (`user_id`);
+  ADD UNIQUE KEY `uq_user_setting` (`user_id`,`key`);
 
 --
 -- Tablo için indeksler `sliding_quotes`
@@ -468,12 +463,6 @@ ALTER TABLE `master_quotes`
 --
 ALTER TABLE `permissions`
   MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- Tablo için AUTO_INCREMENT değeri `products`
---
-ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roles`
