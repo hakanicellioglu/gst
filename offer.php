@@ -96,6 +96,7 @@ include 'includes/header.php';
                 <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara" style="display:inline-block;width:auto;">
                 <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
             </form>
             <form method="get" class="d-inline-block me-2">
                 <select name="sort" class="form-select d-inline-block w-auto">

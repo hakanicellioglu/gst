@@ -45,8 +45,9 @@ require_once __DIR__ . '/../helpers/theme.php';
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('input[type="text"][name="search"]').forEach(function (input) {
-        input.addEventListener('keyup', function () {
-            if (input.form) {
+        input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && input.form) {
+                e.preventDefault();
                 input.form.submit();
             }
         });

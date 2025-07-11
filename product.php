@@ -98,6 +98,7 @@ $products = $stmt->fetchAll();
                 <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                 <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
+                <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
             </form>
             <form method="get" class="d-inline-block me-2">
                 <select name="sort" class="form-select d-inline-block w-auto">
