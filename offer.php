@@ -62,6 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $query = "SELECT mq.*, co.name AS company_name, CONCAT(cu.first_name,' ',cu.last_name) AS customer_name FROM master_quotes mq LEFT JOIN companies co ON mq.company_id = co.id LEFT JOIN customers cu ON mq.contact_id = cu.id ORDER BY mq.quote_date DESC";
 $stmt = $pdo->query($query);
 $quotes = $stmt->fetchAll();
+$view = $_GET['view'] ?? 'list';
+
+$p = $_GET;
+$p['view'] = 'list';
+$listUrl = 'offer?' . http_build_query($p);
+$p['view'] = 'card';
+$cardUrl = 'offer?' . http_build_query($p);
 
 include 'includes/header.php';
 ?>
@@ -77,8 +84,14 @@ include 'includes/header.php';
             <?php if ($canAdd): ?>
                 <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
             <?php endif; ?>
+            <div class="btn-group ms-2" role="group">
+                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>">Liste</a>
+                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>">Kart</a>
+            </div>
         </div>
     </div>
+
+    <?php if ($view === 'list'): ?>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -116,5 +129,35 @@ include 'includes/header.php';
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="row">
+        <?php foreach ($quotes as $q): ?>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($q['company_name']); ?></h5>
+                        <p class="card-text">
+                            Müşteri: <?php echo htmlspecialchars($q['customer_name']); ?><br>
+                            Tarih: <?php echo htmlspecialchars($q['quote_date']); ?><br>
+                            Teslimat: <?php echo htmlspecialchars($q['delivery_term']); ?><br>
+                            Ödeme Yöntemi: <?php echo htmlspecialchars($q['payment_method']); ?><br>
+                            Ödeme Süresi: <?php echo htmlspecialchars($q['payment_due']); ?><br>
+                            Teklif Süresi: <?php echo htmlspecialchars($q['quote_validity']); ?><br>
+                            Vade: <?php echo htmlspecialchars($q['maturity']); ?>
+                        </p>
+                        <div class="text-end">
+                            <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm btn-<?php echo get_color(); ?>">Düzenle</a>
+                            <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
 </div>
 
