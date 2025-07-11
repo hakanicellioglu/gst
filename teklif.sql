@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 10 Tem 2025, 09:05:44
+-- Üretim Zamanı: 11 Tem 2025, 08:01:40
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -180,7 +180,7 @@ CREATE TABLE `master_quotes` (
 
 CREATE TABLE `permissions` (
   `id` smallint(5) UNSIGNED NOT NULL,
-  `code` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
   `description` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
@@ -355,7 +355,7 @@ ALTER TABLE `master_quotes`
 --
 ALTER TABLE `permissions`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `code` (`code`);
+  ADD UNIQUE KEY `code` (`name`);
 
 --
 -- Tablo için indeksler `permission_role`
@@ -363,6 +363,12 @@ ALTER TABLE `permissions`
 ALTER TABLE `permission_role`
   ADD PRIMARY KEY (`role_id`,`permission_id`),
   ADD KEY `permission_id` (`permission_id`);
+
+--
+-- Tablo için indeksler `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Tablo için indeksler `roles`
@@ -463,6 +469,12 @@ ALTER TABLE `master_quotes`
 --
 ALTER TABLE `permissions`
   MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Tablo için AUTO_INCREMENT değeri `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roles`
