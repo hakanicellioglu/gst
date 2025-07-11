@@ -14,11 +14,22 @@ $results = [];
 $width = '';
 $height = '';
 $quantity = 1;
+$glass_type = 'Isıcam';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $width = (float)($_POST['width'] ?? 0);
     $height = (float)($_POST['height'] ?? 0);
     $quantity = max(1, (int)($_POST['quantity'] ?? 1));
+    $glass_type = $_POST['glass_type'] ?? $glass_type;
+
+    if (!empty($_POST['gid'])) {
+        $stmt = $pdo->prepare('SELECT glass_type FROM guillotine_quotes WHERE id = ?');
+        $stmt->execute([$_POST['gid']]);
+        $dbGlass = $stmt->fetchColumn();
+        if ($dbGlass !== false) {
+            $glass_type = $dbGlass;
+        }
+    }
 
     $motor_kutusu = $width - 14;
     $motor_kapak = $motor_kutusu - 1;
@@ -46,8 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kupeste_baza_qty = 2 * $quantity;
     $tutamak_qty = 6 * $quantity * $kenetli_baza_qty * $kupeste_baza_qty;
     $kupeste_qty = $quantity;
-    $yatay_citasi_qty = 6 * $quantity;
-    $dikey_citasi_qty = 6 * $quantity;
+    if (strtolower($glass_type) === 'tek cam') {
+        $yatay_citasi_qty = 6 * $quantity;
+        $dikey_citasi_qty = 6 * $quantity;
+    } else {
+        $yatay_citasi_qty = 0;
+        $dikey_citasi_qty = 0;
+    }
     $dikme_qty = 2 * $quantity;
     $orta_dikme_qty = 2 * $quantity;
     $son_kapatma_qty = 2 * $quantity;
@@ -110,6 +126,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="form-label">Adet</label>
                 <input type="number" name="quantity" class="form-control" min="1" value="<?php echo htmlspecialchars($quantity); ?>">
             </div>
+            <div class="mb-3">
+                <label class="form-label">Cam Tipi</label>
+                <select name="glass_type" class="form-select">
+                    <option value="Isıcam" <?php echo $glass_type === 'Isıcam' ? 'selected' : ''; ?>>Isıcam</option>
+                    <option value="Tek Cam" <?php echo $glass_type === 'Tek Cam' ? 'selected' : ''; ?>>Tek Cam</option>
+                </select>
+            </div>
+            <input type="hidden" name="gid" value="<?php echo htmlspecialchars($_POST['gid'] ?? ''); ?>">
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
         <?php if ($results): ?>
