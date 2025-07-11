@@ -76,9 +76,6 @@ $companies = $stmt->fetchAll();
                 <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
             </form>
-            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
-                Filtrele
-            </button>
             <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Firma
                 Ekle</button>
             <div class="btn-group ms-2" role="group">

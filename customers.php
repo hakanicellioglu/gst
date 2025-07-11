@@ -97,8 +97,6 @@ $customers = $stmt->fetchAll();
                 <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
             </form>
-            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
-                data-bs-target="#filterModal">Filtrele</button>
             <?php if ($canAddCustomer): ?>
                 <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
                     Ekle</button>
