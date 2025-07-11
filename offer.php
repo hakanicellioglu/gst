@@ -59,8 +59,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch quotes
-$query = "SELECT mq.*, co.name AS company_name, CONCAT(cu.first_name,' ',cu.last_name) AS customer_name FROM master_quotes mq LEFT JOIN companies co ON mq.company_id = co.id LEFT JOIN customers cu ON mq.contact_id = cu.id ORDER BY mq.quote_date DESC";
-$stmt = $pdo->query($query);
+$search = $_GET['search'] ?? '';
+$sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
+$query = "SELECT mq.*, co.name AS company_name, CONCAT(cu.first_name,' ',cu.last_name) AS customer_name
+          FROM master_quotes mq
+          LEFT JOIN companies co ON mq.company_id = co.id
+          LEFT JOIN customers cu ON mq.contact_id = cu.id
+          WHERE co.name LIKE :search1 OR CONCAT(cu.first_name,' ',cu.last_name) LIKE :search2
+          ORDER BY mq.quote_date $sort";
+$stmt = $pdo->prepare($query);
+$stmt->execute([
+    ':search1' => "%$search%",
+    ':search2' => "%$search%"
+]);
 $quotes = $stmt->fetchAll();
 $view = $_GET['view'] ?? 'list';
 
@@ -81,6 +92,7 @@ include 'includes/header.php';
     <?php endif; ?>
     <div class="row mb-3">
         <div class="col-12 text-end">
+            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal" data-bs-target="#filterModal">Filtrele</button>
             <?php if ($canAdd): ?>
                 <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
             <?php endif; ?>
@@ -159,5 +171,33 @@ include 'includes/header.php';
         <?php endforeach; ?>
     </div>
     <?php endif; ?>
+</div>
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="get" action="offer">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtrele</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Ara</label>
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sıralama</label>
+                    <select name="sort" class="form-select">
+                        <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                        <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Filtrele</button>
+            </div>
+        </form>
+    </div>
 </div>
 
