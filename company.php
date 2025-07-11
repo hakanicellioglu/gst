@@ -9,17 +9,7 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 load_theme_settings($pdo);
-?>
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Firmalar</title>
-    <link href="<?php echo theme_css(); ?>" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <?php include 'includes/header.php'; ?>
+include 'includes/header.php';
 
 // Handle Add Company
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -305,5 +295,3 @@ $companies = $stmt->fetchAll();
     </div>
 </div>
 
-</body>
-</html>
