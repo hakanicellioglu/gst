@@ -56,6 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
+$view = $_GET['view'] ?? 'list';
+
+$params = $_GET;
+$params['view'] = 'list';
+$listUrl = 'customers?' . http_build_query($params);
+$params['view'] = 'card';
+$cardUrl = 'customers?' . http_build_query($params);
 
 $query = "SELECT c.*, co.name AS company_name FROM customers c LEFT JOIN companies co ON c.company_id = co.id WHERE c.first_name LIKE :search1 OR c.last_name LIKE :search2 ORDER BY c.first_name $sort, c.last_name $sort";
 $stmt = $pdo->prepare($query);
@@ -85,9 +92,14 @@ $customers = $stmt->fetchAll();
             <?php else: ?>
                 <a href="company" class="btn btn-<?php echo get_color(); ?>">Firma Ekle</a>
             <?php endif; ?>
+            <div class="btn-group ms-2" role="group">
+                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>">Liste</a>
+                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>">Kart</a>
+            </div>
         </div>
     </div>
 
+    <?php if ($view === 'list'): ?>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -195,6 +207,93 @@ $customers = $stmt->fetchAll();
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="row">
+        <?php foreach ($customers as $customer): ?>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?></h5>
+                        <p class="card-text">
+                            Firma: <?php echo htmlspecialchars($customer['company_name']); ?><br>
+                            Ünvan: <?php echo htmlspecialchars($customer['title']); ?><br>
+                            Email: <?php echo htmlspecialchars($customer['email']); ?><br>
+                            Telefon: <?php echo htmlspecialchars($customer['phone']); ?><br>
+                            Adres: <?php echo htmlspecialchars($customer['address']); ?>
+                        </p>
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $customer['id']; ?>">Düzenle</button>
+                            <form method="post" action="customers" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal<?php echo $customer['id']; ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Müşteri Düzenle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="customers">
+                            <div class="modal-body">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
+                                <div class="mb-3">
+                                    <label class="form-label">İsim</label>
+                                    <input type="text" name="first_name" value="<?php echo htmlspecialchars($customer['first_name']); ?>" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Soyisim</label>
+                                    <input type="text" name="last_name" value="<?php echo htmlspecialchars($customer['last_name']); ?>" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Firma</label>
+                                    <select name="company_id" class="form-select" required>
+                                        <?php foreach ($companies as $co): ?>
+                                            <option value="<?php echo $co['id']; ?>" <?php echo ($customer['company_id'] == $co['id']) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($co['name']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Ünvan</label>
+                                    <select name="title" class="form-select">
+                                        <option value="Hanım" <?php echo $customer['title'] === 'Hanım' ? 'selected' : ''; ?>>Hanım</option>
+                                        <option value="Bey" <?php echo $customer['title'] === 'Bey' ? 'selected' : ''; ?>>Bey</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" value="<?php echo htmlspecialchars($customer['email']); ?>" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Telefon</label>
+                                    <input type="text" name="phone" value="<?php echo htmlspecialchars($customer['phone']); ?>" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Adres</label>
+                                    <input type="text" name="address" value="<?php echo htmlspecialchars($customer['address']); ?>" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
 </div>
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">

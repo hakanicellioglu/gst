@@ -45,6 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
+$view = $_GET['view'] ?? 'list';
+
+$p = $_GET;
+$p['view'] = 'list';
+$listUrl = 'company?' . http_build_query($p);
+$p['view'] = 'card';
+$cardUrl = 'company?' . http_build_query($p);
 
 $query = "SELECT * FROM companies WHERE name LIKE :search ORDER BY name $sort";
 $stmt = $pdo->prepare($query);
@@ -61,9 +68,14 @@ $companies = $stmt->fetchAll();
             </button>
             <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Firma
                 Ekle</button>
+            <div class="btn-group ms-2" role="group">
+                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>">Liste</a>
+                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>">Kart</a>
+            </div>
         </div>
     </div>
 
+    <?php if ($view === 'list'): ?>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -139,6 +151,70 @@ $companies = $stmt->fetchAll();
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="row">
+        <?php foreach ($companies as $company): ?>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($company['name']); ?></h5>
+                        <p class="card-text">
+                            Telefon: <?php echo htmlspecialchars($company['phone']); ?><br>
+                            Adres: <?php echo htmlspecialchars($company['address']); ?><br>
+                            E-posta: <?php echo htmlspecialchars($company['email']); ?>
+                        </p>
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $company['id']; ?>">Düzenle</button>
+                            <form method="post" action="company" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal<?php echo $company['id']; ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Firma Düzenle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="company">
+                            <div class="modal-body">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
+                                <div class="mb-3">
+                                    <label class="form-label">Ad</label>
+                                    <input type="text" name="name" value="<?php echo htmlspecialchars($company['name']); ?>" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Telefon</label>
+                                    <input type="text" name="phone" value="<?php echo htmlspecialchars($company['phone']); ?>" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Adres</label>
+                                    <input type="text" name="address" value="<?php echo htmlspecialchars($company['address']); ?>" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">E-posta</label>
+                                    <input type="email" name="email" value="<?php echo htmlspecialchars($company['email']); ?>" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
 </div>
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">

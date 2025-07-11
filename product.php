@@ -68,6 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
 $categoryFilter = $_GET['category'] ?? '';
+$view = $_GET['view'] ?? 'list';
+
+$paramList = $_GET;
+$paramList['view'] = 'list';
+$listUrl = 'product?' . http_build_query($paramList);
+$paramList['view'] = 'card';
+$cardUrl = 'product?' . http_build_query($paramList);
 
 $query = "SELECT * FROM products WHERE name LIKE :search";
 $params = [':search' => "%$search%"];
@@ -90,9 +97,14 @@ $products = $stmt->fetchAll();
             <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                 data-bs-target="#addModal">Ürün
                 Ekle</button>
+            <div class="btn-group ms-2" role="group">
+                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>">Liste</a>
+                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>">Kart</a>
+            </div>
         </div>
     </div>
 
+    <?php if ($view === 'list'): ?>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -192,6 +204,91 @@ $products = $stmt->fetchAll();
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php else: ?>
+    <div class="row">
+        <?php foreach ($products as $product): ?>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($product['name']); ?> (<?php echo htmlspecialchars($product['code']); ?>)</h5>
+                        <p class="card-text">
+                            Ölçü Birimi: <?php echo htmlspecialchars($product['unit']); ?><br>
+                            Ölçü Değeri: <?php echo htmlspecialchars($product['measure_value']); ?><br>
+                            Birim Fiyat: <?php echo htmlspecialchars($product['unit_price']); ?><br>
+                            Kategori: <?php echo htmlspecialchars($product['category']); ?>
+                        </p>
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
+                            <form method="post" action="product" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal<?php echo $product['id']; ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Ürün Düzenle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="product">
+                            <div class="modal-body">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                                <div class="mb-3">
+                                    <label class="form-label">Ad</label>
+                                    <input type="text" name="name" value="<?php echo htmlspecialchars($product['name']); ?>" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Kod</label>
+                                    <input type="text" name="code" value="<?php echo htmlspecialchars($product['code']); ?>" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Kategori</label>
+                                    <select name="category" class="form-select category-select" data-unit="unit<?php echo $product['id']; ?>">
+                                        <?php foreach ($categories as $cat): ?>
+                                            <option value="<?php echo $cat; ?>" <?php echo ($product['category'] === $cat) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($cat); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="unitWrapper<?php echo $product['id']; ?>">
+                                    <label class="form-label">Ölçü Birimi</label>
+                                    <select name="unit" id="unit<?php echo $product['id']; ?>" class="form-select unit-select" data-target="measure<?php echo $product['id']; ?>" data-wrapper="unitWrapper<?php echo $product['id']; ?>" required>
+                                        <?php foreach ($units as $unitOption): ?>
+                                            <option value="<?php echo $unitOption; ?>" <?php echo ($product['unit'] === $unitOption) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($unitOption); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="measureWrapper<?php echo $product['id']; ?>">
+                                    <label class="form-label" id="measure<?php echo $product['id']; ?>Label">Ölçü Değeri</label>
+                                    <input type="number" step="0.001" name="measure_value" id="measure<?php echo $product['id']; ?>" value="<?php echo htmlspecialchars($product['measure_value']); ?>" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Birim Fiyat</label>
+                                    <input type="number" step="0.01" name="unit_price" value="<?php echo htmlspecialchars($product['unit_price']); ?>" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
 </div>
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
