@@ -99,6 +99,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ['name' => 'Kenet Fitili (m)', 'length' => $kenet_fitili, 'count' => '-'],
         ['name' => 'Kıl Fitil (m)', 'length' => $kil_fitil, 'count' => '-'],
     ];
+
+    $total_cost = 0;
+    foreach ($results as &$row) {
+        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price FROM products WHERE name = ? LIMIT 1');
+        $stmt->execute([$row['name']]);
+        $product = $stmt->fetch();
+        $row['cost'] = null;
+        if ($product) {
+            $count = is_numeric($row['count']) ? (float)$row['count'] : 0;
+            $length = $row['length'];
+            if (strpos($row['name'], '(m)') === false) {
+                $length = $row['length'] / 1000; // convert mm to m
+            }
+            switch (strtolower($product['unit'])) {
+                case 'adet':
+                    $row['cost'] = $count * $product['unit_price'];
+                    break;
+                case 'kg':
+                    $weight = $length * $product['measure_value'];
+                    $row['cost'] = $weight * $count * $product['unit_price'];
+                    break;
+                default: // metre
+                    $row['cost'] = $length * $count * $product['unit_price'];
+                    break;
+            }
+            $total_cost += $row['cost'];
+        }
+    }
+    unset($row);
 }
 ?>
 <!DOCTYPE html>
@@ -143,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <th>Parça</th>
                         <th>Uzunluk</th>
                         <th>Adet</th>
+                        <th>Maliyet</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -151,8 +181,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <th><?php echo htmlspecialchars($row['name']); ?></th>
                         <td><?php echo round($row['length'], 2); ?></td>
                         <td><?php echo htmlspecialchars($row['count']); ?></td>
+                        <td>
+                            <?php echo is_null($row['cost']) ? '-' : number_format($row['cost'], 2); ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
+                <tr>
+                    <th colspan="3" class="text-end">Toplam Maliyet</th>
+                    <th><?php echo number_format($total_cost, 2); ?></th>
+                </tr>
                 </tbody>
             </table>
         <?php endif; ?>
