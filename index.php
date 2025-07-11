@@ -1,3 +1,12 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (isset($_SESSION['token'])) {
+    header('Location: dashboard.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
