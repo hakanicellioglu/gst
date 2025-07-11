@@ -92,6 +92,22 @@ $products = $stmt->fetchAll();
     <h2 class="mb-4">Ürünler</h2>
     <div class="row mb-3">
         <div class="col-12 text-end">
+            <form method="get" class="d-inline-block me-2">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                    class="form-control" placeholder="Ürün ara" style="display:inline-block;width:auto;">
+                <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
+            </form>
+            <form method="get" class="d-inline-block me-2">
+                <select name="sort" class="form-select d-inline-block w-auto">
+                    <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                    <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                </select>
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
+            </form>
             <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
                 data-bs-target="#filterModal">Filtrele</button>
             <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"

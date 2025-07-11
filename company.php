@@ -63,15 +63,28 @@ $companies = $stmt->fetchAll();
     <h2 class="mb-4">Firmalar</h2>
     <div class="row mb-3">
         <div class="col-12 text-end">
+            <form method="get" class="d-inline-block me-2">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Firma ara" style="display:inline-block;width:auto;">
+                <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+            </form>
+            <form method="get" class="d-inline-block me-2">
+                <select name="sort" class="form-select d-inline-block w-auto">
+                    <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                    <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                </select>
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+            </form>
             <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal" data-bs-target="#filterModal">
                 Filtrele
             </button>
             <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Firma
                 Ekle</button>
-                <div class="btn-group ms-2" role="group">
-                    <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
-                    <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
-                </div>
+            <div class="btn-group ms-2" role="group">
+                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
+                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
+            </div>
         </div>
     </div>
 
