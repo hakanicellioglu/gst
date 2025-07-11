@@ -111,7 +111,7 @@ $products = $stmt->fetchAll();
                 <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
             </form>
             <form method="get" class="d-inline-block me-2">
-                <select name="sort" class="form-select d-inline-block w-auto">
+                <select name="sort" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
                     <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
                     <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
                 </select>
