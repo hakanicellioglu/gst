@@ -42,3 +42,14 @@ require_once __DIR__ . '/../helpers/theme.php';
     </div>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('input[type="text"][name="search"]').forEach(function (input) {
+        input.addEventListener('keyup', function () {
+            if (input.form) {
+                input.form.submit();
+            }
+        });
+    });
+});
+</script>
