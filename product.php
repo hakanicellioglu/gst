@@ -108,8 +108,6 @@ $products = $stmt->fetchAll();
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                 <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
             </form>
-            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal"
-                data-bs-target="#filterModal">Filtrele</button>
             <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                 data-bs-target="#addModal">Ürün
                 Ekle</button>

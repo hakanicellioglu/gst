@@ -105,7 +105,6 @@ include 'includes/header.php';
                 <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
             </form>
-            <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal" data-bs-target="#filterModal">Filtrele</button>
             <?php if ($canAdd): ?>
                 <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
             <?php endif; ?>
