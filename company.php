@@ -58,7 +58,17 @@ $stmt = $pdo->prepare($query);
 $stmt->execute([':search' => "%$search%"]);
 $companies = $stmt->fetchAll();
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
 <div class="container py-4">
     <h2 class="mb-4">Firmalar</h2>
     <div class="row mb-3">

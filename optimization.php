@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alt_kasa_qty = $quantity;
     $kenetli_baza_qty = 2 * $quantity;
     $kupeste_baza_qty = 2 * $quantity;
-    $tutamak_qty = 6 * $quantity * $kenetli_baza_qty * $kupeste_baza_qty;
+    $tutamak_qty = 6 * $quantity - $kenetli_baza_qty - $kupeste_baza_qty;
     $kupeste_qty = $quantity;
     if (strtolower($glass_type) === 'tek cam') {
         $yatay_citasi_qty = 6 * $quantity;
