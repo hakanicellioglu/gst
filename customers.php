@@ -90,6 +90,30 @@ $customers = $stmt->fetchAll();
             <div class="alert alert-warning">
                 Müşteri ekleyebilmek için önce
                 <a href="company" class="alert-link">firma</a> eklemelisiniz.
+        <div class="col-12 text-end">
+            <form method="get" class="d-inline-block me-2">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Müşteri ara" style="display:inline-block;width:auto;">
+                <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
+            </form>
+            <form method="get" class="d-inline-block me-2">
+                <select name="sort" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                    <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                    <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                </select>
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+            </form>
+            <?php if ($canAddCustomer): ?>
+                <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal" data-bs-target="#addModal">Müşteri
+                    Ekle</button>
+            <?php else: ?>
+                <a href="company" class="btn btn-<?php echo get_color(); ?>">Firma Ekle</a>
+            <?php endif; ?>
+            <div class="btn-group ms-2" role="group">
+                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
+                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
             </div>
         <?php endif; ?>
         <div class="row mb-3">
