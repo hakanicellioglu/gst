@@ -92,6 +92,19 @@ include 'includes/header.php';
     <?php endif; ?>
     <div class="row mb-3">
         <div class="col-12 text-end">
+            <form method="get" class="d-inline-block me-2">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara" style="display:inline-block;width:auto;">
+                <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+            </form>
+            <form method="get" class="d-inline-block me-2">
+                <select name="sort" class="form-select d-inline-block w-auto">
+                    <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                    <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                </select>
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+            </form>
             <button type="button" class="btn btn-dark me-2" data-bs-toggle="modal" data-bs-target="#filterModal">Filtrele</button>
             <?php if ($canAdd): ?>
                 <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
