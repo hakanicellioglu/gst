@@ -9,7 +9,17 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 load_theme_settings($pdo);
-include 'includes/header.php';
+?>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Müşteriler</title>
+    <link href="<?php echo theme_css(); ?>" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <?php include 'includes/header.php'; ?>
 
 // Load companies for dropdowns
 $companyStmt = $pdo->query("SELECT id, name FROM companies ORDER BY name");
@@ -396,3 +406,5 @@ $customers = $stmt->fetchAll();
     </div>
 </div>
 
+</body>
+</html>

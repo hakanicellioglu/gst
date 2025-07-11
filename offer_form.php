@@ -178,9 +178,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     header('Location: offer');
     exit;
 }
-
-include 'includes/header.php';
 ?>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Teklif Formu</title>
+    <link href="<?php echo theme_css(); ?>" rel="stylesheet">
+</head>
+<body class="bg-light">
+<?php include 'includes/header.php'; ?>
 <div class="container py-4">
     <h2 class="mb-4">Teklif <?php echo $id ? 'Düzenle' : 'Ekle'; ?></h2>
     <?php if (!$canAdd): ?>
@@ -705,3 +713,5 @@ include 'includes/header.php';
         </script>
     <?php endif; ?>
 </div>
+</body>
+</html>
