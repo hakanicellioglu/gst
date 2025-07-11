@@ -577,7 +577,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
 
                 const form = document.createElement('form');
                 form.method = 'post';
-                form.action = '/optimization';
+                form.action = '/optimization.php';
                 form.target = '_blank';
                 form.innerHTML =
                     '<input type="hidden" name="width" value="' + width + '">' +
