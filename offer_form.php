@@ -292,7 +292,12 @@ include 'includes/header.php';
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Motor Sistemi</label>
-                                <input type="text" name="motor_system" id="giyotinMotor" class="form-control">
+                                <select name="motor_system" id="giyotinMotor" class="form-select">
+                                    <option value="Somfy">Somfy</option>
+                                    <option value="ASA">ASA</option>
+                                    <option value="Cuppon">Cuppon</option>
+                                    <option value="Mosel">Mosel</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
@@ -633,7 +638,7 @@ include 'includes/header.php';
                     widthInput.value = '';
                     heightInput.value = '';
                     qtyInput.value = '';
-                    motorInput.value = '';
+                    motorInput.value = 'Somfy';
                     glassInput.value = 'Isıcam';
                     colorInput.value = 'Şeffaf';
                     remoteInput.value = '';
