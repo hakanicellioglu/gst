@@ -569,7 +569,7 @@ include 'includes/header.php';
 
                 const form = document.createElement('form');
                 form.method = 'post';
-                form.action = '/optimization.php';
+                form.action = '/optimization';
                 form.target = '_blank';
                 form.innerHTML =
                     '<input type="hidden" name="width" value="' + width + '">' +
