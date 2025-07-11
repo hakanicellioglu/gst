@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'last_name' => $user['last_name'],
                     'email' => $user['email']
                 ];
+                // Create a session token on successful login
+                $token = bin2hex(random_bytes(32));
+                $_SESSION['token'] = $token;
+                setcookie('token', $token, time() + 3600, '/', '', false, true);
                 header('Location: dashboard');
                 exit;
             } else {
