@@ -9,7 +9,17 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 load_theme_settings($pdo);
-include 'includes/header.php';
+?>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gösterge Paneli</title>
+    <link href="<?php echo theme_css(); ?>" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <?php include 'includes/header.php'; ?>
 ?>
 <div class="container py-5 h-min">
     <div class="row justify-content-center">
@@ -23,3 +33,5 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
+</body>
+</html>
