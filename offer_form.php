@@ -559,6 +559,8 @@ include 'includes/header.php';
                 const width = document.getElementById('giyotinWidth').value;
                 const height = document.getElementById('giyotinHeight').value;
                 const quantity = document.getElementById('giyotinQty').value || 1;
+                const glass = document.getElementById('giyotinGlass').value;
+                const gid = document.getElementById('giyotinId').value;
 
                 if (!width || !height) {
                     alert('Lütfen genişlik ve yükseklik giriniz.');
@@ -572,7 +574,9 @@ include 'includes/header.php';
                 form.innerHTML =
                     '<input type="hidden" name="width" value="' + width + '">' +
                     '<input type="hidden" name="height" value="' + height + '">' +
-                    '<input type="hidden" name="quantity" value="' + quantity + '">';
+                    '<input type="hidden" name="quantity" value="' + quantity + '">' +
+                    '<input type="hidden" name="glass_type" value="' + glass + '">' +
+                    '<input type="hidden" name="gid" value="' + gid + '">';
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
