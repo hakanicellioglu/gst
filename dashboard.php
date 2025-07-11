@@ -17,5 +17,9 @@ include 'includes/header.php';
             <h1 class="display-4 mb-4 text-<?php echo get_color(); ?>">Hoş geldin,
                 <?php echo isset($_SESSION['user']['first_name']) ? htmlspecialchars($_SESSION['user']['first_name']) : "Kullanıcı!"; ?>
             </h1>
+            <?php if (isset($_SESSION['token'])): ?>
+                <p class="text-muted">Token: <code><?php echo htmlspecialchars($_SESSION['token']); ?></code></p>
+            <?php endif; ?>
         </div>
-    </div></div>
+    </div>
+</div>
