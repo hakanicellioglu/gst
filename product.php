@@ -108,6 +108,7 @@ $products = $stmt->fetchAll();
                         class="form-control" placeholder="Ürün ara" style="display:inline-block;width:auto;">
                     <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
                     <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                    <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
                     <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
                 </form>
                 <form method="get" class="d-inline-block me-2">
@@ -118,6 +119,19 @@ $products = $stmt->fetchAll();
                     <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                     <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                     <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
+                </form>
+                <form method="get" class="d-inline-block me-2">
+                    <select name="category" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                        <option value="">Tüm Kategoriler</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?php echo $cat; ?>" <?php echo ($categoryFilter === $cat) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($cat); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                    <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                 </form>
                 <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                     data-bs-target="#addModal">Ürün
