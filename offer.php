@@ -159,7 +159,7 @@ include 'includes/header.php';
                     <td><?php echo htmlspecialchars($q['maturity']); ?></td>
                     <td class="text-center">
                         <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm btn-<?php echo get_color(); ?>">Düzenle</a>
-                        <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm btn-info">İncele</a>
+                        <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                         <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
@@ -188,7 +188,7 @@ include 'includes/header.php';
                         </p>
                         <div class="text-end">
                             <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm btn-<?php echo get_color(); ?>">Düzenle</a>
-                            <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm btn-info">İncele</a>
+                            <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                             <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $q['id']; ?>">

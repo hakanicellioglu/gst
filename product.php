@@ -177,7 +177,7 @@ $products = $stmt->fetchAll();
                             <td class="text-center">
                                 <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
-                                <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm btn-info">İncele</a>
+                                <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <form method="post" action="product" style="display:inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
@@ -280,7 +280,7 @@ $products = $stmt->fetchAll();
                                 <div class="text-end">
                                     <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                                         data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
-                                    <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm btn-info">İncele</a>
+                                    <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <form method="post" action="product" style="display:inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
