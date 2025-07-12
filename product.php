@@ -2,6 +2,7 @@
 require_once 'config.php';
 require_once 'helpers/theme.php';
 require_once 'helpers/audit.php';
+require_once 'helpers/auth.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -177,7 +178,9 @@ $products = $stmt->fetchAll();
                             <td class="text-center">
                                 <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
+                                <?php if (is_admin($pdo)): ?>
                                 <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                                <?php endif; ?>
                                 <form method="post" action="product" style="display:inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
@@ -280,7 +283,9 @@ $products = $stmt->fetchAll();
                                 <div class="text-end">
                                     <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                         data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
+                                    <?php if (is_admin($pdo)): ?>
                                     <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                                    <?php endif; ?>
                                     <form method="post" action="product" style="display:inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">

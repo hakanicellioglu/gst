@@ -1,11 +1,16 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/auth.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['user'])) {
     header('Location: /login');
+    exit;
+}
+if (!is_admin($pdo)) {
+    echo 'Bu sayfayı görüntüleme yetkiniz yok.';
     exit;
 }
 load_theme_settings($pdo);
