@@ -129,6 +129,7 @@ $products = $stmt->fetchAll();
 
 
             </div>
+            <a href="pdf.php?type=products" class="btn btn-outline-secondary ms-2">PDF</a>
         </div>
 
         <?php if ($view === 'list'): ?>
