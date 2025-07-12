@@ -107,12 +107,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ['name' => 'Kıl Fitil (m)', 'length' => $kil_fitil, 'count' => '-'],
     ];
 
+    $nameCategoryMap = [
+        'Motor Kutusu' => 'Alüminyum',
+        'Motor Kapak' => 'Alüminyum',
+        'Alt Kasa' => 'Alüminyum',
+        'Tutamak' => 'Alüminyum',
+        'Kenetli Baza' => 'Alüminyum',
+        'Küpeşte Baza' => 'Alüminyum',
+        'Küpeşte' => 'Alüminyum',
+        'Yatay Tek Cam Çıtası' => 'Alüminyum',
+        'Dikey Tek Cam Çıtası' => 'Alüminyum',
+        'Dikme' => 'Alüminyum',
+        'Orta Dikme' => 'Alüminyum',
+        'Son Kapatma' => 'Alüminyum',
+        'Kanat' => 'Alüminyum',
+        'Dikey Baza' => 'Alüminyum',
+        'Motor Borusu' => 'Alüminyum',
+        'Cam' => 'Cam',
+        'Zincir' => 'Aksesuar',
+        'Flatbelt Kayış' => 'Aksesuar',
+        'Motor Kutu Contası (m)' => 'Fitil',
+        'Kanat Contası (m)' => 'Fitil',
+        'Kenet Fitili (m)' => 'Fitil',
+        'Kıl Fitil (m)' => 'Fitil',
+    ];
+
     $total_cost = 0;
     foreach ($results as &$row) {
-        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price FROM products WHERE name = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category FROM products WHERE name = ? LIMIT 1');
         $stmt->execute([$row['name']]);
         $product = $stmt->fetch();
         $row['cost'] = null;
+        $row['category'] = $nameCategoryMap[$row['name']] ?? ($product['category'] ?? 'Diğer');
         if ($product) {
             $count = is_numeric($row['count']) ? (float)$row['count'] : 0;
             $length = is_numeric($row['length']) ? (float)$row['length'] : 0;
@@ -135,6 +161,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     unset($row);
+    $groupedResults = [];
+    foreach ($results as $r) {
+        $groupedResults[$r['category']][] = $r;
+    }
+    $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
 }
 ?>
 <!DOCTYPE html>
@@ -173,7 +204,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
         <?php if ($results): ?>
-            <table class="table table-bordered">
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr>
+                        <th>En</th>
+                        <th>Boy</th>
+                        <th>Adet</th>
+                        <th>m\u{B2}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr class="table-secondary">
+                    <th colspan="4">Cam</th>
+                </tr>
+                <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
+                    <?php
+                        $dims = preg_split('/[xX]/', $row['length']);
+                        $en  = isset($dims[0]) && is_numeric(trim($dims[0])) ? round(trim($dims[0])) : trim($dims[0] ?? '');
+                        $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round(trim($dims[1])) : trim($dims[1] ?? '');
+                        $adet = is_numeric($row['count']) ? (int)$row['count'] : $row['count'];
+                        $m2 = (is_numeric($en) && is_numeric($boy) && is_numeric($row['count']))
+                            ? number_format($en * $boy * $row['count'] / 1e6, 2)
+                            : '-';
+                    ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($en); ?></td>
+                        <td><?php echo htmlspecialchars($boy); ?></td>
+                        <td><?php echo htmlspecialchars($adet); ?></td>
+                        <td><?php echo $m2; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered mb-4">
                 <thead>
                     <tr>
                         <th>Parça</th>
@@ -183,7 +247,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($results as $row): ?>
+                <tr class="table-secondary">
+                    <th colspan="4">Alüminyum</th>
+                </tr>
+                <?php foreach ($groupedResults['Alüminyum'] ?? [] as $row): ?>
                     <tr>
                         <th><?php echo htmlspecialchars($row['name']); ?></th>
                         <td>
@@ -202,6 +269,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ?>
                         </td>
                     </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr>
+                        <th>Parça</th>
+                        <th>Uzunluk</th>
+                        <th>Adet</th>
+                        <th>Maliyet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr class="table-secondary">
+                    <th colspan="4">Aksesuar ve Fitil</th>
+                </tr>
+                <?php foreach (['Aksesuar', 'Fitil', 'Diğer'] as $cat): ?>
+                    <?php if (!empty($groupedResults[$cat])): ?>
+                        <?php foreach ($groupedResults[$cat] as $row): ?>
+                            <tr>
+                                <th><?php echo htmlspecialchars($row['name']); ?></th>
+                                <td>
+                                    <?php
+                                        echo is_numeric($row['length'])
+                                            ? round($row['length'])
+                                            : htmlspecialchars($row['length']);
+                                    ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($row['count']); ?></td>
+                                <td>
+                                    <?php
+                                        echo is_null($row['cost'])
+                                            ? '-'
+                                            : number_format(round($row['cost']), 0);
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 <?php endforeach; ?>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Maliyet</th>
