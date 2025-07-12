@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 /**
  * Log create/update/delete actions to the audit_logs table.
  */
-function audit_log(PDO $pdo, string $table, $recordId, string $action): void
+function audit_log(PDO $pdo, string $table, $recordId, string $action, $oldValue = null, $newValue = null): void
 {
     $userId = $_SESSION['user']['id'] ?? null;
     $actionMap = [
@@ -18,14 +18,22 @@ function audit_log(PDO $pdo, string $table, $recordId, string $action): void
     if ($actionId === null) {
         return;
     }
+    if (is_array($oldValue) || is_object($oldValue)) {
+        $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
+    }
+    if (is_array($newValue) || is_object($newValue)) {
+        $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
+    }
     try {
         $stmt = $pdo->prepare(
-            'INSERT INTO audit_logs (user_id, table_name, record_id, action_id) VALUES (:user, :table_name, :record_id, :action_id)'
+            'INSERT INTO audit_logs (user_id, table_name, record_id, old_value, new_value, action_id) VALUES (:user, :table_name, :record_id, :old_value, :new_value, :action_id)'
         );
         $stmt->execute([
             ':user' => $userId,
             ':table_name' => $table,
             ':record_id' => $recordId,
+            ':old_value' => $oldValue,
+            ':new_value' => $newValue,
             ':action_id' => $actionId,
         ]);
     } catch (PDOException $e) {
