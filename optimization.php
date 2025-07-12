@@ -49,10 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $flatbelt_kayis = $son_kapatma + 600;
     $motor_borusu = $width - 59;
 
-    // Cam ölçüleri
-    $cam_en = $width - 221;
-    $cam_boy = $dikey_baza + 26;
-
     // parça adet hesapları
     $motor_kutusu_qty = $quantity;
     $motor_kapak_qty = $quantity;
@@ -80,8 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kenet_fitili = (($tutamak * $quantity) + ($kenetli_baza * $quantity)) / 1000;
     $kil_fitil = (($dikme * $quantity) + ($orta_dikme * $quantity * 2) + ($son_kapatma * $quantity) + ($kanat * $quantity)) / 1000;
 
-    $cam_adet = ($kanat_qty + $dikey_baza_qty) / 2;
-
     $results = [
         ['name' => 'Motor Kutusu', 'length' => $motor_kutusu, 'count' => $motor_kutusu_qty],
         ['name' => 'Motor Kapak', 'length' => $motor_kapak, 'count' => $motor_kapak_qty],
@@ -97,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ['name' => 'Son Kapatma', 'length' => $son_kapatma, 'count' => $son_kapatma_qty],
         ['name' => 'Kanat', 'length' => $kanat, 'count' => $kanat_qty],
         ['name' => 'Dikey Baza', 'length' => $dikey_baza, 'count' => $dikey_baza_qty],
-        ['name' => 'Cam', 'length' => $cam_en . ' x ' . $cam_boy, 'count' => $cam_adet],
         ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincir_qty],
         ['name' => 'Flatbelt Kayış', 'length' => $flatbelt_kayis, 'count' => '-'],
         ['name' => 'Motor Borusu', 'length' => $motor_borusu, 'count' => $motor_borusu_qty],
@@ -115,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $row['cost'] = null;
         if ($product) {
             $count = is_numeric($row['count']) ? (float)$row['count'] : 0;
-            $length = is_numeric($row['length']) ? (float)$row['length'] : 0;
-            if (strpos($row['name'], '(m)') === false && is_numeric($row['length'])) {
+            $length = $row['length'];
+            if (strpos($row['name'], '(m)') === false) {
                 $length = $row['length'] / 1000; // convert mm to m
             }
             switch (strtolower($product['unit'])) {
@@ -186,13 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php foreach ($results as $row): ?>
                     <tr>
                         <th><?php echo htmlspecialchars($row['name']); ?></th>
-                        <td>
-                            <?php
-                                echo is_numeric($row['length'])
-                                    ? round($row['length'], 2)
-                                    : htmlspecialchars($row['length']);
-                            ?>
-                        </td>
+                        <td><?php echo round($row['length'], 2); ?></td>
                         <td><?php echo htmlspecialchars($row['count']); ?></td>
                         <td>
                             <?php echo is_null($row['cost']) ? '-' : number_format($row['cost'], 2); ?>
