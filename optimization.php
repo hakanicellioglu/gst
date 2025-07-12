@@ -189,19 +189,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td>
                             <?php
                                 echo is_numeric($row['length'])
-                                    ? round($row['length'], 2)
+                                    ? round($row['length'])
                                     : htmlspecialchars($row['length']);
                             ?>
                         </td>
                         <td><?php echo htmlspecialchars($row['count']); ?></td>
                         <td>
-                            <?php echo is_null($row['cost']) ? '-' : number_format($row['cost'], 2); ?>
+                            <?php
+                                echo is_null($row['cost'])
+                                    ? '-'
+                                    : number_format(round($row['cost']), 0);
+                            ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Maliyet</th>
-                    <th><?php echo number_format($total_cost, 2); ?></th>
+                    <th><?php echo number_format(round($total_cost), 0); ?></th>
                 </tr>
                 </tbody>
             </table>
