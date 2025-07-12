@@ -115,6 +115,7 @@ $customers = $stmt->fetchAll();
                 <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
                 <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
             </div>
+            <a href="pdf.php?type=customers" class="btn btn-outline-secondary ms-2">PDF</a>
         <?php endif; ?>
         <div class="row mb-3">
 
@@ -149,6 +150,7 @@ $customers = $stmt->fetchAll();
                         class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i
                             class="bi bi-grid"></i></a>
                 </div>
+                <a href="pdf.php?type=customers" class="btn btn-outline-secondary ms-2">PDF</a>
             </div>
         </div>
 
