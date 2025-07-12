@@ -484,7 +484,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                                 <td><?php echo htmlspecialchars($g['remote_qty']); ?></td>
                                 <td><?php echo htmlspecialchars($g['ral_code']); ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-guillotine-btn" data-bs-toggle="modal"
+                                    <button class="btn btn-sm bg-light text-dark edit-guillotine-btn" data-bs-toggle="modal"
                                         data-bs-target="#giyotinModal" data-id="<?php echo $g['id']; ?>"
                                         data-width="<?php echo htmlspecialchars($g['width_mm']); ?>"
                                         data-height="<?php echo htmlspecialchars($g['height_mm']); ?>"
@@ -541,7 +541,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                                 <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
                                 <td><?php echo htmlspecialchars($s['locking']); ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?> edit-sliding-btn" data-bs-toggle="modal"
+                                    <button class="btn btn-sm bg-light text-dark edit-sliding-btn" data-bs-toggle="modal"
                                         data-bs-target="#surmeModal" data-id="<?php echo $s['id']; ?>"
                                         data-system="<?php echo htmlspecialchars($s['system_type']); ?>"
                                         data-wing="<?php echo htmlspecialchars($s['wing_type']); ?>"
