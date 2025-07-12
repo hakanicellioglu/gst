@@ -125,6 +125,9 @@ $products = $stmt->fetchAll();
             <div class="btn-group ms-2" role="group">
                 <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
                 <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
+
+
+
             </div>
             <a href="pdf.php?type=products" class="btn btn-outline-secondary ms-2">PDF</a>
         </div>
