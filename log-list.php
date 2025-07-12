@@ -24,9 +24,16 @@ if (!in_array($table, $allowed, true) || $recordId === '') {
 }
 
 $stmt = $pdo->prepare(
-    'SELECT al.action_time, al.id, u.username, CONCAT(u.first_name, " ", u.last_name) AS full_name
+    'SELECT al.action_time,
+            al.id,
+            u.username,
+            CONCAT(u.first_name, " ", u.last_name) AS full_name,
+            al.old_value,
+            al.new_value,
+            a.name AS action_name
      FROM audit_logs al
      LEFT JOIN users u ON al.user_id = u.id
+     LEFT JOIN actions a ON al.action_id = a.id
      WHERE al.table_name = :table AND al.record_id = :record
      ORDER BY al.action_time DESC'
 );
@@ -55,6 +62,9 @@ $logs = $stmt->fetchAll();
                     <th>ID</th>
                     <th>Kullanıcı Adı</th>
                     <th>İsim Soyisim</th>
+                    <th>İşlem Tipi</th>
+                    <th>Eski Değer</th>
+                    <th>Yeni Değer</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,6 +74,9 @@ $logs = $stmt->fetchAll();
                         <td><?php echo htmlspecialchars($log['id']); ?></td>
                         <td><?php echo htmlspecialchars($log['username']); ?></td>
                         <td><?php echo htmlspecialchars($log['full_name']); ?></td>
+                        <td><?php echo htmlspecialchars($log['action_name']); ?></td>
+                        <td><?php echo htmlspecialchars($log['old_value']); ?></td>
+                        <td><?php echo htmlspecialchars($log['new_value']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
