@@ -176,13 +176,13 @@ $products = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($product['category']); ?></td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
-                                    data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
+                                    data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
                                 <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <form method="post" action="product" style="display:inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
                                 </form>
                             </td>
                         </tr>
@@ -279,13 +279,13 @@ $products = $stmt->fetchAll();
                                 </p>
                                 <div class="text-end">
                                     <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
-                                        data-bs-target="#editModal<?php echo $product['id']; ?>">Düzenle</button>
+                                        data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
                                     <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <form method="post" action="product" style="display:inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
                                     </form>
                                 </div>
                             </div>
