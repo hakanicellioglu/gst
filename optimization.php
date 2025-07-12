@@ -207,10 +207,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <table class="table table-bordered mb-4">
                 <thead>
                     <tr>
-                        <th>Parça</th>
-                        <th>Uzunluk</th>
+                        <th>En</th>
+                        <th>Boy</th>
                         <th>Adet</th>
-                        <th>Maliyet</th>
+                        <th>m\u{B2}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -218,23 +218,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th colspan="4">Cam</th>
                 </tr>
                 <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
+                    <?php
+                        $dims = preg_split('/[xX]/', $row['length']);
+                        $en  = isset($dims[0]) && is_numeric(trim($dims[0])) ? round(trim($dims[0])) : trim($dims[0] ?? '');
+                        $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round(trim($dims[1])) : trim($dims[1] ?? '');
+                        $adet = is_numeric($row['count']) ? (int)$row['count'] : $row['count'];
+                        $m2 = (is_numeric($en) && is_numeric($boy) && is_numeric($row['count']))
+                            ? number_format($en * $boy * $row['count'] / 1e6, 2)
+                            : '-';
+                    ?>
                     <tr>
-                        <th><?php echo htmlspecialchars($row['name']); ?></th>
-                        <td>
-                            <?php
-                                echo is_numeric($row['length'])
-                                    ? round($row['length'])
-                                    : htmlspecialchars($row['length']);
-                            ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($row['count']); ?></td>
-                        <td>
-                            <?php
-                                echo is_null($row['cost'])
-                                    ? '-'
-                                    : number_format(round($row['cost']), 0);
-                            ?>
-                        </td>
+                        <td><?php echo htmlspecialchars($en); ?></td>
+                        <td><?php echo htmlspecialchars($boy); ?></td>
+                        <td><?php echo htmlspecialchars($adet); ?></td>
+                        <td><?php echo $m2; ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
