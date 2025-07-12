@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/audit.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $hash,
                         $userId
                     ]);
+                    audit_log($pdo, 'users', $userId, 'update');
                 } else {
                     $update = $pdo->prepare('UPDATE users SET first_name=?, last_name=?, username=?, email=? WHERE id=?');
                     $update->execute([
@@ -50,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $email,
                         $userId
                     ]);
+                    audit_log($pdo, 'users', $userId, 'update');
                 }
                 $_SESSION['user']['first_name'] = $firstName;
                 $_SESSION['user']['last_name']  = $lastName;
