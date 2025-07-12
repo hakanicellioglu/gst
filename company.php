@@ -124,9 +124,9 @@ $companies = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($company['address']); ?></td>
                             <td><?php echo htmlspecialchars($company['email']); ?></td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
+                                <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $company['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
-                                <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                                <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <form method="post" action="company" style="display:inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
@@ -199,9 +199,9 @@ $companies = $stmt->fetchAll();
                                     E-posta: <?php echo htmlspecialchars($company['email']); ?>
                                 </p>
                                 <div class="text-end">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
+                                    <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                         data-bs-target="#editModal<?php echo $company['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
-                                    <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                                    <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <form method="post" action="company" style="display:inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">

@@ -156,9 +156,9 @@ $customers = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($customer['phone']); ?></td>
                             <td><?php echo htmlspecialchars($customer['address']); ?></td>
                             <td class="text-center">
-                                <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
+                                <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
-                                <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                                <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <form method="post" action="customers" style="display:inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
@@ -258,9 +258,9 @@ $customers = $stmt->fetchAll();
                                     Adres: <?php echo htmlspecialchars($customer['address']); ?>
                                 </p>
                                 <div class="text-end">
-                                    <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
+                                    <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                         data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
-                                    <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                                    <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <form method="post" action="customers" style="display:inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
