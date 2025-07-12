@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+// Log create, update and delete actions
 require_once 'helpers/audit.php';
 require_once 'helpers/auth.php';
 if (session_status() === PHP_SESSION_NONE) {
