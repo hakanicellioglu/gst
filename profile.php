@@ -31,6 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $errors[] = 'Kullanıcı adı veya e-posta zaten kullanılıyor.';
             } else {
+                $stmtOld = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+                $stmtOld->execute([$userId]);
+                $oldData = $stmtOld->fetch();
+
                 if ($password !== '') {
                     $hash = password_hash($password, PASSWORD_BCRYPT);
                     $update = $pdo->prepare('UPDATE users SET first_name=?, last_name=?, username=?, email=?, password_hash=? WHERE id=?');
@@ -42,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $hash,
                         $userId
                     ]);
-                    audit_log($pdo, 'users', $userId, 'update');
                 } else {
                     $update = $pdo->prepare('UPDATE users SET first_name=?, last_name=?, username=?, email=? WHERE id=?');
                     $update->execute([
@@ -52,8 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $email,
                         $userId
                     ]);
-                    audit_log($pdo, 'users', $userId, 'update');
                 }
+                $stmtNew = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+                $stmtNew->execute([$userId]);
+                $newData = $stmtNew->fetch();
+                audit_log($pdo, 'users', $userId, 'update', $oldData, $newData);
                 $_SESSION['user']['first_name'] = $firstName;
                 $_SESSION['user']['last_name']  = $lastName;
                 $_SESSION['user']['username']   = $username;

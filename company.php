@@ -25,25 +25,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':address' => $_POST['address'],
             ':email' => $_POST['email']
         ]);
-        audit_log($pdo, 'companies', $pdo->lastInsertId(), 'create');
+        $newId = $pdo->lastInsertId();
+        $stmtData = $pdo->prepare('SELECT * FROM companies WHERE id = :id');
+        $stmtData->execute([':id' => $newId]);
+        $newData = $stmtData->fetch();
+        audit_log($pdo, 'companies', $newId, 'create', null, $newData);
         header('Location: company');
         exit;
     } elseif ($action === 'edit') {
+        $id = $_POST['id'];
+        $stmtOld = $pdo->prepare('SELECT * FROM companies WHERE id = :id');
+        $stmtOld->execute([':id' => $id]);
+        $oldData = $stmtOld->fetch();
+
         $stmt = $pdo->prepare("UPDATE companies SET name = :name, phone = :phone, address = :address, email = :email WHERE id = :id");
         $stmt->execute([
             ':name' => $_POST['name'],
             ':phone' => $_POST['phone'],
             ':address' => $_POST['address'],
             ':email' => $_POST['email'],
-            ':id' => $_POST['id']
+            ':id' => $id
         ]);
-        audit_log($pdo, 'companies', $_POST['id'], 'update');
+        $stmtNew = $pdo->prepare('SELECT * FROM companies WHERE id = :id');
+        $stmtNew->execute([':id' => $id]);
+        $newData = $stmtNew->fetch();
+        audit_log($pdo, 'companies', $id, 'update', $oldData, $newData);
         header('Location: company');
         exit;
     } elseif ($action === 'delete') {
+        $id = $_POST['id'];
+        $stmtOld = $pdo->prepare('SELECT * FROM companies WHERE id = :id');
+        $stmtOld->execute([':id' => $id]);
+        $oldData = $stmtOld->fetch();
+
         $stmt = $pdo->prepare("DELETE FROM companies WHERE id = :id");
-        $stmt->execute([':id' => $_POST['id']]);
-        audit_log($pdo, 'companies', $_POST['id'], 'delete');
+        $stmt->execute([':id' => $id]);
+        audit_log($pdo, 'companies', $id, 'delete', $oldData, null);
         header('Location: company');
         exit;
     }
