@@ -158,6 +158,7 @@ $customers = $stmt->fetchAll();
                             <td class="text-center">
                                 <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $customer['id']; ?>">Düzenle</button>
+                                <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <form method="post" action="customers" style="display:inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
@@ -259,6 +260,7 @@ $customers = $stmt->fetchAll();
                                 <div class="text-end">
                                     <button class="btn btn-sm btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                                         data-bs-target="#editModal<?php echo $customer['id']; ?>">Düzenle</button>
+                                    <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-info" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <form method="post" action="customers" style="display:inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
