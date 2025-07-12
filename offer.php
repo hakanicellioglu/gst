@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/audit.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -44,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':validity'  => $_POST['quote_validity'],
             ':maturity'  => $_POST['maturity']
         ]);
+        audit_log($pdo, 'master_quotes', $pdo->lastInsertId(), 'create');
         header('Location: offer');
         exit;
     } elseif ($action === 'edit') {
@@ -59,11 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':maturity' => $_POST['maturity'],
             ':id'       => $_POST['id']
         ]);
+        audit_log($pdo, 'master_quotes', $_POST['id'], 'update');
         header('Location: offer');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM master_quotes WHERE id=:id");
         $stmt->execute([':id' => $_POST['id']]);
+        audit_log($pdo, 'master_quotes', $_POST['id'], 'delete');
         header('Location: offer');
         exit;
     }

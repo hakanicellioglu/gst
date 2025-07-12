@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/audit.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -175,6 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     }
 
     $stmt->execute($data);
+    if ($id) {
+        audit_log($pdo, 'master_quotes', $id, 'update');
+    } else {
+        audit_log($pdo, 'master_quotes', $pdo->lastInsertId(), 'create');
+    }
     header('Location: offer');
     exit;
 }
