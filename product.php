@@ -177,7 +177,7 @@ $products = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($product['category']); ?></td>
                             <td class="text-center">
                                 <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
-                                    data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
+                                    data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i></button>
                                 <?php if (is_admin($pdo)): ?>
                                 <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <?php endif; ?>
@@ -185,7 +185,7 @@ $products = $stmt->fetchAll();
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                                 </form>
                             </td>
                         </tr>
@@ -282,7 +282,7 @@ $products = $stmt->fetchAll();
                                 </p>
                                 <div class="text-end">
                                     <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
-                                        data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
+                                        data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i></button>
                                     <?php if (is_admin($pdo)): ?>
                                     <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <?php endif; ?>
@@ -290,7 +290,7 @@ $products = $stmt->fetchAll();
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                                     </form>
                                 </div>
                             </div>

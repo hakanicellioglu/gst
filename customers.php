@@ -158,7 +158,7 @@ $customers = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($customer['address']); ?></td>
                             <td class="text-center">
                                 <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
-                                    data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
+                                    data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i></button>
                                 <?php if (is_admin($pdo)): ?>
                                 <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <?php endif; ?>
@@ -166,7 +166,7 @@ $customers = $stmt->fetchAll();
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                                 </form>
                             </td>
                         </tr>
@@ -262,7 +262,7 @@ $customers = $stmt->fetchAll();
                                 </p>
                                 <div class="text-end">
                                     <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
-                                        data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i> Düzenle</button>
+                                        data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i></button>
                                     <?php if (is_admin($pdo)): ?>
                                     <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <?php endif; ?>
@@ -270,7 +270,7 @@ $customers = $stmt->fetchAll();
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Sil</button>
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                                     </form>
                                 </div>
                             </div>
