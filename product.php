@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/audit.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -42,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':unit_price' => $_POST['unit_price'],
             ':category' => $category
         ]);
+        audit_log($pdo, 'products', $pdo->lastInsertId(), 'create');
         header('Location: product');
         exit;
     } elseif ($action === 'edit') {
@@ -55,11 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':category' => $category,
             ':id' => $_POST['id']
         ]);
+        audit_log($pdo, 'products', $_POST['id'], 'update');
         header('Location: product');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM products WHERE id = :id");
         $stmt->execute([':id' => $_POST['id']]);
+        audit_log($pdo, 'products', $_POST['id'], 'delete');
         header('Location: product');
         exit;
     }

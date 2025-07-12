@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/audit.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':phone' => $_POST['phone'],
             ':address' => $_POST['address']
         ]);
+        audit_log($pdo, 'customers', $pdo->lastInsertId(), 'create');
         header('Location: customers');
         exit;
     } elseif ($action === 'edit') {
@@ -44,11 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':address' => $_POST['address'],
             ':id' => $_POST['id']
         ]);
+        audit_log($pdo, 'customers', $_POST['id'], 'update');
         header('Location: customers');
         exit;
     } elseif ($action === 'delete') {
         $stmt = $pdo->prepare("DELETE FROM customers WHERE id = :id");
         $stmt->execute([':id' => $_POST['id']]);
+        audit_log($pdo, 'customers', $_POST['id'], 'delete');
         header('Location: customers');
         exit;
     }
