@@ -4,10 +4,25 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 /**
- * Log create/update/delete actions to the audit_logs table.
+ * Ensure default action records exist so foreign key constraints do not fail.
  */
+function ensure_default_actions(PDO $pdo): void
+{
+    $sql = "INSERT IGNORE INTO actions (id, name) VALUES
+            (1, 'create'),
+            (2, 'update'),
+            (3, 'delete')";
+    try {
+        $pdo->exec($sql);
+    } catch (PDOException $e) {
+        // Silently ignore if actions table is missing or insert fails
+    }
+}
+
 function audit_log(PDO $pdo, string $table, $recordId, string $action, $oldValue = null, $newValue = null): void
 {
+    // Ensure action IDs exist for foreign key constraint
+    ensure_default_actions($pdo);
     $userId = $_SESSION['user']['id'] ?? null;
     $actionMap = [
         'create' => 1,
