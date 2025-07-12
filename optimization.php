@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
         <?php if ($results): ?>
-            <table class="table table-bordered">
+            <table class="table table-bordered mb-4">
                 <thead>
                     <tr>
                         <th>Parça</th>
@@ -214,11 +214,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($categoryOrder as $cat): ?>
+                <tr class="table-secondary">
+                    <th colspan="4">Cam</th>
+                </tr>
+                <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
+                    <tr>
+                        <th><?php echo htmlspecialchars($row['name']); ?></th>
+                        <td>
+                            <?php
+                                echo is_numeric($row['length'])
+                                    ? round($row['length'])
+                                    : htmlspecialchars($row['length']);
+                            ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($row['count']); ?></td>
+                        <td>
+                            <?php
+                                echo is_null($row['cost'])
+                                    ? '-'
+                                    : number_format(round($row['cost']), 0);
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr>
+                        <th>Parça</th>
+                        <th>Uzunluk</th>
+                        <th>Adet</th>
+                        <th>Maliyet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr class="table-secondary">
+                    <th colspan="4">Alüminyum</th>
+                </tr>
+                <?php foreach ($groupedResults['Alüminyum'] ?? [] as $row): ?>
+                    <tr>
+                        <th><?php echo htmlspecialchars($row['name']); ?></th>
+                        <td>
+                            <?php
+                                echo is_numeric($row['length'])
+                                    ? round($row['length'])
+                                    : htmlspecialchars($row['length']);
+                            ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($row['count']); ?></td>
+                        <td>
+                            <?php
+                                echo is_null($row['cost'])
+                                    ? '-'
+                                    : number_format(round($row['cost']), 0);
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr>
+                        <th>Parça</th>
+                        <th>Uzunluk</th>
+                        <th>Adet</th>
+                        <th>Maliyet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr class="table-secondary">
+                    <th colspan="4">Aksesuar ve Fitil</th>
+                </tr>
+                <?php foreach (['Aksesuar', 'Fitil', 'Diğer'] as $cat): ?>
                     <?php if (!empty($groupedResults[$cat])): ?>
-                        <tr class="table-secondary">
-                            <th colspan="4"><?php echo htmlspecialchars($cat); ?></th>
-                        </tr>
                         <?php foreach ($groupedResults[$cat] as $row): ?>
                             <tr>
                                 <th><?php echo htmlspecialchars($row['name']); ?></th>
