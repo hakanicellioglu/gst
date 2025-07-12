@@ -33,10 +33,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':phone' => $_POST['phone'],
             ':address' => $_POST['address']
         ]);
-        audit_log($pdo, 'customers', $pdo->lastInsertId(), 'create');
+        $newId = $pdo->lastInsertId();
+        $stmtData = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
+        $stmtData->execute([':id' => $newId]);
+        $newData = $stmtData->fetch();
+        audit_log($pdo, 'customers', $newId, 'create', null, $newData);
         header('Location: customers');
         exit;
     } elseif ($action === 'edit') {
+        $id = $_POST['id'];
+        $stmtOld = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
+        $stmtOld->execute([':id' => $id]);
+        $oldData = $stmtOld->fetch();
+
         $stmt = $pdo->prepare("UPDATE customers SET company_id = :company, first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
         $stmt->execute([
             ':company' => $_POST['company_id'],
@@ -46,15 +55,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':email' => $_POST['email'],
             ':phone' => $_POST['phone'],
             ':address' => $_POST['address'],
-            ':id' => $_POST['id']
+            ':id' => $id
         ]);
-        audit_log($pdo, 'customers', $_POST['id'], 'update');
+        $stmtNew = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
+        $stmtNew->execute([':id' => $id]);
+        $newData = $stmtNew->fetch();
+        audit_log($pdo, 'customers', $id, 'update', $oldData, $newData);
         header('Location: customers');
         exit;
     } elseif ($action === 'delete') {
+        $id = $_POST['id'];
+        $stmtOld = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
+        $stmtOld->execute([':id' => $id]);
+        $oldData = $stmtOld->fetch();
+
         $stmt = $pdo->prepare("DELETE FROM customers WHERE id = :id");
-        $stmt->execute([':id' => $_POST['id']]);
-        audit_log($pdo, 'customers', $_POST['id'], 'delete');
+        $stmt->execute([':id' => $id]);
+        audit_log($pdo, 'customers', $id, 'delete', $oldData, null);
         header('Location: customers');
         exit;
     }

@@ -47,10 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':validity'  => $_POST['quote_validity'],
             ':maturity'  => $_POST['maturity']
         ]);
-        audit_log($pdo, 'master_quotes', $pdo->lastInsertId(), 'create');
+        $newId = $pdo->lastInsertId();
+        $stmtData = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
+        $stmtData->execute([':id' => $newId]);
+        $newData = $stmtData->fetch();
+        audit_log($pdo, 'master_quotes', $newId, 'create', null, $newData);
         header('Location: offer');
         exit;
     } elseif ($action === 'edit') {
+        $id = $_POST['id'];
+        $stmtOld = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
+        $stmtOld->execute([':id' => $id]);
+        $oldData = $stmtOld->fetch();
+
         $stmt = $pdo->prepare("UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id");
         $stmt->execute([
             ':company'  => $_POST['company_id'],
@@ -61,15 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':due'      => $_POST['payment_due'],
             ':validity' => $_POST['quote_validity'],
             ':maturity' => $_POST['maturity'],
-            ':id'       => $_POST['id']
+            ':id'       => $id
         ]);
-        audit_log($pdo, 'master_quotes', $_POST['id'], 'update');
+        $stmtNew = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
+        $stmtNew->execute([':id' => $id]);
+        $newData = $stmtNew->fetch();
+        audit_log($pdo, 'master_quotes', $id, 'update', $oldData, $newData);
         header('Location: offer');
         exit;
     } elseif ($action === 'delete') {
+        $id = $_POST['id'];
+        $stmtOld = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
+        $stmtOld->execute([':id' => $id]);
+        $oldData = $stmtOld->fetch();
+
         $stmt = $pdo->prepare("DELETE FROM master_quotes WHERE id=:id");
-        $stmt->execute([':id' => $_POST['id']]);
-        audit_log($pdo, 'master_quotes', $_POST['id'], 'delete');
+        $stmt->execute([':id' => $id]);
+        audit_log($pdo, 'master_quotes', $id, 'delete', $oldData, null);
         header('Location: offer');
         exit;
     }
