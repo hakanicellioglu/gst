@@ -26,6 +26,7 @@ if ($table && $recordId) {
 <head>
     <meta charset="UTF-8">
     <title>Log Kayıtları</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { font-family: Arial, sans-serif; background:#f5f5f5; padding:1rem; }
         .container { max-width: 800px; margin:auto; }
@@ -45,9 +46,9 @@ if ($table && $recordId) {
 <body>
 <div class="container">
 <?php if (!$table || !$recordId): ?>
-    <p>Gerekli parametreler bulunamadı.</p>
+    <div class="alert alert-warning mt-3">Gerekli parametreler bulunamadı.</div>
 <?php elseif (!$logs): ?>
-    <p>Kayıt bulunamadı.</p>
+    <div class="alert alert-warning mt-3">Kayıt bulunamadı.</div>
 <?php else: ?>
     <?php foreach ($logs as $log): ?>
         <?php
@@ -94,5 +95,6 @@ function toggle(id){
     e.style.display = (e.style.display==='block')? 'none' : 'block';
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
