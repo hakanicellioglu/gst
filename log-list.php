@@ -55,32 +55,25 @@ $logs = $stmt->fetchAll();
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <h2 class="mb-4">Log Kayıtları</h2>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Tarih ve Saat</th>
-                    <th>ID</th>
-                    <th>Kullanıcı Adı</th>
-                    <th>İsim Soyisim</th>
-                    <th>İşlem Tipi</th>
-                    <th>Eski Değer</th>
-                    <th>Yeni Değer</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($logs as $log): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($log['action_time']); ?></td>
-                        <td><?php echo htmlspecialchars($log['id']); ?></td>
-                        <td><?php echo htmlspecialchars($log['username']); ?></td>
-                        <td><?php echo htmlspecialchars($log['full_name']); ?></td>
-                        <td><?php echo htmlspecialchars($log['action_name']); ?></td>
-                        <td><?php echo htmlspecialchars($log['old_value']); ?></td>
-                        <td><?php echo htmlspecialchars($log['new_value']); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="row">
+            <?php foreach ($logs as $log): ?>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo htmlspecialchars($log['action_name']); ?></h5>
+                            <p class="card-text">
+                                Tarih ve Saat: <?php echo htmlspecialchars($log['action_time']); ?><br>
+                                ID: <?php echo htmlspecialchars($log['id']); ?><br>
+                                Kullanıcı: <?php echo htmlspecialchars($log['username']); ?><br>
+                                İsim Soyisim: <?php echo htmlspecialchars($log['full_name']); ?><br>
+                                Eski Değer: <?php echo htmlspecialchars($log['old_value']); ?><br>
+                                Yeni Değer: <?php echo htmlspecialchars($log['new_value']); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
         <a href="javascript:history.back()" class="btn btn-secondary">Geri</a>
     </div>
 </body>
