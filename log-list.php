@@ -42,6 +42,22 @@ $stmt->execute([
     ':record' => $recordId
 ]);
 $logs = $stmt->fetchAll();
+
+function format_log_value($value): string
+{
+    $decoded = json_decode($value, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+        $parts = [];
+        foreach ($decoded as $key => $val) {
+            if (is_array($val) || is_object($val)) {
+                $val = json_encode($val, JSON_UNESCAPED_UNICODE);
+            }
+            $parts[] = htmlspecialchars($key) . ': ' . htmlspecialchars((string)$val);
+        }
+        return implode('<br>', $parts);
+    }
+    return htmlspecialchars($value);
+}
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -66,8 +82,8 @@ $logs = $stmt->fetchAll();
                                 ID: <?php echo htmlspecialchars($log['id']); ?><br>
                                 Kullanıcı: <?php echo htmlspecialchars($log['username']); ?><br>
                                 İsim Soyisim: <?php echo htmlspecialchars($log['full_name']); ?><br>
-                                Eski Değer: <?php echo htmlspecialchars($log['old_value']); ?><br>
-                                Yeni Değer: <?php echo htmlspecialchars($log['new_value']); ?>
+                                Eski Değer: <?php echo format_log_value($log['old_value']); ?><br>
+                                Yeni Değer: <?php echo format_log_value($log['new_value']); ?>
                             </p>
                         </div>
                     </div>
