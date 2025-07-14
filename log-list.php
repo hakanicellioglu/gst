@@ -28,6 +28,9 @@ $stmt = $pdo->prepare(
             al.id,
             u.username,
             CONCAT(u.first_name, " ", u.last_name) AS full_name,
+            al.table_name,
+            al.record_id,
+            al.column_name,
             al.old_value,
             al.new_value,
             a.name AS action_name
@@ -57,37 +60,32 @@ $logs = $stmt->fetchAll();
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <h2 class="mb-4">Log Kayıtları</h2>
-        <div class="row">
-            <?php foreach ($logs as $log): ?>
-                <div class="col-md-4">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($log['action_name']); ?></h5>
-                            <p class="card-text">
-
-                                <p class="fw-bold">Tarih ve Saat</p>
-                                <?php echo htmlspecialchars($log['action_time']); ?><br>
-
-                                <p class="fw-bold">ID</p>
-                                <?php echo htmlspecialchars($log['id']); ?><br>
-
-                                <p class="fw-bold">Kullanıcı</p>
-                                <?php echo htmlspecialchars($log['username']); ?><br>
-
-                                <p class="fw-bold">İsim Soyisim</p>
-                                <?php echo htmlspecialchars($log['full_name']); ?><br>
-
-                                <p class="fw-bold">Eski Değer</p>
-                                <?php echo htmlspecialchars($log['old_value']); ?><br>
-                                
-                                <p class="fw-bold">Yeni Değer</p>
-                                <?php echo htmlspecialchars($log['new_value']); ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Tarih ve Saat</th>
+                    <th>Kullanıcı</th>
+                    <th>Tablo</th>
+                    <th>Satır</th>
+                    <th>Sütun</th>
+                    <th>Eski Değer</th>
+                    <th>Yeni Değer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($logs as $log): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($log['action_time']); ?></td>
+                        <td><?php echo htmlspecialchars($log['username']); ?></td>
+                        <td><?php echo htmlspecialchars($log['table_name']); ?></td>
+                        <td><?php echo htmlspecialchars($log['record_id']); ?></td>
+                        <td><?php echo htmlspecialchars($log['column_name']); ?></td>
+                        <td><?php echo htmlspecialchars($log['old_value']); ?></td>
+                        <td><?php echo htmlspecialchars($log['new_value']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
         <a href="javascript:history.back()" class="btn btn-secondary">Geri</a>
     </div>
 </body>
