@@ -240,7 +240,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
 <body class="bg-light">
 <?php include 'includes/header.php'; ?>
 <div class="container py-4">
-    <h2 class="mb-4">Teklif <?php echo $id ? 'Düzenle' : 'Ekle'; ?></h2>
+    <h2 class="mb-4 d-flex justify-content-between align-items-center">
+        <span>Teklif <?php echo $id ? 'Düzenle' : 'Ekle'; ?></span>
+        <?php if ($id): ?>
+            <a href="pdf-creater.php?id=<?php echo $id; ?>" class="btn btn-sm btn-danger" target="_blank">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+            </a>
+        <?php endif; ?>
+    </h2>
     <?php if (!$canAdd): ?>
         <div class="alert alert-warning">
             Teklif ekleyebilmek için önce <a href="company" class="alert-link">firma</a> ve <a href="customers"

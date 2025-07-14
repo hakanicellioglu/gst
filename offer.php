@@ -178,6 +178,7 @@ include 'includes/header.php';
                     <td><?php echo htmlspecialchars($q['maturity']); ?></td>
                     <td class="text-center">
                         <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i class="bi bi-pencil"></i></a>
+                        <a href="pdf-creater.php?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="PDF İndir" target="_blank"><i class="bi bi-file-earmark-pdf"></i></a>
                         <?php if (is_admin($pdo)): ?>
                         <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                         <?php endif; ?>
@@ -209,6 +210,7 @@ include 'includes/header.php';
                         </p>
                         <div class="text-end">
                             <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i class="bi bi-pencil"></i></a>
+                            <a href="pdf-creater.php?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="PDF İndir" target="_blank"><i class="bi bi-file-earmark-pdf"></i></a>
                             <?php if (is_admin($pdo)): ?>
                             <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                             <?php endif; ?>
