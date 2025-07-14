@@ -58,7 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         ':remote_qty' => $_POST['remote_qty'],
         ':ral' => $_POST['ral_code']
     ]);
-    logAction($pdo, 'guillotine_quotes', $pdo->lastInsertId(), 'create');
+    $newId = $pdo->lastInsertId();
+    $stmtData = $pdo->prepare('SELECT * FROM guillotine_quotes WHERE id = :id');
+    $stmtData->execute([':id' => $newId]);
+    $newData = $stmtData->fetch();
+    logAction($pdo, 'guillotine_quotes', $newId, 'create', null, $newData);
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -82,13 +86,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sliding']) && $id
         ':ral' => $_POST['ral_code'],
         ':locking' => $_POST['locking']
     ]);
-    logAction($pdo, 'sliding_quotes', $pdo->lastInsertId(), 'create');
+    $newId = $pdo->lastInsertId();
+    $stmtData = $pdo->prepare('SELECT * FROM sliding_quotes WHERE id = :id');
+    $stmtData->execute([':id' => $newId]);
+    $newData = $stmtData->fetch();
+    logAction($pdo, 'sliding_quotes', $newId, 'create', null, $newData);
     header('Location: offer_form?id=' . $id);
     exit;
 }
 
 // Handle editing guillotine quotes
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) && $id) {
+    $oldStmt = $pdo->prepare('SELECT * FROM guillotine_quotes WHERE id=:gid');
+    $oldStmt->execute([':gid' => $_POST['gid']]);
+    $oldData = $oldStmt->fetch();
+
     $stmt = $pdo->prepare(
         "UPDATE guillotine_quotes SET width_mm=:width, height_mm=:height, system_qty=:qty, glass_type=:glass, glass_color=:color, motor_system=:motor, remote_qty=:remote_qty, ral_code=:ral WHERE id=:gid AND master_quote_id=:master"
     );
@@ -104,25 +116,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
         ':gid' => $_POST['gid'],
         ':master' => $id
     ]);
-    logAction($pdo, 'guillotine_quotes', $_POST['gid'], 'update');
+    $newStmt = $pdo->prepare('SELECT * FROM guillotine_quotes WHERE id=:gid');
+    $newStmt->execute([':gid' => $_POST['gid']]);
+    $newData = $newStmt->fetch();
+    logAction($pdo, 'guillotine_quotes', $_POST['gid'], 'update', $oldData, $newData);
     header('Location: offer_form?id=' . $id);
     exit;
 }
 
 // Handle deleting guillotine quotes
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_guillotine']) && $id) {
+    $oldStmt = $pdo->prepare('SELECT * FROM guillotine_quotes WHERE id=:gid');
+    $oldStmt->execute([':gid' => $_POST['gid']]);
+    $oldData = $oldStmt->fetch();
+
     $stmt = $pdo->prepare("DELETE FROM guillotine_quotes WHERE id=:gid AND master_quote_id=:master");
     $stmt->execute([
         ':gid' => $_POST['gid'],
         ':master' => $id
     ]);
-    logAction($pdo, 'guillotine_quotes', $_POST['gid'], 'delete');
+    logAction($pdo, 'guillotine_quotes', $_POST['gid'], 'delete', $oldData, null);
     header('Location: offer_form?id=' . $id);
     exit;
 }
 
 // Handle editing sliding quotes
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $id) {
+    $oldStmt = $pdo->prepare('SELECT * FROM sliding_quotes WHERE id=:sid');
+    $oldStmt->execute([':sid' => $_POST['sid']]);
+    $oldData = $oldStmt->fetch();
+
     $stmt = $pdo->prepare(
         "UPDATE sliding_quotes SET system_type=:system, width_mm=:width, height_mm=:height, wing_type=:wing, fastening_type=:fastening, glass_type=:glass, glass_color=:color, system_qty=:qty, ral_code=:ral, locking=:locking WHERE id=:sid AND master_quote_id=:master"
     );
@@ -140,19 +163,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $i
         ':sid' => $_POST['sid'],
         ':master' => $id
     ]);
-    logAction($pdo, 'sliding_quotes', $_POST['sid'], 'update');
+    $newStmt = $pdo->prepare('SELECT * FROM sliding_quotes WHERE id=:sid');
+    $newStmt->execute([':sid' => $_POST['sid']]);
+    $newData = $newStmt->fetch();
+    logAction($pdo, 'sliding_quotes', $_POST['sid'], 'update', $oldData, $newData);
     header('Location: offer_form?id=' . $id);
     exit;
 }
 
 // Handle deleting sliding quotes
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_sliding']) && $id) {
+    $oldStmt = $pdo->prepare('SELECT * FROM sliding_quotes WHERE id=:sid');
+    $oldStmt->execute([':sid' => $_POST['sid']]);
+    $oldData = $oldStmt->fetch();
+
     $stmt = $pdo->prepare("DELETE FROM sliding_quotes WHERE id=:sid AND master_quote_id=:master");
     $stmt->execute([
         ':sid' => $_POST['sid'],
         ':master' => $id
     ]);
-    logAction($pdo, 'sliding_quotes', $_POST['sid'], 'delete');
+    logAction($pdo, 'sliding_quotes', $_POST['sid'], 'delete', $oldData, null);
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -170,22 +200,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
     ];
 
     if ($id) {
+        $oldStmt = $pdo->prepare('SELECT * FROM master_quotes WHERE id=:id');
+        $oldStmt->execute([':id' => $id]);
+        $oldData = $oldStmt->fetch();
+
         $data[':id'] = $id;
         $stmt = $pdo->prepare(
             "UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id"
         );
+        $stmt->execute($data);
+        $newStmt = $pdo->prepare('SELECT * FROM master_quotes WHERE id=:id');
+        $newStmt->execute([':id' => $id]);
+        $newData = $newStmt->fetch();
+        logAction($pdo, 'master_quotes', $id, 'update', $oldData, $newData);
     } else {
         $data[':prepared'] = $_SESSION['user']['id'] ?? null;
         $stmt = $pdo->prepare(
             "INSERT INTO master_quotes (company_id, contact_id, quote_date, prepared_by, delivery_term, payment_method, payment_due, quote_validity, maturity) VALUES (:company, :contact, :date, :prepared, :delivery, :method, :due, :validity, :maturity)"
         );
-    }
-
-    $stmt->execute($data);
-    if ($id) {
-        logAction($pdo, 'master_quotes', $id, 'update');
-    } else {
-        logAction($pdo, 'master_quotes', $pdo->lastInsertId(), 'create');
+        $stmt->execute($data);
+        $newId = $pdo->lastInsertId();
+        $newStmt = $pdo->prepare('SELECT * FROM master_quotes WHERE id=:id');
+        $newStmt->execute([':id' => $newId]);
+        $newData = $newStmt->fetch();
+        logAction($pdo, 'master_quotes', $newId, 'create', null, $newData);
     }
     header('Location: offer');
     exit;
