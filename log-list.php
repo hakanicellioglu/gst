@@ -60,55 +60,33 @@ $logs = $stmt->fetchAll();
         <h2 class="mb-4">Log Kayıtları</h2>
         <div class="row">
             <?php foreach ($logs as $log): ?>
-                <div class="col-md-4">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($log['action_name']); ?></h5>
-                            <p class="card-text">
-
-                                <p class="fw-bold">Tablo</p>
-                                <?php echo htmlspecialchars($log['table_name']); ?><br>
-
-                                <p class="fw-bold">Tarih ve Saat</p>
-                                <?php echo htmlspecialchars($log['action_time']); ?><br>
-
-                                <p class="fw-bold">ID</p>
-                                <?php echo htmlspecialchars($log['id']); ?><br>
-
-                                <p class="fw-bold">Kullanıcı</p>
-                                <?php echo htmlspecialchars($log['username']); ?><br>
-
-                                <p class="fw-bold">İsim Soyisim</p>
-                                <?php echo htmlspecialchars($log['full_name']); ?><br>
-                            </p>
-                            <?php
-                                $oldData = json_decode($log['old_value'], true);
-                                $newData = json_decode($log['new_value'], true);
-                                $oldData = is_array($oldData) ? $oldData : [];
-                                $newData = is_array($newData) ? $newData : [];
-                                $columns = array_unique(array_merge(array_keys($oldData), array_keys($newData)));
-                            ?>
-                            <table class="table table-bordered table-striped mt-3">
-                                <thead>
-                                    <tr>
-                                        <th>Sütun</th>
-                                        <th>Eski Değer</th>
-                                        <th>Yeni Değer</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($columns as $col): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($col); ?></td>
-                                            <td><?php echo isset($oldData[$col]) && $oldData[$col] !== null ? htmlspecialchars($oldData[$col]) : ''; ?></td>
-                                            <td><?php echo isset($newData[$col]) && $newData[$col] !== null ? htmlspecialchars($newData[$col]) : ''; ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                $oldData = json_decode($log['old_value'], true);
+                $newData = json_decode($log['new_value'], true);
+                $oldData = is_array($oldData) ? $oldData : [];
+                $newData = is_array($newData) ? $newData : [];
+                $columns = array_unique(array_merge(array_keys($oldData), array_keys($newData)));
+                ?>
+                <table class="table table-bordered table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Sütun</th>
+                            <th>Eski Değer</th>
+                            <th>Yeni Değer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($columns as $col): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($col); ?></td>
+                                <td><?php echo isset($oldData[$col]) && $oldData[$col] !== null ? htmlspecialchars($oldData[$col]) : ''; ?>
+                                </td>
+                                <td><?php echo isset($newData[$col]) && $newData[$col] !== null ? htmlspecialchars($newData[$col]) : ''; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             <?php endforeach; ?>
         </div>
         <a href="javascript:history.back()" class="btn btn-secondary">Geri</a>
