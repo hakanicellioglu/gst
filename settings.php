@@ -17,6 +17,10 @@ load_theme_settings($pdo);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme = $_POST['theme'] ?? 'light';
     $color = $_POST['color'] ?? 'primary';
+    $oldData = [
+        'theme' => get_theme(),
+        'color' => get_color()
+    ];
     set_theme($theme);
     set_color($color);
 
@@ -44,7 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':val'  => json_encode($color)
         ]);
         $pdo->commit();
-        audit_log($pdo, 'settings', $_SESSION['user']['id'], 'update');
+        $newData = [
+            'theme' => $theme,
+            'color' => $color
+        ];
+        audit_log($pdo, 'settings', $_SESSION['user']['id'], 'update', $oldData, $newData);
         $success = 'Ayarlar kaydedildi.';
     } catch (PDOException $e) {
         $pdo->rollBack();
