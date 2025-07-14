@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hash = password_hash($password, PASSWORD_BCRYPT);
                 $insert = $pdo->prepare('INSERT INTO users (first_name, last_name, username, password_hash, email) VALUES (?, ?, ?, ?, ?)');
                 $insert->execute([$firstName, $lastName, $username, $hash, $email]);
-                audit_log($pdo, 'users', $pdo->lastInsertId(), 'create');
+                logAction($pdo, 'users', $pdo->lastInsertId(), 'create');
                 $success = 'Kayıt başarılı. Giriş yapabilirsiniz.';
             }
         } catch (PDOException $e) {

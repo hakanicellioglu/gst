@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':val'  => json_encode($color)
         ]);
         $pdo->commit();
-        audit_log($pdo, 'settings', $_SESSION['user']['id'], 'update');
+        logAction($pdo, 'settings', $_SESSION['user']['id'], 'update');
         $success = 'Ayarlar kaydedildi.';
     } catch (PDOException $e) {
         $pdo->rollBack();

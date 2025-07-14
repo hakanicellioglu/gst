@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         ':remote_qty' => $_POST['remote_qty'],
         ':ral' => $_POST['ral_code']
     ]);
-    audit_log($pdo, 'guillotine_quotes', $pdo->lastInsertId(), 'create');
+    logAction($pdo, 'guillotine_quotes', $pdo->lastInsertId(), 'create');
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sliding']) && $id
         ':ral' => $_POST['ral_code'],
         ':locking' => $_POST['locking']
     ]);
-    audit_log($pdo, 'sliding_quotes', $pdo->lastInsertId(), 'create');
+    logAction($pdo, 'sliding_quotes', $pdo->lastInsertId(), 'create');
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
         ':gid' => $_POST['gid'],
         ':master' => $id
     ]);
-    audit_log($pdo, 'guillotine_quotes', $_POST['gid'], 'update');
+    logAction($pdo, 'guillotine_quotes', $_POST['gid'], 'update');
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_guillotine']) 
         ':gid' => $_POST['gid'],
         ':master' => $id
     ]);
-    audit_log($pdo, 'guillotine_quotes', $_POST['gid'], 'delete');
+    logAction($pdo, 'guillotine_quotes', $_POST['gid'], 'delete');
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $i
         ':sid' => $_POST['sid'],
         ':master' => $id
     ]);
-    audit_log($pdo, 'sliding_quotes', $_POST['sid'], 'update');
+    logAction($pdo, 'sliding_quotes', $_POST['sid'], 'update');
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_sliding']) && 
         ':sid' => $_POST['sid'],
         ':master' => $id
     ]);
-    audit_log($pdo, 'sliding_quotes', $_POST['sid'], 'delete');
+    logAction($pdo, 'sliding_quotes', $_POST['sid'], 'delete');
     header('Location: offer_form?id=' . $id);
     exit;
 }
@@ -183,9 +183,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
 
     $stmt->execute($data);
     if ($id) {
-        audit_log($pdo, 'master_quotes', $id, 'update');
+        logAction($pdo, 'master_quotes', $id, 'update');
     } else {
-        audit_log($pdo, 'master_quotes', $pdo->lastInsertId(), 'create');
+        logAction($pdo, 'master_quotes', $pdo->lastInsertId(), 'create');
     }
     header('Location: offer');
     exit;
