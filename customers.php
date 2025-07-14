@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtData = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
         $stmtData->execute([':id' => $newId]);
         $newData = $stmtData->fetch();
-        audit_log($pdo, 'customers', $newId, 'create', null, $newData);
+        logAction($pdo, 'customers', $newId, 'create', null, $newData);
         header('Location: customers');
         exit;
     } elseif ($action === 'edit') {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtNew = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
         $stmtNew->execute([':id' => $id]);
         $newData = $stmtNew->fetch();
-        audit_log($pdo, 'customers', $id, 'update', $oldData, $newData);
+        logAction($pdo, 'customers', $id, 'update', $oldData, $newData);
         header('Location: customers');
         exit;
     } elseif ($action === 'delete') {
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare("DELETE FROM customers WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        audit_log($pdo, 'customers', $id, 'delete', $oldData, null);
+        logAction($pdo, 'customers', $id, 'delete', $oldData, null);
         header('Location: customers');
         exit;
     }

@@ -55,3 +55,17 @@ function audit_log(PDO $pdo, string $table, $recordId, string $action, $oldValue
         // Do not interrupt application flow if audit logging fails
     }
 }
+
+/**
+ * Backwards compatible wrapper for audit_log.
+ * Accepts only standard action names create, update or delete.
+ */
+function logAction(PDO $pdo, string $table, $recordId, string $action, $oldValue = null, $newValue = null): void
+{
+    $allowed = ['create', 'update', 'delete'];
+    $action = strtolower($action);
+    if (!in_array($action, $allowed, true)) {
+        return;
+    }
+    audit_log($pdo, $table, $recordId, $action, $oldValue, $newValue);
+}

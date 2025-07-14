@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtData = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
         $stmtData->execute([':id' => $newId]);
         $newData = $stmtData->fetch();
-        audit_log($pdo, 'master_quotes', $newId, 'create', null, $newData);
+        logAction($pdo, 'master_quotes', $newId, 'create', null, $newData);
         header('Location: offer');
         exit;
     } elseif ($action === 'edit') {
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtNew = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
         $stmtNew->execute([':id' => $id]);
         $newData = $stmtNew->fetch();
-        audit_log($pdo, 'master_quotes', $id, 'update', $oldData, $newData);
+        logAction($pdo, 'master_quotes', $id, 'update', $oldData, $newData);
         header('Location: offer');
         exit;
     } elseif ($action === 'delete') {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare("DELETE FROM master_quotes WHERE id=:id");
         $stmt->execute([':id' => $id]);
-        audit_log($pdo, 'master_quotes', $id, 'delete', $oldData, null);
+        logAction($pdo, 'master_quotes', $id, 'delete', $oldData, null);
         header('Location: offer');
         exit;
     }

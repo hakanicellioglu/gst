@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtData = $pdo->prepare('SELECT * FROM companies WHERE id = :id');
         $stmtData->execute([':id' => $newId]);
         $newData = $stmtData->fetch();
-        audit_log($pdo, 'companies', $newId, 'create', null, $newData);
+        logAction($pdo, 'companies', $newId, 'create', null, $newData);
         header('Location: company');
         exit;
     } elseif ($action === 'edit') {
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtNew = $pdo->prepare('SELECT * FROM companies WHERE id = :id');
         $stmtNew->execute([':id' => $id]);
         $newData = $stmtNew->fetch();
-        audit_log($pdo, 'companies', $id, 'update', $oldData, $newData);
+        logAction($pdo, 'companies', $id, 'update', $oldData, $newData);
         header('Location: company');
         exit;
     } elseif ($action === 'delete') {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare("DELETE FROM companies WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        audit_log($pdo, 'companies', $id, 'delete', $oldData, null);
+        logAction($pdo, 'companies', $id, 'delete', $oldData, null);
         header('Location: company');
         exit;
     }
