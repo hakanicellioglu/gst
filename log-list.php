@@ -61,12 +61,14 @@ function format_log_value($value): string
 ?>
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Log Kayıtları</title>
     <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
+
 <body class="bg-light">
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
@@ -93,4 +95,5 @@ function format_log_value($value): string
         <a href="javascript:history.back()" class="btn btn-secondary">Geri</a>
     </div>
 </body>
+
 </html>
