@@ -15,12 +15,14 @@ $width = '';
 $height = '';
 $quantity = 1;
 $glass_type = 'Isıcam';
+$profit_margin = 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $width = (float) ($_POST['width'] ?? 0);
     $height = (float) ($_POST['height'] ?? 0);
     $quantity = max(1, (int) ($_POST['quantity'] ?? 1));
     $glass_type = $_POST['glass_type'] ?? $glass_type;
+    $profit_margin = (float) ($_POST['profit_margin'] ?? 0);
 
     if (!empty($_POST['gid'])) {
         $stmt = $pdo->prepare('SELECT glass_type FROM guillotine_quotes WHERE id = ?');
@@ -166,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $groupedResults[$r['category']][] = $r;
     }
     $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
+    $sales_price = $total_cost * (1 + $profit_margin / 100);
 }
 ?>
 <!DOCTYPE html>
@@ -204,6 +207,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="Isıcam" <?php echo $glass_type === 'Isıcam' ? 'selected' : ''; ?>>Isıcam</option>
                     <option value="Tek Cam" <?php echo $glass_type === 'Tek Cam' ? 'selected' : ''; ?>>Tek Cam</option>
                 </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kar Marjı (%)</label>
+                <input type="number" step="0.01" name="profit_margin" class="form-control"
+                    value="<?php echo htmlspecialchars($profit_margin); ?>">
             </div>
             <input type="hidden" name="gid" value="<?php echo htmlspecialchars($_POST['gid'] ?? ''); ?>">
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
@@ -318,6 +326,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <tr>
                         <th colspan="3" class="text-end">Toplam Maliyet</th>
                         <th><?php echo number_format(round($total_cost), 0); ?></th>
+                    </tr>
+                    <tr>
+                        <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
+                        <th><?php echo number_format(round($sales_price), 0); ?></th>
                     </tr>
                 </tbody>
             </table>
