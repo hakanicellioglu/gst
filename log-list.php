@@ -30,6 +30,7 @@ $stmt = $pdo->prepare(
             CONCAT(u.first_name, " ", u.last_name) AS full_name,
             al.old_value,
             al.new_value,
+            al.table_name,
             a.name AS action_name
      FROM audit_logs al
      LEFT JOIN users u ON al.user_id = u.id
@@ -65,6 +66,9 @@ $logs = $stmt->fetchAll();
                             <h5 class="card-title"><?php echo htmlspecialchars($log['action_name']); ?></h5>
                             <p class="card-text">
 
+                                <p class="fw-bold">Tablo</p>
+                                <?php echo htmlspecialchars($log['table_name']); ?><br>
+
                                 <p class="fw-bold">Tarih ve Saat</p>
                                 <?php echo htmlspecialchars($log['action_time']); ?><br>
 
@@ -76,13 +80,32 @@ $logs = $stmt->fetchAll();
 
                                 <p class="fw-bold">İsim Soyisim</p>
                                 <?php echo htmlspecialchars($log['full_name']); ?><br>
-
-                                <p class="fw-bold">Eski Değer</p>
-                                <?php echo htmlspecialchars($log['old_value']); ?><br>
-                                
-                                <p class="fw-bold">Yeni Değer</p>
-                                <?php echo htmlspecialchars($log['new_value']); ?>
                             </p>
+                            <?php
+                                $oldData = json_decode($log['old_value'], true);
+                                $newData = json_decode($log['new_value'], true);
+                                $oldData = is_array($oldData) ? $oldData : [];
+                                $newData = is_array($newData) ? $newData : [];
+                                $columns = array_unique(array_merge(array_keys($oldData), array_keys($newData)));
+                            ?>
+                            <table class="table table-bordered table-striped mt-3">
+                                <thead>
+                                    <tr>
+                                        <th>Sütun</th>
+                                        <th>Eski Değer</th>
+                                        <th>Yeni Değer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($columns as $col): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($col); ?></td>
+                                            <td><?php echo isset($oldData[$col]) && $oldData[$col] !== null ? htmlspecialchars($oldData[$col]) : ''; ?></td>
+                                            <td><?php echo isset($newData[$col]) && $newData[$col] !== null ? htmlspecialchars($newData[$col]) : ''; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
