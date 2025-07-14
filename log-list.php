@@ -4,8 +4,8 @@
 require_once 'config.php';
 
 // Sanitize GET parameters
-$table = isset($_GET['table_name']) ? preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['table_name']) : '';
-$recordId = isset($_GET['record_id']) ? (int)$_GET['record_id'] : 0;
+$table = isset($_GET['table']) ? preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['table']) : '';
+$recordId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 $logs = [];
 if ($table && $recordId) {
@@ -14,10 +14,10 @@ if ($table && $recordId) {
             FROM audit_logs al
             LEFT JOIN users u ON al.user_id = u.id
             LEFT JOIN actions a ON al.action_id = a.id
-            WHERE al.table_name = :table AND al.record_id = :id
+            WHERE al.table_name = :table_name AND al.record_id = :record_id
             ORDER BY al.action_time DESC";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':table' => $table, ':id' => $recordId]);
+    $stmt->execute([':table_name' => $table, ':record_id' => $recordId]);
     $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
