@@ -9,9 +9,11 @@ if (session_status() === PHP_SESSION_NONE) {
 function ensure_default_actions(PDO $pdo): void
 {
     $sql = "INSERT IGNORE INTO actions (id, name) VALUES
-            (1, 'create'),
-            (2, 'update'),
-            (3, 'delete')";
+            (1, 'login'),
+            (2, 'logout'),
+            (3, 'create'),
+            (4, 'update'),
+            (5, 'delete')";
     try {
         $pdo->exec($sql);
     } catch (PDOException $e) {
@@ -25,9 +27,9 @@ function audit_log(PDO $pdo, string $table, $recordId, string $action, $oldValue
     ensure_default_actions($pdo);
     $userId = $_SESSION['user']['id'] ?? null;
     $actionMap = [
-        'create' => 1,
-        'update' => 2,
-        'delete' => 3,
+        'create' => 3,
+        'update' => 4,
+        'delete' => 5,
     ];
     $actionId = $actionMap[strtolower($action)] ?? null;
     if ($actionId === null) {
