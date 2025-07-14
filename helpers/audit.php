@@ -21,8 +21,24 @@ function ensure_default_actions(PDO $pdo): void
     }
 }
 
+function logAction(PDO $pdo, string $table, $recordId, string $action, $oldValue = null, $newValue = null): void
+{
+    $allowed = ['create', 'update', 'delete'];
+    $action = strtolower($action);
+    if (!in_array($action, $allowed, true)) {
+        return;
+    }
+    audit_log($pdo, $table, $recordId, $action, $oldValue, $newValue);
+}
+
 function audit_log(PDO $pdo, string $table, $recordId, string $action, $oldValue = null, $newValue = null): void
 {
+    if (is_array($oldValue) || is_object($oldValue)) {
+        $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
+    }
+    if (is_array($newValue) || is_object($newValue)) {
+        $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
+    }
     // Ensure action IDs exist for foreign key constraint
     ensure_default_actions($pdo);
     $userId = $_SESSION['user']['id'] ?? null;
@@ -34,12 +50,6 @@ function audit_log(PDO $pdo, string $table, $recordId, string $action, $oldValue
     $actionId = $actionMap[strtolower($action)] ?? null;
     if ($actionId === null) {
         return;
-    }
-    if (is_array($oldValue) || is_object($oldValue)) {
-        $oldValue = json_encode($oldValue, JSON_UNESCAPED_UNICODE);
-    }
-    if (is_array($newValue) || is_object($newValue)) {
-        $newValue = json_encode($newValue, JSON_UNESCAPED_UNICODE);
     }
     try {
         $stmt = $pdo->prepare(

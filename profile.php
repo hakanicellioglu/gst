@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtNew = $pdo->prepare('SELECT * FROM users WHERE id = ?');
                 $stmtNew->execute([$userId]);
                 $newData = $stmtNew->fetch();
-                audit_log($pdo, 'users', $userId, 'update', $oldData, $newData);
+                logAction($pdo, 'users', $userId, 'update', $oldData, $newData);
                 $_SESSION['user']['first_name'] = $firstName;
                 $_SESSION['user']['last_name']  = $lastName;
                 $_SESSION['user']['username']   = $username;
