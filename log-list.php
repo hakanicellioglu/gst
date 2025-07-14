@@ -41,10 +41,12 @@ if ($table && $recordId) {
         .field { font-weight:bold; }
         .old { color:#b21; margin-left:0.5rem; }
         .new { color:#1a7f37; margin-left:0.5rem; }
+        .back-btn { background:#6c757d; margin-bottom:1rem; }
     </style>
 </head>
 <body>
 <div class="container">
+    <button class="btn back-btn" onclick="history.back()">Geri Dön</button>
 <?php if (!$table || !$recordId): ?>
     <div class="alert alert-warning mt-3">Gerekli parametreler bulunamadı.</div>
 <?php elseif (!$logs): ?>
