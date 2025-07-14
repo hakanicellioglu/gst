@@ -45,12 +45,14 @@ $logs = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Log Kayıtları</title>
     <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
+
 <body class="bg-light">
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
@@ -62,12 +64,24 @@ $logs = $stmt->fetchAll();
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($log['action_name']); ?></h5>
                             <p class="card-text">
-                                Tarih ve Saat: <?php echo htmlspecialchars($log['action_time']); ?><br>
-                                ID: <?php echo htmlspecialchars($log['id']); ?><br>
-                                Kullanıcı: <?php echo htmlspecialchars($log['username']); ?><br>
-                                İsim Soyisim: <?php echo htmlspecialchars($log['full_name']); ?><br>
-                                Eski Değer: <?php echo htmlspecialchars($log['old_value']); ?><br>
-                                Yeni Değer: <?php echo htmlspecialchars($log['new_value']); ?>
+
+                                <p class="fw-bold">Tarih ve Saat</p>
+                                <?php echo htmlspecialchars($log['action_time']); ?><br>
+
+                                <p class="fw-bold">ID</p>
+                                <?php echo htmlspecialchars($log['id']); ?><br>
+
+                                <p class="fw-bold">Kullanıcı</p>
+                                <?php echo htmlspecialchars($log['username']); ?><br>
+
+                                <p class="fw-bold">İsim Soyisim</p>
+                                <?php echo htmlspecialchars($log['full_name']); ?><br>
+
+                                <p class="fw-bold">Eski Değer</p>
+                                <?php echo htmlspecialchars($log['old_value']); ?><br>
+                                
+                                <p class="fw-bold">Yeni Değer</p>
+                                <?php echo htmlspecialchars($log['new_value']); ?>
                             </p>
                         </div>
                     </div>
@@ -77,4 +91,5 @@ $logs = $stmt->fetchAll();
         <a href="javascript:history.back()" class="btn btn-secondary">Geri</a>
     </div>
 </body>
+
 </html>
