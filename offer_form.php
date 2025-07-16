@@ -386,16 +386,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                                 <input type="text" name="ral_code" id="giyotinRal" class="form-control">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Kar Marjı (%)</label>
-                                <input type="number" step="0.01" id="giyotinProfit" class="form-control">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Fiyat</label>
-                                <input type="text" id="giyotinPrice" class="form-control" readonly>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
@@ -629,7 +619,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                 const quantity = document.getElementById('giyotinQty').value || 1;
                 const glass = document.getElementById('giyotinGlass').value;
                 const gid = document.getElementById('giyotinId').value;
-                const profit = document.getElementById('giyotinProfit').value || 0;
 
                 if (!width || !height) {
                     alert('Lütfen genişlik ve yükseklik giriniz.');
@@ -645,9 +634,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                     '<input type="hidden" name="height" value="' + height + '">' +
                     '<input type="hidden" name="quantity" value="' + quantity + '">' +
                     '<input type="hidden" name="glass_type" value="' + glass + '">' +
-                    '<input type="hidden" name="profit_margin" value="' + profit + '">' +
-                    '<input type="hidden" name="gid" value="' + gid + '">' +
-                    '<input type="hidden" name="return" value="1">';
+                    '<input type="hidden" name="gid" value="' + gid + '">';
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
@@ -688,15 +675,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                 const colorInput = document.getElementById("giyotinColor");
                 const remoteInput = document.getElementById("giyotinRemoteQty");
                 const ralInput = document.getElementById("giyotinRal");
-                const profitInput = document.getElementById("giyotinProfit");
-                const priceInput = document.getElementById("giyotinPrice");
                 const submitBtn = document.getElementById("giyotinSubmit");
-
-                window.addEventListener('message', function (e) {
-                    if (e.data && typeof e.data.price !== 'undefined') {
-                        priceInput.value = e.data.price;
-                    }
-                });
 
                 document.querySelectorAll('.edit-guillotine-btn').forEach(btn => {
                     btn.addEventListener('click', function () {
@@ -726,8 +705,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                     colorInput.value = 'Şeffaf';
                     remoteInput.value = '';
                     ralInput.value = '';
-                    profitInput.value = '';
-                    priceInput.value = '';
                     submitBtn.textContent = 'Ekle';
                     giyotinModal.querySelector('.modal-title').textContent = 'Giyotin Teklifi';
                 });
