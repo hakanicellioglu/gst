@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 define('FPDF_FONTPATH', __DIR__ . '/font/');
-require_once 'fpdf.php';
+require_once 'tFPDF.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -173,31 +173,32 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     return ['results' => $results, 'grouped' => $groupedResults, 'total' => $total_cost, 'sales' => $sales_price];
 }
 
-$pdf = new FPDF();
+$pdf = new tFPDF();
 $pdf->AddPage();
-$pdf->SetFont('Arial','B',14);
+$pdf->AddFont('DejaVu','','DejaVuSans.ttf', true);
+$pdf->SetFont('DejaVu','B',14);
 $pdf->Cell(0,10,'Teklif Bilgileri',0,1,'C');
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('DejaVu','',12);
 $pdf->Cell(0,8,'Firma: ' . $quote['company_name'],0,1);
 $pdf->Cell(0,8,'Musteri: ' . $quote['customer_name'],0,1);
 $pdf->Cell(0,8,'Tarih: ' . $quote['quote_date'],0,1);
 $pdf->Ln(4);
 
 foreach ($guillotines as $g) {
-    $pdf->SetFont('Arial','B',12);
+    $pdf->SetFont('DejaVu','B',12);
     $pdf->Cell(0,8,'Giyotin Sistem (' . $g['width_mm'] . ' x ' . $g['height_mm'] . ' mm)',0,1);
-    $pdf->SetFont('Arial','',11);
+    $pdf->SetFont('DejaVu','',11);
     $pdf->Cell(0,6,'Adet: ' . $g['system_qty'] . ' | Cam: ' . $g['glass_type'],0,1);
     $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']);
     foreach ($opt['grouped'] as $cat => $rows) {
-        $pdf->SetFont('Arial','B',11);
+        $pdf->SetFont('DejaVu','B',11);
         $pdf->Cell(0,7,$cat,0,1);
-        $pdf->SetFont('Arial','B',10);
+        $pdf->SetFont('DejaVu','B',10);
         $pdf->Cell(80,6,'Parca',1);
         $pdf->Cell(30,6,'Uzunluk',1);
         $pdf->Cell(20,6,'Adet',1);
         $pdf->Cell(30,6,'Maliyet',1,1);
-        $pdf->SetFont('Arial','',10);
+        $pdf->SetFont('DejaVu','',10);
         foreach ($rows as $row) {
             $len = is_numeric($row['length']) ? round($row['length']) : $row['length'];
             $cost = is_null($row['cost']) ? '-' : round($row['cost']);
@@ -216,15 +217,15 @@ foreach ($guillotines as $g) {
 }
 
 if ($slidings) {
-    $pdf->SetFont('Arial','B',12);
+    $pdf->SetFont('DejaVu','B',12);
     $pdf->Cell(0,8,'Surme Sistemler',0,1);
-    $pdf->SetFont('Arial','B',10);
+    $pdf->SetFont('DejaVu','B',10);
     $pdf->Cell(40,6,'Sistem Tipi',1);
     $pdf->Cell(30,6,'En',1);
     $pdf->Cell(30,6,'Boy',1);
     $pdf->Cell(20,6,'Adet',1);
     $pdf->Cell(40,6,'Renk',1,1);
-    $pdf->SetFont('Arial','',10);
+    $pdf->SetFont('DejaVu','',10);
     foreach ($slidings as $s) {
         $pdf->Cell(40,6,$s['system_type'],1);
         $pdf->Cell(30,6,$s['width_mm'],1);
