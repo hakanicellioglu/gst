@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+define('FPDF_FONTPATH', __DIR__ . '/font/');
 require_once 'fpdf.php';
 
 if (session_status() === PHP_SESSION_NONE) {
