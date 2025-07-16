@@ -1,10 +1,16 @@
 <?php
+
 require_once 'config.php';
 require_once 'helpers/theme.php';
 require_once 'helpers/auth.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
+
+// Generate CSRF token if not present
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 if (!isset($_SESSION['user']) || !is_admin($pdo)) {
@@ -14,30 +20,57 @@ if (!isset($_SESSION['user']) || !is_admin($pdo)) {
 
 load_theme_settings($pdo);
 
-// Basic stats for dashboard
-$userCount = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-$productCount = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
-$orderCount = $pdo->query("SELECT COUNT(*) FROM master_quotes")->fetchColumn();
-$revenue = $pdo->query("SELECT SUM(total_amount) FROM master_quotes")->fetchColumn();
-$revenue = $revenue ?: 0;
+// Cache dashboard statistics for 5 minutes
+$cacheKey = 'dashboard_stats';
+if (isset($_SESSION[$cacheKey], $_SESSION[$cacheKey]['expires']) && $_SESSION[$cacheKey]['expires'] > time()) {
+    [
+        'userCount'    => $userCount,
+        'productCount' => $productCount,
+        'orderCount'   => $orderCount,
+        'revenue'      => $revenue,
+    ] = $_SESSION[$cacheKey]['data'];
+} else {
+    $userCountStmt = $pdo->prepare('SELECT COUNT(*) FROM users');
+    $userCountStmt->execute();
+    $userCount = (int) $userCountStmt->fetchColumn();
 
-$recentUsersStmt = $pdo->query(
-    "SELECT u.username, r.name AS role, u.created_at\n" .
-    "FROM users u\n" .
-    "LEFT JOIN role_user ru ON u.id = ru.user_id\n" .
-    "LEFT JOIN roles r ON ru.role_id = r.id\n" .
-    "ORDER BY u.created_at DESC LIMIT 5"
+    $productCountStmt = $pdo->prepare('SELECT COUNT(*) FROM products');
+    $productCountStmt->execute();
+    $productCount = (int) $productCountStmt->fetchColumn();
+
+    $orderCountStmt = $pdo->prepare('SELECT COUNT(*) FROM master_quotes');
+    $orderCountStmt->execute();
+    $orderCount = (int) $orderCountStmt->fetchColumn();
+
+    $revenueStmt = $pdo->prepare('SELECT SUM(total_amount) FROM master_quotes');
+    $revenueStmt->execute();
+    $revenue = (float) $revenueStmt->fetchColumn();
+
+    $_SESSION[$cacheKey] = [
+        'expires' => time() + 300,
+        'data'    => compact('userCount', 'productCount', 'orderCount', 'revenue'),
+    ];
+}
+
+$recentUsersStmt = $pdo->prepare(
+    'SELECT u.username, r.name AS role, u.created_at ' .
+    'FROM users u ' .
+    'LEFT JOIN role_user ru ON u.id = ru.user_id ' .
+    'LEFT JOIN roles r ON ru.role_id = r.id ' .
+    'ORDER BY u.created_at DESC LIMIT 5'
 );
+$recentUsersStmt->execute();
 $recentUsers = $recentUsersStmt->fetchAll();
 
 // Revenue for the last 7 days
-$revenueDaysStmt = $pdo->query(
-    "SELECT DATE(quote_date) AS dt, SUM(total_amount) AS total\n" .
-    "FROM master_quotes\n" .
-    "WHERE quote_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)\n" .
-    "GROUP BY DATE(quote_date)\n" .
-    "ORDER BY dt"
+$revenueDaysStmt = $pdo->prepare(
+    'SELECT DATE(quote_date) AS dt, SUM(total_amount) AS total '
+    . 'FROM master_quotes '
+    . 'WHERE quote_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) '
+    . 'GROUP BY DATE(quote_date) '
+    . 'ORDER BY dt'
 );
+$revenueDaysStmt->execute();
 $revenueDays = $revenueDaysStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
 $lineLabels = [];
@@ -49,9 +82,8 @@ for ($i = 6; $i >= 0; $i--) {
 }
 
 // Product count by category
-$categoryStmt = $pdo->query(
-    "SELECT category, COUNT(*) AS total FROM products GROUP BY category ORDER BY category"
-);
+$categoryStmt = $pdo->prepare('SELECT category, COUNT(*) AS total FROM products GROUP BY category ORDER BY category');
+$categoryStmt->execute();
 $categoryData = $categoryStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 $pieLabels = array_keys($categoryData);
 $pieValues = array_values($categoryData);
