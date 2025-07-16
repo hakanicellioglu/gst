@@ -11,6 +11,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 $quote_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$simple   = isset($_GET['simple']);
 if (!$quote_id) {
     die('Teklif ID gerekli');
 }
@@ -200,15 +201,23 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 </head>
 <body>
 <div class="container my-3">
+    <?php if (!$simple): ?>
     <div class="mb-3">
         <button class="btn btn-primary" onclick="generatePDF()">PDF İndir</button>
         <button class="btn btn-secondary" onclick="printProposal()">Yazdır</button>
     </div>
+    <?php endif; ?>
     <div class="proposal-document">
         <h1 class="h4 text-center mb-3">Teklif Bilgileri</h1>
         <p><strong>Firma:</strong> <?php echo htmlspecialchars($quote['company_name']); ?></p>
         <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
         <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
+        <?php if ($simple): ?>
+            <?php foreach ($guillotines as $g): ?>
+                <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
+                <p><?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm - <?php echo round($opt['sales']); ?></p>
+            <?php endforeach; ?>
+        <?php else: ?>
         <?php foreach ($guillotines as $g): ?>
             <h2 class="h5 mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
             <p>Adet: <?php echo $g['system_qty']; ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
@@ -266,6 +275,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                 <?php endforeach; ?>
                 </tbody>
             </table>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
@@ -360,5 +370,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<?php if ($simple): ?>
+<script>
+document.addEventListener('DOMContentLoaded', generatePDF);
+</script>
+<?php endif; ?>
 </body>
 </html>
