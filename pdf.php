@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 require_once 'config.php';
 // PDF artik tarayıcıda olusturulacagi icin tFPDF kaldirildi
@@ -180,6 +179,24 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     <meta charset="UTF-8">
     <title>Teklif</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; }
+        .proposal-document {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            padding: 20px;
+        }
+        .proposal-document h2 {
+            background-color: #e9ecef;
+            padding: 6px;
+            border-radius: .25rem;
+        }
+        .proposal-document table thead {
+            background-color: #343a40;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <div class="container my-3">
@@ -198,7 +215,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
                 <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
-                <table class="table table-sm">
+                <table class="table table-sm table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Parça</th>
@@ -227,7 +244,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 
         <?php if ($slidings): ?>
             <h2 class="h5 mt-4">Sürme Sistemler</h2>
-            <table class="table table-sm">
+            <table class="table table-sm table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Sistem Tipi</th>
@@ -345,6 +362,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-=======
->>>>>>> main
