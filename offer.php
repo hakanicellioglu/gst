@@ -181,6 +181,9 @@ include 'includes/header.php';
                         <?php if (is_admin($pdo)): ?>
                         <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                         <?php endif; ?>
+                        <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank" class="btn btn-sm bg-light text-dark" title="PDF">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </a>
                         <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
@@ -212,6 +215,9 @@ include 'includes/header.php';
                             <?php if (is_admin($pdo)): ?>
                             <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                             <?php endif; ?>
+                            <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank" class="btn btn-sm bg-light text-dark" title="PDF">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </a>
                             <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
