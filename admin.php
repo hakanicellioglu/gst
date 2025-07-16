@@ -29,6 +29,32 @@ $recentUsersStmt = $pdo->query(
     "ORDER BY u.created_at DESC LIMIT 5"
 );
 $recentUsers = $recentUsersStmt->fetchAll();
+
+// Revenue for the last 7 days
+$revenueDaysStmt = $pdo->query(
+    "SELECT DATE(quote_date) AS dt, SUM(total_amount) AS total\n".
+    "FROM master_quotes\n".
+    "WHERE quote_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)\n".
+    "GROUP BY DATE(quote_date)\n".
+    "ORDER BY dt"
+);
+$revenueDays = $revenueDaysStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+$lineLabels = [];
+$lineValues = [];
+for ($i = 6; $i >= 0; $i--) {
+    $d = date('Y-m-d', strtotime("-$i day"));
+    $lineLabels[] = date('d.m', strtotime($d));
+    $lineValues[] = isset($revenueDays[$d]) ? (float)$revenueDays[$d] : 0;
+}
+
+// Product count by category
+$categoryStmt = $pdo->query(
+    "SELECT category, COUNT(*) AS total FROM products GROUP BY category ORDER BY category"
+);
+$categoryData = $categoryStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+$pieLabels = array_keys($categoryData);
+$pieValues = array_values($categoryData);
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -136,26 +162,30 @@ $recentUsers = $recentUsersStmt->fetchAll();
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 <script>
 const lineCtx = document.getElementById('lineChart');
+const lineLabels = <?php echo json_encode($lineLabels); ?>;
+const lineData = <?php echo json_encode($lineValues); ?>;
 new Chart(lineCtx, {
     type: 'line',
     data: {
-        labels: ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],
+        labels: lineLabels,
         datasets: [{
             label: 'Gelir',
-            data: [12, 19, 3, 5, 2, 3, 7],
+            data: lineData,
             borderColor: '#0d6efd',
             fill: false
         }]
     }
 });
 const pieCtx = document.getElementById('pieChart');
+const pieLabels = <?php echo json_encode($pieLabels); ?>;
+const pieData = <?php echo json_encode($pieValues); ?>;
 new Chart(pieCtx, {
     type: 'pie',
     data: {
-        labels: ['Ürün A','Ürün B','Ürün C'],
+        labels: pieLabels,
         datasets: [{
-            data: [10,20,30],
-            backgroundColor: ['#0d6efd','#198754','#dc3545']
+            data: pieData,
+            backgroundColor: ['#0d6efd','#198754','#dc3545','#6c757d','#6610f2']
         }]
     }
 });
