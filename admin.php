@@ -176,7 +176,6 @@ new Chart(lineCtx, {
         }]
     }
 });
-
 const pieCtx = document.getElementById('pieChart');
 const pieLabels = <?php echo json_encode($pieLabels); ?>;
 const pieData = <?php echo json_encode($pieValues); ?>;
