@@ -197,6 +197,9 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             background-color: #343a40;
             color: #fff;
         }
+        .pdf-mode .optimization-details {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -222,33 +225,35 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <h2 class="h5 mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
             <p>Adet: <?php echo $g['system_qty']; ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
-            <?php foreach ($opt['grouped'] as $cat => $rows): ?>
-                <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
-                <table class="table table-sm table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Parça</th>
-                            <th>Uzunluk</th>
-                            <th>Adet</th>
-                            <th>Maliyet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($rows as $row): ?>
-                        <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
-                        <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
-                        <tr>
-                            <td><?php echo $row['name']; ?></td>
-                            <td><?php echo $len; ?></td>
-                            <td><?php echo $row['count']; ?></td>
-                            <td><?php echo $cost; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endforeach; ?>
-            <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
-            <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
+            <div class="optimization-details">
+                <?php foreach ($opt['grouped'] as $cat => $rows): ?>
+                    <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
+                    <table class="table table-sm table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Parça</th>
+                                <th>Uzunluk</th>
+                                <th>Adet</th>
+                                <th>Maliyet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($rows as $row): ?>
+                            <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
+                            <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
+                            <tr>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $len; ?></td>
+                                <td><?php echo $row['count']; ?></td>
+                                <td><?php echo $cost; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endforeach; ?>
+                <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
+                <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
+            </div>
         <?php endforeach; ?>
 
         <?php if ($slidings): ?>
@@ -292,6 +297,7 @@ function generatePDF() {
 }
 function createPDF() {
     const element = document.querySelector('.proposal-document');
+    document.body.classList.add('pdf-mode');
     const proposalTitle = 'Teklif';
     const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
     const opt = {
@@ -301,7 +307,9 @@ function createPDF() {
         html2canvas: { scale: 2, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
-    html2pdf().set(opt).from(element).save();
+    html2pdf().set(opt).from(element).save().then(() => {
+        document.body.classList.remove('pdf-mode');
+    });
 }
 function printProposal() {
     const originalTitle = document.title;
