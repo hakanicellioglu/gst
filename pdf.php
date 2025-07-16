@@ -1,7 +1,6 @@
 <?php
 require_once 'config.php';
-define('FPDF_FONTPATH', __DIR__ . '/font/');
-require_once 'tFPDF.php';
+// PDF artik tarayıcıda olusturulacagi icin tFPDF kaldirildi
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -173,67 +172,176 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     return ['results' => $results, 'grouped' => $groupedResults, 'total' => $total_cost, 'sales' => $sales_price];
 }
 
-$pdf = new tFPDF();
-$pdf->AddPage();
-$pdf->AddFont('DejaVu','','DejaVuSans.ttf', true);
-$pdf->SetFont('DejaVu','B',14);
-$pdf->Cell(0,10,'Teklif Bilgileri',0,1,'C');
-$pdf->SetFont('DejaVu','',12);
-$pdf->Cell(0,8,'Firma: ' . $quote['company_name'],0,1);
-$pdf->Cell(0,8,'Musteri: ' . $quote['customer_name'],0,1);
-$pdf->Cell(0,8,'Tarih: ' . $quote['quote_date'],0,1);
-$pdf->Ln(4);
+?>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Teklif</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-3">
+    <div class="mb-3">
+        <button class="btn btn-primary" onclick="generatePDF()">PDF İndir</button>
+        <button class="btn btn-secondary" onclick="printProposal()">Yazdır</button>
+    </div>
+    <div class="proposal-document">
+        <h1 class="h4 text-center mb-3">Teklif Bilgileri</h1>
+        <p><strong>Firma:</strong> <?php echo htmlspecialchars($quote['company_name']); ?></p>
+        <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
+        <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
+        <?php foreach ($guillotines as $g): ?>
+            <h2 class="h5 mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
+            <p>Adet: <?php echo $g['system_qty']; ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
+            <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
+            <?php foreach ($opt['grouped'] as $cat => $rows): ?>
+                <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Parça</th>
+                            <th>Uzunluk</th>
+                            <th>Adet</th>
+                            <th>Maliyet</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($rows as $row): ?>
+                        <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
+                        <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
+                        <tr>
+                            <td><?php echo $row['name']; ?></td>
+                            <td><?php echo $len; ?></td>
+                            <td><?php echo $row['count']; ?></td>
+                            <td><?php echo $cost; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endforeach; ?>
+            <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
+            <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
+        <?php endforeach; ?>
 
-foreach ($guillotines as $g) {
-    $pdf->SetFont('DejaVu','B',12);
-    $pdf->Cell(0,8,'Giyotin Sistem (' . $g['width_mm'] . ' x ' . $g['height_mm'] . ' mm)',0,1);
-    $pdf->SetFont('DejaVu','',11);
-    $pdf->Cell(0,6,'Adet: ' . $g['system_qty'] . ' | Cam: ' . $g['glass_type'],0,1);
-    $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']);
-    foreach ($opt['grouped'] as $cat => $rows) {
-        $pdf->SetFont('DejaVu','B',11);
-        $pdf->Cell(0,7,$cat,0,1);
-        $pdf->SetFont('DejaVu','B',10);
-        $pdf->Cell(80,6,'Parca',1);
-        $pdf->Cell(30,6,'Uzunluk',1);
-        $pdf->Cell(20,6,'Adet',1);
-        $pdf->Cell(30,6,'Maliyet',1,1);
-        $pdf->SetFont('DejaVu','',10);
-        foreach ($rows as $row) {
-            $len = is_numeric($row['length']) ? round($row['length']) : $row['length'];
-            $cost = is_null($row['cost']) ? '-' : round($row['cost']);
-            $pdf->Cell(80,6,$row['name'],1);
-            $pdf->Cell(30,6,$len,1);
-            $pdf->Cell(20,6,$row['count'],1);
-            $pdf->Cell(30,6,$cost,1,1);
-        }
-        $pdf->Ln(2);
+        <?php if ($slidings): ?>
+            <h2 class="h5 mt-4">Sürme Sistemler</h2>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Sistem Tipi</th>
+                        <th>En</th>
+                        <th>Boy</th>
+                        <th>Adet</th>
+                        <th>Renk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($slidings as $s): ?>
+                    <tr>
+                        <td><?php echo $s['system_type']; ?></td>
+                        <td><?php echo $s['width_mm']; ?></td>
+                        <td><?php echo $s['height_mm']; ?></td>
+                        <td><?php echo $s['system_qty']; ?></td>
+                        <td><?php echo $s['ral_code']; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+</div>
+<script>
+function generatePDF() {
+    if (typeof html2pdf === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = function() { createPDF(); };
+        document.head.appendChild(script);
+    } else {
+        createPDF();
     }
-    $pdf->Cell(130,6,'Toplam Maliyet',1);
-    $pdf->Cell(30,6,round($opt['total']),1,1,'R');
-    $pdf->Cell(130,6,'Toplam Fiyat',1);
-    $pdf->Cell(30,6,round($opt['sales']),1,1,'R');
-    $pdf->Ln(5);
 }
-
-if ($slidings) {
-    $pdf->SetFont('DejaVu','B',12);
-    $pdf->Cell(0,8,'Surme Sistemler',0,1);
-    $pdf->SetFont('DejaVu','B',10);
-    $pdf->Cell(40,6,'Sistem Tipi',1);
-    $pdf->Cell(30,6,'En',1);
-    $pdf->Cell(30,6,'Boy',1);
-    $pdf->Cell(20,6,'Adet',1);
-    $pdf->Cell(40,6,'Renk',1,1);
-    $pdf->SetFont('DejaVu','',10);
-    foreach ($slidings as $s) {
-        $pdf->Cell(40,6,$s['system_type'],1);
-        $pdf->Cell(30,6,$s['width_mm'],1);
-        $pdf->Cell(30,6,$s['height_mm'],1);
-        $pdf->Cell(20,6,$s['system_qty'],1);
-        $pdf->Cell(40,6,$s['ral_code'],1,1);
+function createPDF() {
+    const element = document.querySelector('.proposal-document');
+    const proposalTitle = 'Teklif';
+    const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
+    const opt = {
+        margin: [5,5,5,5],
+        filename: `${proposalNumber} - ${proposalTitle}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+function printProposal() {
+    const originalTitle = document.title;
+    const proposalTitle = 'Teklif';
+    const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
+    document.title = `${proposalNumber} - ${proposalTitle}`;
+    window.print();
+    setTimeout(() => { document.title = originalTitle; }, 1000);
+}
+function updateStatus(newStatus) {
+    const statusLabels = {
+        'sent': 'gönderildi olarak işaretlemek',
+        'accepted': 'kabul edildi olarak işaretlemek',
+        'rejected': 'reddedildi olarak işaretlemek'
+    };
+    if (confirm(`Bu teklifi ${statusLabels[newStatus]} istediğinizden emin misiniz?`)) {
+        const buttons = document.querySelectorAll('button[onclick*="updateStatus"]');
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Güncelleniyor...';
+        });
+        fetch('proposal-update-status.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: <?php echo $quote_id; ?>, status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (typeof notifications !== 'undefined') {
+                    notifications.success(data.message);
+                } else {
+                    alert(data.message);
+                }
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                if (typeof notifications !== 'undefined') {
+                    notifications.error(data.message || 'Durum güncellenirken hata oluştu');
+                } else {
+                    alert(data.message || 'Durum güncellenirken hata oluştu');
+                }
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.innerHTML = btn.getAttribute('data-original-text') || btn.innerHTML;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (typeof notifications !== 'undefined') {
+                notifications.error('Durum güncellenirken hata oluştu');
+            } else {
+                alert('Durum güncellenirken hata oluştu');
+            }
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                btn.innerHTML = btn.getAttribute('data-original-text') || btn.innerHTML;
+            });
+        });
     }
-    $pdf->Ln(5);
 }
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('button[onclick*="updateStatus"]');
+    buttons.forEach(btn => {
+        btn.setAttribute('data-original-text', btn.innerHTML);
+    });
+});
+</script>
+</body>
+</html>
 
-$pdf->Output('I','teklif.pdf');
