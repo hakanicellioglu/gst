@@ -1,0 +1,4 @@
+- Reformatted admin.php according to PSR-12 guidelines and added comments.
+- Added CSRF token generation and session-based caching for dashboard stats.
+- Converted raw SQL queries in admin.php to prepared statements.
+- Added session_regenerate_id call in login.php during login.
