@@ -16,6 +16,7 @@ $height = '';
 $quantity = 1;
 $glass_type = 'Isıcam';
 $profit_margin = 0;
+$returnPrice = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $width = (float) ($_POST['width'] ?? 0);
@@ -23,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantity = max(1, (int) ($_POST['quantity'] ?? 1));
     $glass_type = $_POST['glass_type'] ?? $glass_type;
     $profit_margin = (float) ($_POST['profit_margin'] ?? 0);
+    $returnPrice = isset($_POST['return']);
 
     if (!empty($_POST['gid'])) {
         $stmt = $pdo->prepare('SELECT glass_type FROM guillotine_quotes WHERE id = ?');
@@ -335,6 +337,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </table>
         <?php endif; ?>
     </div>
+    <?php if ($returnPrice && $results): ?>
+        <script>
+            if (window.opener) {
+                window.opener.postMessage({price: <?php echo json_encode(round($sales_price, 2)); ?>}, '*');
+                window.close();
+            }
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
