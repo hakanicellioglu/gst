@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 require_once 'config.php';
 // PDF artik tarayıcıda olusturulacagi icin tFPDF kaldirildi
@@ -345,3 +346,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 </html>
 
+=======
+>>>>>>> main
