@@ -101,7 +101,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
         ['name' => 'Son Kapatma', 'length' => $son_kapatma, 'count' => $son_kapatma_qty],
         ['name' => 'Kanat', 'length' => $kanat, 'count' => $kanat_qty],
         ['name' => 'Dikey Baza', 'length' => $dikey_baza, 'count' => $dikey_baza_qty],
-        ['name' => 'Cam', 'length' => $cam_en . ' x ' . $cam_boy, 'count' => $cam_adet],
+        ['name' => 'Cam', 'length' => round($cam_en) . ' x ' . round($cam_boy), 'count' => $cam_adet],
         ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincir_qty],
         ['name' => 'Flatbelt Kayış', 'length' => $flatbelt_kayis, 'count' => '-'],
         ['name' => 'Motor Borusu', 'length' => $motor_borusu, 'count' => $motor_borusu_qty],
@@ -215,11 +215,11 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
         <?php if ($simple): ?>
             <?php foreach ($guillotines as $g): ?>
                 <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
-                <p><?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm - <?php echo round($opt['sales']); ?></p>
+                <p><?php echo round($g['width_mm']); ?> x <?php echo round($g['height_mm']); ?> mm - <?php echo round($opt['sales']); ?></p>
             <?php endforeach; ?>
         <?php else: ?>
         <?php foreach ($guillotines as $g): ?>
-            <h2 class="h5 mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
+            <h2 class="h5 mt-4">Giyotin Sistem (<?php echo round($g['width_mm']); ?> x <?php echo round($g['height_mm']); ?> mm)</h2>
             <p>Adet: <?php echo $g['system_qty']; ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
@@ -267,8 +267,8 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                 <?php foreach ($slidings as $s): ?>
                     <tr>
                         <td><?php echo $s['system_type']; ?></td>
-                        <td><?php echo $s['width_mm']; ?></td>
-                        <td><?php echo $s['height_mm']; ?></td>
+                        <td><?php echo round($s['width_mm']); ?></td>
+                        <td><?php echo round($s['height_mm']); ?></td>
                         <td><?php echo $s['system_qty']; ?></td>
                         <td><?php echo $s['ral_code']; ?></td>
                     </tr>

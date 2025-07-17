@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ['name' => 'Son Kapatma', 'length' => $son_kapatma, 'count' => $son_kapatma_qty],
         ['name' => 'Kanat', 'length' => $kanat, 'count' => $kanat_qty],
         ['name' => 'Dikey Baza', 'length' => $dikey_baza, 'count' => $dikey_baza_qty],
-        ['name' => 'Cam', 'length' => $cam_en . ' x ' . $cam_boy, 'count' => $cam_adet],
+        ['name' => 'Cam', 'length' => round($cam_en) . ' x ' . round($cam_boy), 'count' => $cam_adet],
         ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincir_qty],
         ['name' => 'Flatbelt Kayış', 'length' => $flatbelt_kayis, 'count' => '-'],
         ['name' => 'Motor Borusu', 'length' => $motor_borusu, 'count' => $motor_borusu_qty],
