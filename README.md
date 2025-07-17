@@ -3,3 +3,5 @@
 This project is a PHP-based quoting system. Product images are stored directly in the database using a BLOB `image_data` column with its MIME type in `image_type`. Images are displayed on both the optimization and PDF pages using base64 data URLs.
 
 See `image_upload_example.php` for a minimal example of handling an image upload and saving the binary data.
+
+The browser-based PDF generation uses `html2pdf.bundle.min.js`, which is now bundled locally so the feature works without internet access.
