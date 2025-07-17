@@ -138,11 +138,16 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 
     $total_cost = 0;
     foreach ($results as &$row) {
-        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category FROM products WHERE name = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
         $stmt->execute([$row['name']]);
         $product = $stmt->fetch();
         $row['cost'] = null;
         $row['category'] = $nameCategoryMap[$row['name']] ?? ($product['category'] ?? 'Diğer');
+        if (!empty($product['image_data'])) {
+            $row['image_src'] = 'data:' . $product['image_type'] . ';base64,' . base64_encode($product['image_data']);
+        } else {
+            $row['image_src'] = null;
+        }
         if ($product) {
             $count = is_numeric($row['count']) ? (float) $row['count'] : 0;
             $length = is_numeric($row['length']) ? (float) $row['length'] : 0;
@@ -238,7 +243,12 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                         <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
                         <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
                         <tr>
-                            <td><?php echo $row['name']; ?></td>
+                            <td>
+                                <?php if (!empty($row['image_src'])): ?>
+                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
+                                <?php endif; ?>
+                                <?php echo htmlspecialchars($row['name']); ?>
+                            </td>
                             <td><?php echo $len; ?></td>
                             <td><?php echo $row['count']; ?></td>
                             <td><?php echo $cost; ?></td>
