@@ -127,14 +127,14 @@ include 'includes/header.php';
     <?php endif; ?>
     <div class="row mb-3">
         <div class="col-12 text-end">
-            <form method="get" class="d-inline-block me-2">
-                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara" style="display:inline-block;width:auto;">
+            <form method="get" class="form-inline-responsive d-inline-block me-2">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara">
                 <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
                 <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                 <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
             </form>
-            <form method="get" class="d-inline-block me-2">
-                <select name="sort" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+            <form method="get" class="form-inline-responsive d-inline-block me-2">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
                     <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
                     <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
                 </select>
@@ -163,7 +163,7 @@ include 'includes/header.php';
                 <th>Ödeme Süresi</th>
                 <th>Teklif Süresi</th>
                 <th>Vade</th>
-                <th class="text-center" style="width:150px;">İşlemler</th>
+                <th class="text-center actions-col">İşlemler</th>
             </tr>
         </thead>
         <tbody>
@@ -185,7 +185,7 @@ include 'includes/header.php';
                         <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank" class="btn btn-sm bg-light text-dark" title="PDF">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </a>
-                        <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                        <form method="post" action="offer" class="d-inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
                             <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
@@ -219,7 +219,7 @@ include 'includes/header.php';
                             <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank" class="btn btn-sm bg-light text-dark" title="PDF">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
-                            <form method="post" action="offer" style="display:inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                            <form method="post" action="offer" class="d-inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
                                 <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>

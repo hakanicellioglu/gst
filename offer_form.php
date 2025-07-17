@@ -511,7 +511,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                             <th>Uzaktan</th>
                             <th>Adet</th>
                             <th>RAL Kod</th>
-                            <th class="text-center" style="width:150px;">İşlemler</th>
+                            <th class="text-center actions-col">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -540,7 +540,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                                         data-ral="<?php echo htmlspecialchars($g['ral_code']); ?>">
                                         Düzenle
                                     </button>
-                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block"
+                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" class="d-inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="delete_guillotine" value="1">
                                         <input type="hidden" name="gid" value="<?php echo $g['id']; ?>">
@@ -568,7 +568,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                             <th>Adet</th>
                             <th>RAL Kod</th>
                             <th>Kilit</th>
-                            <th class="text-center" style="width:150px;">İşlemler</th>
+                            <th class="text-center actions-col">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -599,7 +599,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                                         data-locking="<?php echo htmlspecialchars($s['locking']); ?>">
                                         Düzenle
                                     </button>
-                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" style="display:inline-block"
+                                    <form method="post" action="offer_form?id=<?php echo $id; ?>" class="d-inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="delete_sliding" value="1">
                                         <input type="hidden" name="sid" value="<?php echo $s['id']; ?>">
