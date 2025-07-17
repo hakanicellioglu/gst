@@ -138,12 +138,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $total_cost = 0;
     foreach ($results as &$row) {
-        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_path FROM products WHERE name = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
         $stmt->execute([$row['name']]);
         $product = $stmt->fetch();
         $row['cost'] = null;
         $row['category'] = $nameCategoryMap[$row['name']] ?? ($product['category'] ?? 'Diğer');
-        $row['image_path'] = $product['image_path'] ?? null;
+        if (!empty($product['image_data'])) {
+            $row['image_src'] = 'data:' . $product['image_type'] . ';base64,' . base64_encode($product['image_data']);
+        } else {
+            $row['image_src'] = null;
+        }
         if ($product) {
             $count = is_numeric($row['count']) ? (float) $row['count'] : 0;
             $length = is_numeric($row['length']) ? (float) $row['length'] : 0;
@@ -269,8 +273,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php foreach ($groupedResults['Alüminyum'] ?? [] as $row): ?>
                         <tr>
                             <th>
-                                <?php if (!empty($row['image_path'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="" style="max-width:40px" class="me-2">
+                                <?php if (!empty($row['image_src'])): ?>
+                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
                                 <?php endif; ?>
                                 <?php echo htmlspecialchars($row['name']); ?>
                             </th>
@@ -312,8 +316,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <?php foreach ($groupedResults[$cat] as $row): ?>
                                 <tr>
                                     <th>
-                                        <?php if (!empty($row['image_path'])): ?>
-                                            <img src="<?php echo htmlspecialchars($row['image_path']); ?>" alt="" style="max-width:40px" class="me-2">
+                                        <?php if (!empty($row['image_src'])): ?>
+                                            <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
                                         <?php endif; ?>
                                         <?php echo htmlspecialchars($row['name']); ?>
                                     </th>

@@ -2,33 +2,27 @@
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $imagePath = null;
+    $imageData = null;
+    $imageType = null;
     if (!empty($_FILES['image']['name'])) {
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg','jpeg','png','webp'];
         if (in_array($ext, $allowed, true)) {
-            $dir = __DIR__ . '/uploads/products';
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-            $filename = uniqid('prod_', true) . '.' . $ext;
-            $dest = $dir . '/' . $filename;
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                $imagePath = 'uploads/products/' . $filename;
-            }
+            $imageData = file_get_contents($_FILES['image']['tmp_name']);
+            $imageType = mime_content_type($_FILES['image']['tmp_name']);
         }
     }
-    if ($imagePath) {
-        $stmt = $pdo->prepare('INSERT INTO products (name, code, unit, measure_value, unit_price, category, image_path) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([
-            $_POST['name'],
-            $_POST['code'],
-            $_POST['unit'],
-            $_POST['measure_value'],
-            $_POST['unit_price'],
-            $_POST['category'],
-            $imagePath
-        ]);
+    if ($imageData) {
+        $stmt = $pdo->prepare('INSERT INTO products (name, code, unit, measure_value, unit_price, category, image_data, image_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        $stmt->bindParam(1, $_POST['name']);
+        $stmt->bindParam(2, $_POST['code']);
+        $stmt->bindParam(3, $_POST['unit']);
+        $stmt->bindParam(4, $_POST['measure_value']);
+        $stmt->bindParam(5, $_POST['unit_price']);
+        $stmt->bindParam(6, $_POST['category']);
+        $stmt->bindParam(7, $imageData, PDO::PARAM_LOB);
+        $stmt->bindParam(8, $imageType);
+        $stmt->execute();
         echo 'Saved';
     } else {
         echo 'Invalid image';

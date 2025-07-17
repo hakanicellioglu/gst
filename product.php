@@ -35,33 +35,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (in_array($unit, $noMeasureUnits, true)) {
         $measureValue = 1;
     }
-    $imagePath = null;
+    $imageData = null;
+    $imageType = null;
     if (!empty($_FILES['image']['name'])) {
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'webp'];
         if (in_array($ext, $allowed, true)) {
-            $dir = __DIR__ . '/uploads/products';
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-            $filename = uniqid('prod_', true) . '.' . $ext;
-            $dest = $dir . '/' . $filename;
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
-                $imagePath = 'uploads/products/' . $filename;
-            }
+            $imageData = file_get_contents($_FILES['image']['tmp_name']);
+            $imageType = mime_content_type($_FILES['image']['tmp_name']);
         }
     }
     if ($action === 'add') {
-        $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category, image_path) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category, :image_path)");
-        $stmt->execute([
-            ':name' => $_POST['name'],
-            ':code' => $_POST['code'],
-            ':unit' => $unit,
-            ':measure_value' => $measureValue,
-            ':unit_price' => $_POST['unit_price'],
-            ':category' => $category,
-            ':image_path' => $imagePath
-        ]);
+        $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category, image_data, image_type) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category, :image_data, :image_type)");
+        $stmt->bindParam(':name', $_POST['name']);
+        $stmt->bindParam(':code', $_POST['code']);
+        $stmt->bindParam(':unit', $unit);
+        $stmt->bindParam(':measure_value', $measureValue);
+        $stmt->bindParam(':unit_price', $_POST['unit_price']);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':image_data', $imageData, PDO::PARAM_LOB);
+        $stmt->bindParam(':image_type', $imageType);
+        $stmt->execute();
         $newId = $pdo->lastInsertId();
         $stmtData = $pdo->prepare('SELECT * FROM products WHERE id = :id');
         $stmtData->execute([':id' => $newId]);
@@ -75,20 +69,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtOld->execute([':id' => $id]);
         $oldData = $stmtOld->fetch();
 
-        if ($imagePath === null) {
-            $imagePath = $oldData['image_path'];
+        if ($imageData === null) {
+            $imageData = $oldData['image_data'];
+            $imageType = $oldData['image_type'];
         }
-        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category, image_path = :image_path WHERE id = :id");
-        $stmt->execute([
-            ':name' => $_POST['name'],
-            ':code' => $_POST['code'],
-            ':unit' => $unit,
-            ':measure_value' => $measureValue,
-            ':unit_price' => $_POST['unit_price'],
-            ':category' => $category,
-            ':image_path' => $imagePath,
-            ':id' => $id
-        ]);
+        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category, image_data = :image_data, image_type = :image_type WHERE id = :id");
+        $stmt->bindParam(':name', $_POST['name']);
+        $stmt->bindParam(':code', $_POST['code']);
+        $stmt->bindParam(':unit', $unit);
+        $stmt->bindParam(':measure_value', $measureValue);
+        $stmt->bindParam(':unit_price', $_POST['unit_price']);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':image_data', $imageData, PDO::PARAM_LOB);
+        $stmt->bindParam(':image_type', $imageType);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
         $stmtNew = $pdo->prepare('SELECT * FROM products WHERE id = :id');
         $stmtNew->execute([':id' => $id]);
         $newData = $stmtNew->fetch();
