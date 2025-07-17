@@ -192,15 +192,20 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             border: 1px solid #dee2e6;
             border-radius: .25rem;
             padding: 20px;
+            width: 210mm;
+            min-height: 297mm;
+            page-break-after: always;
+            overflow: hidden;
         }
         .proposal-document h2 {
             background-color: #e9ecef;
             padding: 6px;
             border-radius: .25rem;
         }
-        .proposal-document table thead {
-            background-color: #343a40;
-            color: #fff;
+        @media print {
+            .proposal-document {
+                page-break-after: always;
+            }
         }
     </style>
 </head>
@@ -229,33 +234,25 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
                 <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
-                <table class="table table-sm table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Parça</th>
-                            <th>Uzunluk</th>
-                            <th>Adet</th>
-                            <th>Maliyet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($rows as $row): ?>
-                        <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
-                        <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
-                        <tr>
-                            <td>
-                                <?php if (!empty($row['image_src'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
-                                <?php endif; ?>
-                                <?php echo htmlspecialchars($row['name']); ?>
-                            </td>
-                            <td><?php echo $len; ?></td>
-                            <td><?php echo $row['count']; ?></td>
-                            <td><?php echo $cost; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="row g-3">
+                <?php foreach ($rows as $row): ?>
+                    <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
+                    <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <?php if (!empty($row['image_src'])): ?>
+                                <img src="<?php echo htmlspecialchars($row['image_src']); ?>" class="card-img-top" style="max-height:120px;object-fit:contain;" alt="">
+                            <?php endif; ?>
+                            <div class="card-body p-2">
+                                <h6 class="card-title mb-1"><?php echo htmlspecialchars($row['name']); ?></h6>
+                                <p class="card-text mb-1">Uzunluk: <?php echo $len; ?></p>
+                                <p class="card-text mb-1">Adet: <?php echo $row['count']; ?></p>
+                                <p class="card-text">Maliyet: <?php echo $cost; ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
             <?php endforeach; ?>
             <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
             <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
@@ -263,28 +260,21 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 
         <?php if ($slidings): ?>
             <h2 class="h5 mt-4">Sürme Sistemler</h2>
-            <table class="table table-sm table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Sistem Tipi</th>
-                        <th>En</th>
-                        <th>Boy</th>
-                        <th>Adet</th>
-                        <th>Renk</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="row g-3">
                 <?php foreach ($slidings as $s): ?>
-                    <tr>
-                        <td><?php echo $s['system_type']; ?></td>
-                        <td><?php echo $s['width_mm']; ?></td>
-                        <td><?php echo $s['height_mm']; ?></td>
-                        <td><?php echo $s['system_qty']; ?></td>
-                        <td><?php echo $s['ral_code']; ?></td>
-                    </tr>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body p-2">
+                            <h6 class="card-title mb-1"><?php echo $s['system_type']; ?></h6>
+                            <p class="card-text mb-1">En: <?php echo $s['width_mm']; ?></p>
+                            <p class="card-text mb-1">Boy: <?php echo $s['height_mm']; ?></p>
+                            <p class="card-text mb-1">Adet: <?php echo $s['system_qty']; ?></p>
+                            <p class="card-text">Renk: <?php echo $s['ral_code']; ?></p>
+                        </div>
+                    </div>
+                </div>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
+            </div>
         <?php endif; ?>
         <?php endif; ?>
     </div>
