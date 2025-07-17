@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/device.php';
 // Log create, update and delete actions
 require_once 'helpers/audit.php';
 require_once 'helpers/auth.php';
@@ -107,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
 $categoryFilter = $_GET['category'] ?? '';
-$view = $_GET['view'] ?? 'list';
+$view = $_GET['view'] ?? (is_mobile() ? 'card' : 'list');
 
 $paramList = $_GET;
 $paramList['view'] = 'list';

@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/device.php';
 // Log create, update and delete actions
 require_once 'helpers/audit.php';
 require_once 'helpers/auth.php';
@@ -107,7 +108,7 @@ $stmt->execute([
     ':search2' => "%$search%"
 ]);
 $quotes = $stmt->fetchAll();
-$view = $_GET['view'] ?? 'list';
+$view = $_GET['view'] ?? (is_mobile() ? 'card' : 'list');
 
 $p = $_GET;
 $p['view'] = 'list';
