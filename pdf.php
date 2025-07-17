@@ -138,7 +138,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 
     $total_cost = 0;
     foreach ($results as &$row) {
-        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
+        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type, code FROM products WHERE name = ? LIMIT 1');
         $stmt->execute([$row['name']]);
         $product = $stmt->fetch();
         $row['cost'] = null;
@@ -148,6 +148,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
         } else {
             $row['image_src'] = null;
         }
+        $row['code'] = $product['code'] ?? '';
         if ($product) {
             $count = is_numeric($row['count']) ? (float) $row['count'] : 0;
             $length = is_numeric($row['length']) ? (float) $row['length'] : 0;
@@ -186,107 +187,153 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     <title>Teklif</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; }
+        /* reduce left margin to maximize horizontal space */
+        @page { size: A4; margin: 10mm 15mm 10mm 8mm; }
+        body {
+            background-color: #f0f2f5;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333;
+            counter-reset: page;
+        }
         .proposal-document {
             background-color: #fff;
-            border: 1px solid #dee2e6;
+            border: 1px solid #ced4da;
             border-radius: .25rem;
             padding: 20px;
+            width: 100%;
+            min-height: 252mm;
+            margin: 0 auto;
+            position: relative;
+            page-break-after: always;
+            overflow: hidden;
         }
-        .proposal-document h2 {
+        .section-header {
             background-color: #e9ecef;
             padding: 6px;
             border-radius: .25rem;
+            font-weight: bold;
         }
-        .proposal-document table thead {
-            background-color: #343a40;
-            color: #fff;
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.5rem;
+        }
+        .product-card {
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin: 0.5rem;
+            flex: 0 0 calc(33.333% - 1rem);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card img {
+            max-height: 80px;
+            object-fit: contain;
+            width: 100%;
+        }
+        .product-card .card-body {
+            padding: .5rem;
+            font-size: 0.875rem;
+        }
+        .footer {
+            position: absolute;
+            bottom: 5mm;
+            width: calc(100% - 40px);
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        .footer .page-number::after {
+            counter-increment: page;
+            content: counter(page);
+        }
+        @media print {
+            .proposal-document { page-break-after: always; }
         }
     </style>
 </head>
 <body>
-<div class="container my-3">
+<div class="container my-3 px-0">
     <?php if (!$simple): ?>
     <div class="mb-3">
         <button class="btn btn-primary" onclick="generatePDF()">PDF İndir</button>
         <button class="btn btn-secondary" onclick="printProposal()">Yazdır</button>
     </div>
     <?php endif; ?>
-    <div class="proposal-document">
-        <h1 class="h4 text-center mb-3">Teklif Bilgileri</h1>
-        <p><strong>Firma:</strong> <?php echo htmlspecialchars($quote['company_name']); ?></p>
-        <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
-        <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
-        <?php if ($simple): ?>
+    <div id="proposal-wrapper">
+    <?php if ($simple): ?>
+        <div class="proposal-document">
+            <h1 class="h4 text-center mb-3">Teklif Bilgileri</h1>
+            <p><strong>Firma:</strong> <?php echo htmlspecialchars($quote['company_name']); ?></p>
+            <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
+            <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
             <?php foreach ($guillotines as $g): ?>
                 <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
                 <p><?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm - <?php echo round($opt['sales']); ?></p>
             <?php endforeach; ?>
-        <?php else: ?>
+            <div class="footer">Tarih: <?php echo date('d.m.Y'); ?> - Sayfa <span class="page-number"></span></div>
+        </div>
+    <?php else: ?>
         <?php foreach ($guillotines as $g): ?>
-            <h2 class="h5 mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
+        <div class="proposal-document">
+            <h1 class="h4 text-center mb-3">Teklif Bilgileri</h1>
+            <p><strong>Firma:</strong> <?php echo htmlspecialchars($quote['company_name']); ?></p>
+            <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
+            <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
+            <h2 class="section-header mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
             <p>Adet: <?php echo $g['system_qty']; ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
-                <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
-                <table class="table table-sm table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Parça</th>
-                            <th>Uzunluk</th>
-                            <th>Adet</th>
-                            <th>Maliyet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($rows as $row): ?>
-                        <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
-                        <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
-                        <tr>
-                            <td>
-                                <?php if (!empty($row['image_src'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
-                                <?php endif; ?>
-                                <?php echo htmlspecialchars($row['name']); ?>
-                            </td>
-                            <td><?php echo $len; ?></td>
-                            <td><?php echo $row['count']; ?></td>
-                            <td><?php echo $cost; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endforeach; ?>
-            <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
-            <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
-        <?php endforeach; ?>
-
-        <?php if ($slidings): ?>
-            <h2 class="h5 mt-4">Sürme Sistemler</h2>
-            <table class="table table-sm table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Sistem Tipi</th>
-                        <th>En</th>
-                        <th>Boy</th>
-                        <th>Adet</th>
-                        <th>Renk</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($slidings as $s): ?>
-                    <tr>
-                        <td><?php echo $s['system_type']; ?></td>
-                        <td><?php echo $s['width_mm']; ?></td>
-                        <td><?php echo $s['height_mm']; ?></td>
-                        <td><?php echo $s['system_qty']; ?></td>
-                        <td><?php echo $s['ral_code']; ?></td>
-                    </tr>
+                <h3 class="section-header mt-3"><?php echo $cat; ?></h3>
+                <div class="product-grid">
+                <?php foreach ($rows as $row): ?>
+                    <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
+                    <?php $cost = is_null($row['cost']) ? '-' : round($row['cost'], 2); ?>
+                    <div class="product-card">
+                        <?php if (!empty($row['image_src'])): ?>
+                            <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="">
+                        <?php endif; ?>
+                        <div class="card-body">
+                            <div class="fw-semibold"><?php echo htmlspecialchars($row['name']); ?></div>
+                            <div class="text-muted small mb-1"><?php echo htmlspecialchars($row['code']); ?></div>
+                            <div>Uzunluk: <?php echo $len; ?></div>
+                            <div>Adet: <?php echo $row['count']; ?></div>
+                            <div>Maliyet: <?php echo $cost; ?> ₺</div>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
+                </div>
+            <?php endforeach; ?>
+            <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total'], 2); ?> ₺</p>
+            <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales'], 2); ?> ₺</p>
+            <div class="footer">Tarih: <?php echo date('d.m.Y'); ?> - Sayfa <span class="page-number"></span></div>
+        </div>
+        <?php endforeach; ?>
+        <?php if ($slidings): ?>
+        <div class="proposal-document">
+            <h1 class="h4 text-center mb-3">Teklif Bilgileri</h1>
+            <p><strong>Firma:</strong> <?php echo htmlspecialchars($quote['company_name']); ?></p>
+            <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
+            <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
+            <h2 class="section-header mt-4">Sürme Sistemler</h2>
+            <div class="product-grid">
+            <?php foreach ($slidings as $s): ?>
+                <div class="product-card">
+                    <div class="card-body">
+                        <div class="fw-semibold"><?php echo htmlspecialchars($s['system_type']); ?></div>
+                        <div>En: <?php echo $s['width_mm']; ?> mm</div>
+                        <div>Boy: <?php echo $s['height_mm']; ?> mm</div>
+                        <div>Adet: <?php echo $s['system_qty']; ?></div>
+                        <div>Renk: <?php echo htmlspecialchars($s['ral_code']); ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            </div>
+            <div class="footer">Tarih: <?php echo date('d.m.Y'); ?> - Sayfa <span class="page-number"></span></div>
+        </div>
         <?php endif; ?>
-        <?php endif; ?>
+    <?php endif; ?>
     </div>
 </div>
 <script>
@@ -301,7 +348,7 @@ function generatePDF() {
     }
 }
 function createPDF() {
-    const element = document.querySelector('.proposal-document');
+    const element = document.getElementById('proposal-wrapper');
     const proposalTitle = 'Teklif';
     const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
     const opt = {
