@@ -212,19 +212,28 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             border-radius: .25rem;
             font-weight: bold;
         }
-        table.product-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 8px;
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -0.5rem;
         }
-        table.product-table th,
-        table.product-table td {
+        .product-card {
             border: 1px solid #dee2e6;
-            padding: 4px;
+            border-radius: .25rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin: 0.5rem;
+            flex: 0 0 calc(33.333% - 1rem);
+            display: flex;
+            flex-direction: column;
         }
-        table.product-table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
+        .product-card img {
+            max-height: 80px;
+            object-fit: contain;
+            width: 100%;
+        }
+        .product-card .card-body {
+            padding: .5rem;
+            font-size: 0.875rem;
         }
         .footer {
             position: absolute;
@@ -276,35 +285,24 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
                 <h3 class="section-header mt-3"><?php echo $cat; ?></h3>
-                <table class="product-table">
-                    <thead>
-                        <tr>
-                            <th>Ürün Adı</th>
-                            <th>Kodu</th>
-                            <th>Uzunluk</th>
-                            <th>Adet</th>
-                            <th>Maliyet (₺)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($rows as $row): ?>
-                        <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
-                        <?php $cost = is_null($row['cost']) ? '-' : round($row['cost'], 2); ?>
-                        <tr>
-                            <td>
-                                <?php if (!empty($row['image_src'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-1 align-middle">
-                                <?php endif; ?>
-                                <?php echo htmlspecialchars($row['name']); ?>
-                            </td>
-                            <td><?php echo htmlspecialchars($row['code']); ?></td>
-                            <td><?php echo $len; ?></td>
-                            <td><?php echo $row['count']; ?></td>
-                            <td><?php echo $cost; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="product-grid">
+                <?php foreach ($rows as $row): ?>
+                    <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
+                    <?php $cost = is_null($row['cost']) ? '-' : round($row['cost'], 2); ?>
+                    <div class="product-card">
+                        <?php if (!empty($row['image_src'])): ?>
+                            <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="">
+                        <?php endif; ?>
+                        <div class="card-body">
+                            <div class="fw-semibold"><?php echo htmlspecialchars($row['name']); ?></div>
+                            <div class="text-muted small mb-1"><?php echo htmlspecialchars($row['code']); ?></div>
+                            <div>Uzunluk: <?php echo $len; ?></div>
+                            <div>Adet: <?php echo $row['count']; ?></div>
+                            <div>Maliyet: <?php echo $cost; ?> ₺</div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
             <?php endforeach; ?>
             <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total'], 2); ?> ₺</p>
             <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales'], 2); ?> ₺</p>
@@ -318,28 +316,19 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <p><strong>Müşteri:</strong> <?php echo htmlspecialchars($quote['customer_name']); ?></p>
             <p><strong>Tarih:</strong> <?php echo htmlspecialchars($quote['quote_date']); ?></p>
             <h2 class="section-header mt-4">Sürme Sistemler</h2>
-            <table class="product-table">
-                <thead>
-                    <tr>
-                        <th>Sistem Tipi</th>
-                        <th>En (mm)</th>
-                        <th>Boy (mm)</th>
-                        <th>Adet</th>
-                        <th>Renk</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($slidings as $s): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($s['system_type']); ?></td>
-                        <td><?php echo $s['width_mm']; ?></td>
-                        <td><?php echo $s['height_mm']; ?></td>
-                        <td><?php echo $s['system_qty']; ?></td>
-                        <td><?php echo htmlspecialchars($s['ral_code']); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="product-grid">
+            <?php foreach ($slidings as $s): ?>
+                <div class="product-card">
+                    <div class="card-body">
+                        <div class="fw-semibold"><?php echo htmlspecialchars($s['system_type']); ?></div>
+                        <div>En: <?php echo $s['width_mm']; ?> mm</div>
+                        <div>Boy: <?php echo $s['height_mm']; ?> mm</div>
+                        <div>Adet: <?php echo $s['system_qty']; ?></div>
+                        <div>Renk: <?php echo htmlspecialchars($s['ral_code']); ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            </div>
             <div class="footer">Tarih: <?php echo date('d.m.Y'); ?> - Sayfa <span class="page-number"></span></div>
         </div>
         <?php endif; ?>
