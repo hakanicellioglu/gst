@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/device.php';
 // Log create, update and delete actions
 require_once 'helpers/audit.php';
 require_once 'helpers/auth.php';
@@ -107,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
 $categoryFilter = $_GET['category'] ?? '';
-$view = $_GET['view'] ?? 'list';
+$view = $_GET['view'] ?? (is_mobile() ? 'card' : 'list');
 
 $paramList = $_GET;
 $paramList['view'] = 'list';
@@ -175,7 +176,7 @@ $products = $stmt->fetchAll();
                 <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                     data-bs-target="#addModal">Ürün
                     Ekle</button>
-                <div class="btn-group ms-2" role="group">
+                <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
                     <a href="<?php echo $listUrl; ?>"
                         class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i
                             class="bi bi-list"></i></a>
@@ -188,7 +189,7 @@ $products = $stmt->fetchAll();
         </div>
 
         <?php if ($view === 'list'): ?>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped responsive-table">
                 <thead>
                     <tr>
                         <th>Ad</th>
@@ -305,9 +306,9 @@ $products = $stmt->fetchAll();
                 </tbody>
             </table>
         <?php else: ?>
-            <div class="row">
+            <div class="row g-3 cards-row">
                 <?php foreach ($products as $product): ?>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($product['name']); ?>
