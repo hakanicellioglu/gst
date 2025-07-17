@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
 $categoryFilter = $_GET['category'] ?? '';
-$view = $_GET['view'] ?? (is_mobile() ? 'card' : 'list');
+$view = resolve_view();
 
 $paramList = $_GET;
 $paramList['view'] = 'list';
