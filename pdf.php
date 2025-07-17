@@ -55,8 +55,8 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     $flatbelt_kayis = $son_kapatma + 600;
     $motor_borusu = $width - 59;
 
-    $cam_en = $width - 221;
-    $cam_boy = $dikey_baza + 26;
+    $cam_en = round($width - 219);
+    $cam_boy = round($dikey_baza + 28 - 2);
 
     $motor_kutusu_qty = $quantity;
     $motor_kapak_qty = $quantity;

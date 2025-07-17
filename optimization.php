@@ -54,8 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $motor_borusu = $width - 59;
 
     // Cam ölçüleri
-    $cam_en = $width - 221;
-    $cam_boy = $dikey_baza + 26;
+    $cam_en = round($width - 219);
+    $cam_boy = round($dikey_baza + 28 - 2);
 
     // parça adet hesapları
     $motor_kutusu_qty = $quantity;
