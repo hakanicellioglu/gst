@@ -187,7 +187,8 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     <title>Teklif</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        @page { size: A4; margin: 15mm; }
+        /* reduce left margin to maximize horizontal space */
+        @page { size: A4; margin: 10mm 15mm 10mm 8mm; }
         body {
             background-color: #f0f2f5;
             font-family: Arial, Helvetica, sans-serif;
@@ -199,9 +200,9 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             border: 1px solid #ced4da;
             border-radius: .25rem;
             padding: 20px;
-            width: 210mm;
+            width: 100%;
             min-height: 252mm;
-            margin: auto;
+            margin: 0 auto;
             position: relative;
             page-break-after: always;
             overflow: hidden;
@@ -253,7 +254,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
     </style>
 </head>
 <body>
-<div class="container my-3">
+<div class="container my-3 px-0">
     <?php if (!$simple): ?>
     <div class="mb-3">
         <button class="btn btn-primary" onclick="generatePDF()">PDF İndir</button>
