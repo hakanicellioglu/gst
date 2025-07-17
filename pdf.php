@@ -297,8 +297,12 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 function generatePDF() {
     if (typeof html2pdf === 'undefined') {
         const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.src = 'libs/html2pdf.bundle.min.js';
         script.onload = function() { createPDF(); };
+        script.onerror = function() {
+            console.error('Failed to load html2pdf library');
+            alert('PDF kütüpanesi yüklenemedi');
+        };
         document.head.appendChild(script);
     } else {
         createPDF();
@@ -306,11 +310,16 @@ function generatePDF() {
 }
 // Build the PDF manually so that we can control when new pages are added.
 function createPDF() {
-    const { jsPDF } = window.jspdf;
+    const jsPDFClass = window.jspdf?.jsPDF || window.jsPDF;
+    if (!jsPDFClass) {
+        console.error('jsPDF not available');
+        alert('PDF kütüpanesi yüklenemedi');
+        return;
+    }
     const proposalTitle = 'Teklif';
     const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
 
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pdf = new jsPDFClass({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     const margin = 5;
     const usableWidth = pdf.internal.pageSize.getWidth() - margin * 2;
     const usableHeight = pdf.internal.pageSize.getHeight() - margin * 2;
