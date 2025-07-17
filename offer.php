@@ -108,7 +108,7 @@ $stmt->execute([
     ':search2' => "%$search%"
 ]);
 $quotes = $stmt->fetchAll();
-$view = $_GET['view'] ?? (is_mobile() ? 'card' : 'list');
+$view = resolve_view();
 
 $p = $_GET;
 $p['view'] = 'list';

@@ -6,6 +6,10 @@
         display: none;
     }
 }
+.cards-row {
+    display: flex;
+    flex-wrap: wrap;
+}
 .cards-row .card {
     margin-bottom: 1rem;
 }
