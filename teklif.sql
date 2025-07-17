@@ -208,7 +208,9 @@ CREATE TABLE `products` (
   `unit` varchar(20) NOT NULL,
   `measure_value` decimal(10,3) NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
-  `category` varchar(50) DEFAULT NULL
+  `category` varchar(50) DEFAULT NULL,
+  `image_data` LONGBLOB,
+  `image_type` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------

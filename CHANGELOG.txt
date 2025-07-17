@@ -1,3 +1,4 @@
+- Store product images as BLOBs (image_data/image_type) and update example.
 - Reformatted admin.php according to PSR-12 guidelines and added comments.
 - Added CSRF token generation and session-based caching for dashboard stats.
 - Converted raw SQL queries in admin.php to prepared statements.

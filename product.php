@@ -35,16 +35,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (in_array($unit, $noMeasureUnits, true)) {
         $measureValue = 1;
     }
+    $imageData = null;
+    $imageType = null;
+    if (!empty($_FILES['image']['name'])) {
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+        if (in_array($ext, $allowed, true)) {
+            $imageData = file_get_contents($_FILES['image']['tmp_name']);
+            $imageType = mime_content_type($_FILES['image']['tmp_name']);
+        }
+    }
     if ($action === 'add') {
-        $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category)");
-        $stmt->execute([
-            ':name' => $_POST['name'],
-            ':code' => $_POST['code'],
-            ':unit' => $unit,
-            ':measure_value' => $measureValue,
-            ':unit_price' => $_POST['unit_price'],
-            ':category' => $category
-        ]);
+        $stmt = $pdo->prepare("INSERT INTO products (name, code, unit, measure_value, unit_price, category, image_data, image_type) VALUES (:name, :code, :unit, :measure_value, :unit_price, :category, :image_data, :image_type)");
+        $stmt->bindParam(':name', $_POST['name']);
+        $stmt->bindParam(':code', $_POST['code']);
+        $stmt->bindParam(':unit', $unit);
+        $stmt->bindParam(':measure_value', $measureValue);
+        $stmt->bindParam(':unit_price', $_POST['unit_price']);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':image_data', $imageData, PDO::PARAM_LOB);
+        $stmt->bindParam(':image_type', $imageType);
+        $stmt->execute();
         $newId = $pdo->lastInsertId();
         $stmtData = $pdo->prepare('SELECT * FROM products WHERE id = :id');
         $stmtData->execute([':id' => $newId]);
@@ -58,16 +69,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtOld->execute([':id' => $id]);
         $oldData = $stmtOld->fetch();
 
-        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category WHERE id = :id");
-        $stmt->execute([
-            ':name' => $_POST['name'],
-            ':code' => $_POST['code'],
-            ':unit' => $unit,
-            ':measure_value' => $measureValue,
-            ':unit_price' => $_POST['unit_price'],
-            ':category' => $category,
-            ':id' => $id
-        ]);
+        if ($imageData === null) {
+            $imageData = $oldData['image_data'];
+            $imageType = $oldData['image_type'];
+        }
+        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category, image_data = :image_data, image_type = :image_type WHERE id = :id");
+        $stmt->bindParam(':name', $_POST['name']);
+        $stmt->bindParam(':code', $_POST['code']);
+        $stmt->bindParam(':unit', $unit);
+        $stmt->bindParam(':measure_value', $measureValue);
+        $stmt->bindParam(':unit_price', $_POST['unit_price']);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':image_data', $imageData, PDO::PARAM_LOB);
+        $stmt->bindParam(':image_type', $imageType);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
         $stmtNew = $pdo->prepare('SELECT * FROM products WHERE id = :id');
         $stmtNew->execute([':id' => $id]);
         $newData = $stmtNew->fetch();
@@ -217,7 +233,7 @@ $products = $stmt->fetchAll();
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form method="post" action="product">
+                                    <form method="post" action="product" enctype="multipart/form-data">
                                         <div class="modal-body">
                                             <input type="hidden" name="action" value="edit">
                                             <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
@@ -266,10 +282,14 @@ $products = $stmt->fetchAll();
                                                     class="form-control" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Birim Fiyat</label>
-                                                <input type="number" step="0.01" name="unit_price"
+                                            <label class="form-label">Birim Fiyat</label>
+                                            <input type="number" step="0.01" name="unit_price"
                                                     value="<?php echo htmlspecialchars($product['unit_price']); ?>"
                                                     class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Görsel</label>
+                                                <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -323,7 +343,7 @@ $products = $stmt->fetchAll();
                                     <h5 class="modal-title">Ürün Düzenle</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form method="post" action="product">
+                                <form method="post" action="product" enctype="multipart/form-data">
                                     <div class="modal-body">
                                         <input type="hidden" name="action" value="edit">
                                         <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
@@ -376,6 +396,10 @@ $products = $stmt->fetchAll();
                                             <input type="number" step="0.01" name="unit_price"
                                                 value="<?php echo htmlspecialchars($product['unit_price']); ?>"
                                                 class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Görsel</label>
+                                            <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -439,7 +463,7 @@ $products = $stmt->fetchAll();
                     <h5 class="modal-title">Ürün Ekle</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" action="product">
+                <form method="post" action="product" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden" name="action" value="add">
                         <div class="mb-3">
@@ -479,6 +503,10 @@ $products = $stmt->fetchAll();
                         <div class="mb-3">
                             <label class="form-label">Birim Fiyat</label>
                             <input type="number" step="0.01" name="unit_price" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Görsel</label>
+                            <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                         </div>
                     </div>
                     <div class="modal-footer">
