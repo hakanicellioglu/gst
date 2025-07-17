@@ -204,10 +204,21 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             padding: 10px;
             background-color: #fff;
         }
+        /* Cards in the PDF should have a fixed height so that each card
+           occupies the same space on every page. `page-break-inside: avoid`
+           ensures a card never gets split between pages when printing. */
+        .proposal-document .item-card.fixed-height {
+            height: 60mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
         .proposal-document .item-card img {
             width: 100%;
             height: auto;
-            max-height: 150px;
+            max-height: 25mm;
             object-fit: contain;
         }
     </style>
@@ -242,7 +253,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                         <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
                         <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
                         <div class="col">
-                            <div class="item-card h-100">
+                            <div class="item-card fixed-height pdf-card">
                                 <?php if (!empty($row['image_src'])): ?>
                                     <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" class="mb-2">
                                 <?php endif; ?>
@@ -266,7 +277,7 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                 <?php foreach ($slidings as $s): ?>
                     <div class="col">
-                        <div class="item-card h-100">
+                        <div class="item-card fixed-height pdf-card">
                             <div class="card-body p-2">
                                 <h6 class="card-title mb-1 text-center"><?php echo $s['system_type']; ?></h6>
                                 <p class="mb-1"><strong>En:</strong> <?php echo $s['width_mm']; ?></p>
@@ -293,18 +304,39 @@ function generatePDF() {
         createPDF();
     }
 }
+// Build the PDF manually so that we can control when new pages are added.
 function createPDF() {
-    const element = document.querySelector('.proposal-document');
+    const { jsPDF } = window.jspdf;
     const proposalTitle = 'Teklif';
     const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
-    const opt = {
-        margin: [5,5,5,5],
-        filename: `${proposalNumber} - ${proposalTitle}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
+
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const margin = 5;
+    const usableWidth = pdf.internal.pageSize.getWidth() - margin * 2;
+    const usableHeight = pdf.internal.pageSize.getHeight() - margin * 2;
+    let currentY = margin;
+
+    const cards = document.querySelectorAll('.pdf-card');
+
+    // Process each card sequentially to ensure order is preserved
+    const addCards = Array.from(cards).reduce((promise, card) => {
+        return promise.then(() => html2canvas(card, { scale: 2, useCORS: true }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = usableWidth;
+            const imgHeight = imgWidth * canvas.height / canvas.width;
+
+            if (currentY + imgHeight > usableHeight) {
+                pdf.addPage();
+                currentY = margin;
+            }
+            pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
+            currentY += imgHeight + 2; // small space between cards
+        }));
+    }, Promise.resolve());
+
+    addCards.then(() => {
+        pdf.save(`${proposalNumber} - ${proposalTitle}.pdf`);
+    });
 }
 function printProposal() {
     const originalTitle = document.title;
