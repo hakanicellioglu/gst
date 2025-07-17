@@ -215,12 +215,12 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
         <?php if ($simple): ?>
             <?php foreach ($guillotines as $g): ?>
                 <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
-                <p><?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm - <?php echo round($opt['sales']); ?></p>
+                <p><?php echo intval($g['width_mm']); ?> x <?php echo intval($g['height_mm']); ?> mm - <?php echo intval($opt['sales']); ?></p>
             <?php endforeach; ?>
         <?php else: ?>
         <?php foreach ($guillotines as $g): ?>
-            <h2 class="h5 mt-4">Giyotin Sistem (<?php echo $g['width_mm']; ?> x <?php echo $g['height_mm']; ?> mm)</h2>
-            <p>Adet: <?php echo $g['system_qty']; ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
+            <h2 class="h5 mt-4">Giyotin Sistem (<?php echo intval($g['width_mm']); ?> x <?php echo intval($g['height_mm']); ?> mm)</h2>
+            <p>Adet: <?php echo intval($g['system_qty']); ?> | Cam: <?php echo htmlspecialchars($g['glass_type']); ?></p>
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
                 <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
@@ -235,8 +235,8 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                     </thead>
                     <tbody>
                     <?php foreach ($rows as $row): ?>
-                        <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
-                        <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
+                        <?php $len = is_numeric($row['length']) ? intval($row['length']) : $row['length']; ?>
+                        <?php $cost = is_null($row['cost']) ? '-' : intval($row['cost']); ?>
                         <tr>
                             <td><?php echo $row['name']; ?></td>
                             <td><?php echo $len; ?></td>
@@ -247,8 +247,8 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                     </tbody>
                 </table>
             <?php endforeach; ?>
-            <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
-            <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
+            <p><strong>Toplam Maliyet:</strong> <?php echo intval($opt['total']); ?></p>
+            <p><strong>Toplam Fiyat:</strong> <?php echo intval($opt['sales']); ?></p>
         <?php endforeach; ?>
 
         <?php if ($slidings): ?>
@@ -267,9 +267,9 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
                 <?php foreach ($slidings as $s): ?>
                     <tr>
                         <td><?php echo $s['system_type']; ?></td>
-                        <td><?php echo $s['width_mm']; ?></td>
-                        <td><?php echo $s['height_mm']; ?></td>
-                        <td><?php echo $s['system_qty']; ?></td>
+                        <td><?php echo intval($s['width_mm']); ?></td>
+                        <td><?php echo intval($s['height_mm']); ?></td>
+                        <td><?php echo intval($s['system_qty']); ?></td>
                         <td><?php echo $s['ral_code']; ?></td>
                     </tr>
                 <?php endforeach; ?>
