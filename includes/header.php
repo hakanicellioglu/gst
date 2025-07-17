@@ -55,3 +55,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+<script src="/assets/js/view.js"></script>
