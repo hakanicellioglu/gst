@@ -198,9 +198,28 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             padding: 6px;
             border-radius: .25rem;
         }
-        .proposal-document table thead {
-            background-color: #343a40;
-            color: #fff;
+        .proposal-document .item-card {
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            padding: 10px;
+            background-color: #fff;
+        }
+        /* Cards in the PDF should have a fixed height so that each card
+           occupies the same space on every page. `page-break-inside: avoid`
+           ensures a card never gets split between pages when printing. */
+        .proposal-document .item-card.fixed-height {
+            height: 60mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+        .proposal-document .item-card img {
+            width: 100%;
+            height: auto;
+            max-height: 25mm;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -229,33 +248,25 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
             <?php $opt = compute_optimization($pdo, (float)$g['width_mm'], (float)$g['height_mm'], (int)$g['system_qty'], (string)$g['glass_type']); ?>
             <?php foreach ($opt['grouped'] as $cat => $rows): ?>
                 <h3 class="h6 mt-3"><?php echo $cat; ?></h3>
-                <table class="table table-sm table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Parça</th>
-                            <th>Uzunluk</th>
-                            <th>Adet</th>
-                            <th>Maliyet</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                     <?php foreach ($rows as $row): ?>
                         <?php $len = is_numeric($row['length']) ? round($row['length']) : $row['length']; ?>
                         <?php $cost = is_null($row['cost']) ? '-' : round($row['cost']); ?>
-                        <tr>
-                            <td>
+                        <div class="col">
+                            <div class="item-card fixed-height pdf-card">
                                 <?php if (!empty($row['image_src'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
+                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" class="mb-2">
                                 <?php endif; ?>
-                                <?php echo htmlspecialchars($row['name']); ?>
-                            </td>
-                            <td><?php echo $len; ?></td>
-                            <td><?php echo $row['count']; ?></td>
-                            <td><?php echo $cost; ?></td>
-                        </tr>
+                                <div class="card-body p-2">
+                                    <h6 class="card-title mb-1 text-center"><?php echo htmlspecialchars($row['name']); ?></h6>
+                                    <p class="mb-1"><strong>Uzunluk:</strong> <?php echo $len; ?></p>
+                                    <p class="mb-1"><strong>Adet:</strong> <?php echo $row['count']; ?></p>
+                                    <p class="mb-0"><strong>Maliyet:</strong> <?php echo $cost; ?></p>
+                                </div>
+                            </div>
+                        </div>
                     <?php endforeach; ?>
-                    </tbody>
-                </table>
+                </div>
             <?php endforeach; ?>
             <p><strong>Toplam Maliyet:</strong> <?php echo round($opt['total']); ?></p>
             <p><strong>Toplam Fiyat:</strong> <?php echo round($opt['sales']); ?></p>
@@ -263,28 +274,21 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 
         <?php if ($slidings): ?>
             <h2 class="h5 mt-4">Sürme Sistemler</h2>
-            <table class="table table-sm table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Sistem Tipi</th>
-                        <th>En</th>
-                        <th>Boy</th>
-                        <th>Adet</th>
-                        <th>Renk</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                 <?php foreach ($slidings as $s): ?>
-                    <tr>
-                        <td><?php echo $s['system_type']; ?></td>
-                        <td><?php echo $s['width_mm']; ?></td>
-                        <td><?php echo $s['height_mm']; ?></td>
-                        <td><?php echo $s['system_qty']; ?></td>
-                        <td><?php echo $s['ral_code']; ?></td>
-                    </tr>
+                    <div class="col">
+                        <div class="item-card fixed-height pdf-card">
+                            <div class="card-body p-2">
+                                <h6 class="card-title mb-1 text-center"><?php echo $s['system_type']; ?></h6>
+                                <p class="mb-1"><strong>En:</strong> <?php echo $s['width_mm']; ?></p>
+                                <p class="mb-1"><strong>Boy:</strong> <?php echo $s['height_mm']; ?></p>
+                                <p class="mb-1"><strong>Adet:</strong> <?php echo $s['system_qty']; ?></p>
+                                <p class="mb-0"><strong>Renk:</strong> <?php echo $s['ral_code']; ?></p>
+                            </div>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
+            </div>
         <?php endif; ?>
         <?php endif; ?>
     </div>
@@ -293,25 +297,55 @@ function compute_optimization(PDO $pdo, float $width, float $height, int $quanti
 function generatePDF() {
     if (typeof html2pdf === 'undefined') {
         const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.src = 'libs/html2pdf.bundle.min.js';
         script.onload = function() { createPDF(); };
+        script.onerror = function() {
+            console.error('Failed to load html2pdf library');
+            alert('PDF kütüpanesi yüklenemedi');
+        };
         document.head.appendChild(script);
     } else {
         createPDF();
     }
 }
+// Build the PDF manually so that we can control when new pages are added.
 function createPDF() {
-    const element = document.querySelector('.proposal-document');
+    const jsPDFClass = window.jspdf?.jsPDF || window.jsPDF;
+    if (!jsPDFClass) {
+        console.error('jsPDF not available');
+        alert('PDF kütüpanesi yüklenemedi');
+        return;
+    }
     const proposalTitle = 'Teklif';
     const proposalNumber = 'TKF-<?php echo $quote_id; ?>';
-    const opt = {
-        margin: [5,5,5,5],
-        filename: `${proposalNumber} - ${proposalTitle}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
+
+    const pdf = new jsPDFClass({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const margin = 5;
+    const usableWidth = pdf.internal.pageSize.getWidth() - margin * 2;
+    const usableHeight = pdf.internal.pageSize.getHeight() - margin * 2;
+    let currentY = margin;
+
+    const cards = document.querySelectorAll('.pdf-card');
+
+    // Process each card sequentially to ensure order is preserved
+    const addCards = Array.from(cards).reduce((promise, card) => {
+        return promise.then(() => html2canvas(card, { scale: 2, useCORS: true }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = usableWidth;
+            const imgHeight = imgWidth * canvas.height / canvas.width;
+
+            if (currentY + imgHeight > usableHeight) {
+                pdf.addPage();
+                currentY = margin;
+            }
+            pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
+            currentY += imgHeight + 2; // small space between cards
+        }));
+    }, Promise.resolve());
+
+    addCards.then(() => {
+        pdf.save(`${proposalNumber} - ${proposalTitle}.pdf`);
+    });
 }
 function printProposal() {
     const originalTitle = document.title;
