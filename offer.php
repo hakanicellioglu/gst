@@ -143,7 +143,7 @@ include 'includes/header.php';
             <?php if ($canAdd): ?>
                 <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
             <?php endif; ?>
-            <div class="btn-group ms-2" role="group">
+            <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
                 <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
                 <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
             </div>
@@ -151,7 +151,7 @@ include 'includes/header.php';
     </div>
 
     <?php if ($view === 'list'): ?>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped responsive-table">
         <thead>
             <tr>
                 <th>Firma</th>
@@ -195,9 +195,9 @@ include 'includes/header.php';
         </tbody>
     </table>
     <?php else: ?>
-    <div class="row">
+    <div class="row g-3 cards-row">
         <?php foreach ($quotes as $q): ?>
-            <div class="col-md-4">
+            <div class="col-12 col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo htmlspecialchars($q['company_name']); ?></h5>

@@ -1,0 +1,11 @@
+@media (max-width: 767.98px) {
+    .view-toggle {
+        display: none !important;
+    }
+    .responsive-table {
+        display: none;
+    }
+}
+.cards-row .card {
+    margin-bottom: 1rem;
+}

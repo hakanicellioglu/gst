@@ -113,7 +113,7 @@ $companies = $stmt->fetchAll();
                 <button type="button" class="btn btn-<?php echo get_color(); ?>" data-bs-toggle="modal"
                     data-bs-target="#addModal">Firma
                     Ekle</button>
-                <div class="btn-group ms-2" role="group">
+                <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
                     <a href="<?php echo $listUrl; ?>"
                         class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i
                             class="bi bi-list"></i></a>
@@ -125,7 +125,7 @@ $companies = $stmt->fetchAll();
         </div>
 
         <?php if ($view === 'list'): ?>
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped responsive-table">
                 <thead>
                     <tr>
                         <th>Ad</th>
@@ -208,9 +208,9 @@ $companies = $stmt->fetchAll();
                 </tbody>
             </table>
         <?php else: ?>
-            <div class="row">
+            <div class="row g-3 cards-row">
                 <?php foreach ($companies as $company): ?>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo htmlspecialchars($company['name']); ?></h5>
