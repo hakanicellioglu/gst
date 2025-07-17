@@ -13,3 +13,31 @@
 .cards-row .card {
     margin-bottom: 1rem;
 }
+
+/* Inline form helper */
+.form-inline-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-inline-responsive .form-control,
+.form-inline-responsive .form-select {
+    width: auto;
+}
+
+@media (max-width: 767.98px) {
+    .form-inline-responsive .form-control,
+    .form-inline-responsive .form-select {
+        flex: 1 1 100%;
+    }
+}
+
+.actions-col {
+    width: 150px;
+}
+
+.opt-img {
+    max-width: 40px;
+}

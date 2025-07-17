@@ -274,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <tr>
                             <th>
                                 <?php if (!empty($row['image_src'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
+                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" class="me-2 opt-img">
                                 <?php endif; ?>
                                 <?php echo htmlspecialchars($row['name']); ?>
                             </th>
@@ -317,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <tr>
                                     <th>
                                         <?php if (!empty($row['image_src'])): ?>
-                                            <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" style="max-width:40px" class="me-2">
+                                            <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" class="me-2 opt-img">
                                         <?php endif; ?>
                                         <?php echo htmlspecialchars($row['name']); ?>
                                     </th>

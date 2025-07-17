@@ -118,15 +118,15 @@ $customers = $stmt->fetchAll();
         <div class="row mb-3">
 
             <div class="col-12 text-end">
-                <form method="get" class="d-inline-block me-2">
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
                     <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
-                        class="form-control" placeholder="Müşteri ara" style="display:inline-block;width:auto;">
+                        class="form-control" placeholder="Müşteri ara">
                     <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
                     <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                     <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
                 </form>
-                <form method="get" class="d-inline-block me-2">
-                    <select name="sort" class="form-select d-inline-block w-auto">
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
+                    <select name="sort" class="form-select">
                         <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
                         <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
                     </select>
@@ -162,7 +162,7 @@ $customers = $stmt->fetchAll();
                         <th>Email</th>
                         <th>Telefon</th>
                         <th>Adres</th>
-                        <th class="text-center" style="width:150px;">İşlemler</th>
+                        <th class="text-center actions-col">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -181,7 +181,7 @@ $customers = $stmt->fetchAll();
                                 <?php if (is_admin($pdo)): ?>
                                 <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <?php endif; ?>
-                                <form method="post" action="customers" style="display:inline-block"
+                                <form method="post" action="customers" class="d-inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">
@@ -285,7 +285,7 @@ $customers = $stmt->fetchAll();
                                     <?php if (is_admin($pdo)): ?>
                                     <a href="log-list.php?table=customers&id=<?php echo $customer['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <?php endif; ?>
-                                    <form method="post" action="customers" style="display:inline-block"
+                                    <form method="post" action="customers" class="d-inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?php echo $customer['id']; ?>">

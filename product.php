@@ -143,16 +143,16 @@ $products = $stmt->fetchAll();
         <h2 class="mb-4">Ürünler</h2>
         <div class="row mb-3">
             <div class="col-12 text-end">
-                <form method="get" class="d-inline-block me-2">
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
                     <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
-                        class="form-control" placeholder="Ürün ara" style="display:inline-block;width:auto;">
+                        class="form-control" placeholder="Ürün ara">
                     <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
                     <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                     <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
                     <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
                 </form>
-                <form method="get" class="d-inline-block me-2">
-                    <select name="sort" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
                         <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
                         <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
                     </select>
@@ -160,8 +160,8 @@ $products = $stmt->fetchAll();
                     <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                     <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoryFilter); ?>">
                 </form>
-                <form method="get" class="d-inline-block me-2">
-                    <select name="category" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
+                    <select name="category" class="form-select" onchange="this.form.submit()">
                         <option value="">Tüm Kategoriler</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?php echo $cat; ?>" <?php echo ($categoryFilter === $cat) ? 'selected' : ''; ?>>
@@ -198,7 +198,7 @@ $products = $stmt->fetchAll();
                         <th>Ölçü Değeri</th>
                         <th>Birim Fiyat</th>
                         <th>Kategori</th>
-                        <th class="text-center" style="width:150px;">İşlemler</th>
+                        <th class="text-center actions-col">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -216,7 +216,7 @@ $products = $stmt->fetchAll();
                                 <?php if (is_admin($pdo)): ?>
                                 <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                 <?php endif; ?>
-                                <form method="post" action="product" style="display:inline-block"
+                                <form method="post" action="product" class="d-inline-block"
                                     onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
@@ -325,7 +325,7 @@ $products = $stmt->fetchAll();
                                     <?php if (is_admin($pdo)): ?>
                                     <a href="log-list.php?table=products&id=<?php echo $product['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                                     <?php endif; ?>
-                                    <form method="post" action="product" style="display:inline-block"
+                                    <form method="post" action="product" class="d-inline-block"
                                         onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
