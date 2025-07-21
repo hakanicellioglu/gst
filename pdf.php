@@ -176,10 +176,11 @@ $grand = $subtotal + $vat;
 
 <body>
     <div class="container pdf-container">
-        <div class="no-print" style="text-align:right;">
-            <button class="btn btn-secondary" onclick="history.back()">Geri</button>
-        </div>
         <h1 class="text-center text-danger">DEMONTE TEKLİF FORMU</h1>
+
+        <div class="no-print d-flex justify-content-end my-3">
+            <button class="btn btn-primary" onclick="window.print()">Yazdır</button>
+        </div>
 
         <div class="row">
             <!-- Sol Sütun -->
@@ -307,10 +308,7 @@ $grand = $subtotal + $vat;
             </tr>
         </table>
 
-        <div class="no-print" style="text-align:center; margin-top:20px;">
-            <button class="btn btn-secondary" onclick="history.back()">Geri</button>
-            <button class="btn btn-primary" onclick="window.print()">Yazdır</button>
-        </div>
+
     </div>
 </body>
 
