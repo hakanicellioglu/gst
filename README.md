@@ -1,5 +1,31 @@
-# GST Project
+# GST Teklif Yönetim Sistemi
 
-This project is a PHP-based quoting system. Product images are stored directly in the database using a BLOB `image_data` column with its MIME type in `image_type`. Images are displayed on both the optimization and PDF pages using base64 data URLs.
+Bu depo, PHP ile geliştirilmiş bir teklif yönetim uygulamasıdır. Kullanıcılar müşteri kayıtlarını tutabilir, ürünleri yönetebilir ve PDF formatında teklifler oluşturabilir. Ürün görselleri veritabanındaki BLOB alanlarında saklanır ve sayfalarda base64 kodlanmış veri URL'leriyle görüntülenir.
 
-See `image_upload_example.php` for a minimal example of handling an image upload and saving the binary data.
+## Kurulum
+
+1. `teklif.sql` dosyasını kullanarak MySQL veritabanınızı oluşturun.
+2. `config.php` içindeki veritabanı bağlantı ayarlarını kendi ortamınıza göre düzenleyin.
+3. PHP 8 ve Composer yüklü bir sunucuda projeyi çalıştırabilirsiniz. Basit bir geliştirme ortamı için komut satırında şu komutu kullanabilirsiniz:
+
+```bash
+php -S localhost:8000
+```
+
+Ardından tarayıcınızdan `http://localhost:8000` adresini ziyaret edin.
+
+## Özellikler
+
+- Kullanıcı oturum yönetimi ve yetkilendirme
+- Temayı açık ve koyu renk seçenekleriyle değiştirebilme
+- Ürün görsellerini veritabanında saklama
+- Teklifleri PDF olarak dışa aktarma
+- Kullanıcı işlemlerini kaydeden denetim (audit) yapısı
+
+## Örnek
+
+`image_upload_example.php` dosyasında temel resim yükleme ve BLOB olarak saklama örneği bulunmaktadır.
+
+## Lisans
+
+Bu proje MIT lisansı ile lisanslanmıştır. Ayrıntılar için `LİCENSE.md` dosyasına bakabilirsiniz.
