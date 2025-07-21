@@ -124,7 +124,10 @@ $grand = $subtotal + $vat;
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
 <style>
     @page { size: A4; margin: 10mm; }
-    body { font-family: Arial, sans-serif; }
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+    }
     .pdf-container { width: 190mm; margin: auto; }
     h1 { text-align: center; color: #c00; margin-top: 0; }
     table { width: 100%; margin-top: 10px; border-collapse: collapse; }
