@@ -88,16 +88,19 @@ $bankAccounts = $_POST['bank_accounts'] ?? $_GET['bank_accounts'] ?? [];
 if (!$bankAccounts) {
     $bankAccounts = [
         [
-            'name' => 'ALBARAKA TÜRK KATILIM BANKASI – ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
-            'iban' => 'TR33 0020 3000 0956 2368 0000 01',
+            'bank'    => 'ALBARAKA TÜRK KATILIM BANKASI',
+            'company' => 'ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
+            'iban'    => 'TR33 0020 3000 0956 2368 0000 01',
         ],
         [
-            'name' => 'VAKIF KATILIM BANKASI – ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
-            'iban' => 'TR55 0021 0000 0008 3591 5000 01',
+            'bank'    => 'VAKIF KATILIM BANKASI',
+            'company' => 'ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
+            'iban'    => 'TR55 0021 0000 0008 3591 5000 01',
         ],
         [
-            'name' => 'VAKIF BANK – ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
-            'iban' => 'TR44 0001 5001 5800 7321 3983 24',
+            'bank'    => 'VAKIF BANK',
+            'company' => 'ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
+            'iban'    => 'TR44 0001 5001 5800 7321 3983 24',
         ],
     ];
 }
@@ -203,17 +206,29 @@ $grand = $subtotal + $vat;
 
     <table class="table table-bordered table-sm bank-accounts">
         <thead class="table-dark">
-            <tr><th colspan="3">Banka Hesap Bilgileri</th></tr>
+            <tr><th colspan="3">Banka Bilgileri</th></tr>
+            <tr>
+                <th>Banka Adı</th>
+                <th>Firma Adı</th>
+                <th>IBAN</th>
+            </tr>
         </thead>
         <tbody>
+            <?php foreach ($bankAccounts as $b):
+                $bankName = $b['bank'] ?? null;
+                $companyName = $b['company'] ?? null;
+                if (!$bankName || !$companyName) {
+                    $parts = preg_split('/\s*[–-]\s*/u', $b['name'] ?? '', 2);
+                    $bankName = $bankName ?: ($parts[0] ?? '');
+                    $companyName = $companyName ?: ($parts[1] ?? '');
+                }
+            ?>
             <tr>
-                <?php foreach ($bankAccounts as $b): ?>
-                <td>
-                    <?=htmlspecialchars($b['name'])?><br>
-                    <?=htmlspecialchars($b['iban'])?>
-                </td>
-                <?php endforeach; ?>
+                <td><?=htmlspecialchars($bankName)?></td>
+                <td><?=htmlspecialchars($companyName)?></td>
+                <td><?=htmlspecialchars($b['iban'] ?? '')?></td>
             </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 
