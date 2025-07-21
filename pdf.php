@@ -105,7 +105,7 @@ if (!$bankAccounts) {
 
 $subtotal = 0;
 foreach ($products as &$p) {
-    $p['meterage']       = (($p['width'] + $p['height']) * 2) / 1000;
+    $p['meterage']       = (($p['width'] * $p['height'])) / 1000000;
     $p['total_meterage'] = $p['meterage'] * $p['qty'];
     $p['total_price']    = $p['total_meterage'] * $p['unit'];
     $subtotal += $p['total_price'];
@@ -116,125 +116,175 @@ $grand = $subtotal + $vat;
 ?>
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
-<meta charset="UTF-8">
-<title>DEMONTE TEKLİF FORMU</title>
-<style>
-    @page { size: A4; margin: 10mm; }
-    body { font-family: Arial, sans-serif; margin: 0; }
-    .container { width: 190mm; margin: auto; }
-    h1 { text-align: center; color: #c00; margin-top: 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #000; padding: 4px; font-size: 12px; }
-    thead th { background: #c00; color: #fff; }
-    tfoot td { text-align: right; }
-    .no-border td { border: none; }
-    .signature td { height: 60px; text-align: center; border: none; }
-    @media print {
-        .no-print { display: none; }
+    <meta charset="UTF-8">
+    <title>DEMONTE TEKLİF FORMU</title>
+    <style>
+    @page {
+        size: A4;
+        margin: 10mm;
     }
-</style>
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+    }
+
+    .container {
+        width: 190mm;
+        margin: auto;
+    }
+
+    h1 {
+        text-align: center;
+        color: #c00;
+        margin-top: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 4px;
+        font-size: 12px;
+    }
+
+    thead th {
+        background: #c00;
+        color: #fff;
+    }
+
+    tfoot td {
+        text-align: right;
+    }
+
+    .no-border td {
+        border: none;
+    }
+
+    .signature td {
+        height: 60px;
+        text-align: center;
+        border: none;
+    }
+
+    @media print {
+        .no-print {
+            display: none;
+        }
+    }
+    </style>
 </head>
+
 <body>
-<div class="container">
-    <div class="no-print" style="text-align:right;">
-        <button onclick="history.back()">Geri</button>
+    <div class="container">
+        <div class="no-print" style="text-align:right;">
+            <button onclick="history.back()">Geri</button>
+        </div>
+        <h1>DEMONTE TEKLİF FORMU</h1>
+        <table class="no-border">
+            <tr>
+                <td><strong>Firma</strong></td>
+                <td><?=htmlspecialchars($company)?></td>
+                <td><strong>İlgili</strong></td>
+                <td><?=htmlspecialchars($contact)?></td>
+            </tr>
+            <tr>
+                <td><strong>Teklif Tarihi</strong></td>
+                <td><?=$offerDate?></td>
+                <td><strong>Teklif No</strong></td>
+                <td><?=$offerNumber?></td>
+            </tr>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>RAL Kodu</th>
+                    <th>Cam Rengi</th>
+                    <th>Sistem Tipi</th>
+                    <th>Adet</th>
+                    <th>En (mm)</th>
+                    <th>Boy (mm)</th>
+                    <th>Metraj (m)</th>
+                    <th>Toplam Metraj (m)</th>
+                    <th>Toplam Fiyat ₺</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($products as $p): ?>
+                <tr>
+                    <td><?=htmlspecialchars($p['ral'])?></td>
+                    <td><?=htmlspecialchars($p['glass'])?></td>
+                    <td><?=htmlspecialchars($p['type'])?></td>
+                    <td><?=$p['qty']?></td>
+                    <td><?=$p['width']?></td>
+                    <td><?=$p['height']?></td>
+                    <td><?=number_format($p['meterage'], 2)?></td>
+                    <td><?=number_format($p['total_meterage'], 2)?></td>
+                    <td><?=number_format($p['total_price'], 2)?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8">Ara Toplam</td>
+                    <td><?=number_format($subtotal, 2)?> ₺</td>
+                </tr>
+                <tr>
+                    <td colspan="8">KDV %20</td>
+                    <td><?=number_format($vat, 2)?> ₺</td>
+                </tr>
+                <tr>
+                    <td colspan="8"><strong>Genel Toplam</strong></td>
+                    <td><strong><?=number_format($grand, 2)?> ₺</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <p><strong>Teslimat:</strong> <?=$delivery?></p>
+        <p><strong>Ödeme:</strong> <?=$payment?></p>
+        <p><strong>Teklif Geçerlilik:</strong> <?=$validity?></p>
+        <p><strong>Teklifi Hazırlayan:</strong> <?=htmlspecialchars($preparedBy)?></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">Banka Hesap Bilgileri</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($bankAccounts as $b): ?>
+                <tr>
+                    <td><?=htmlspecialchars($b['name'])?></td>
+                    <td><?=htmlspecialchars($b['iban'])?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <table class="signature" style="margin-top:40px; width:100%;">
+            <tr>
+                <td>Teklif Onayı</td>
+                <td>Müşteri Onayı</td>
+            </tr>
+            <tr>
+                <td>........................................</td>
+                <td>........................................</td>
+            </tr>
+        </table>
+
+        <div class="no-print" style="text-align:center; margin-top:20px;">
+            <button onclick="history.back()">Geri</button>
+            <button onclick="window.print()">Yazdır</button>
+        </div>
     </div>
-    <h1>DEMONTE TEKLİF FORMU</h1>
-    <table class="no-border">
-        <tr>
-            <td><strong>Firma</strong></td>
-            <td><?=htmlspecialchars($company)?></td>
-            <td><strong>İlgili</strong></td>
-            <td><?=htmlspecialchars($contact)?></td>
-        </tr>
-        <tr>
-            <td><strong>Teklif Tarihi</strong></td>
-            <td><?=$offerDate?></td>
-            <td><strong>Teklif No</strong></td>
-            <td><?=$offerNumber?></td>
-        </tr>
-    </table>
-
-    <table>
-        <thead>
-            <tr>
-                <th>RAL Kodu</th>
-                <th>Cam Rengi</th>
-                <th>Sistem Tipi</th>
-                <th>Adet</th>
-                <th>En (mm)</th>
-                <th>Boy (mm)</th>
-                <th>Metraj (m)</th>
-                <th>Toplam Metraj (m)</th>
-                <th>Toplam Fiyat ₺</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($products as $p): ?>
-            <tr>
-                <td><?=htmlspecialchars($p['ral'])?></td>
-                <td><?=htmlspecialchars($p['glass'])?></td>
-                <td><?=htmlspecialchars($p['type'])?></td>
-                <td><?=$p['qty']?></td>
-                <td><?=$p['width']?></td>
-                <td><?=$p['height']?></td>
-                <td><?=number_format($p['meterage'], 2)?></td>
-                <td><?=number_format($p['total_meterage'], 2)?></td>
-                <td><?=number_format($p['total_price'], 2)?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="8">Ara Toplam</td>
-                <td><?=number_format($subtotal, 2)?> ₺</td>
-            </tr>
-            <tr>
-                <td colspan="8">KDV %20</td>
-                <td><?=number_format($vat, 2)?> ₺</td>
-            </tr>
-            <tr>
-                <td colspan="8"><strong>Genel Toplam</strong></td>
-                <td><strong><?=number_format($grand, 2)?> ₺</strong></td>
-            </tr>
-        </tfoot>
-    </table>
-
-    <p><strong>Teslimat:</strong> <?=$delivery?></p>
-    <p><strong>Ödeme:</strong> <?=$payment?></p>
-    <p><strong>Teklif Geçerlilik:</strong> <?=$validity?></p>
-    <p><strong>Teklifi Hazırlayan:</strong> <?=htmlspecialchars($preparedBy)?></p>
-
-    <table>
-        <thead>
-            <tr><th colspan="2">Banka Hesap Bilgileri</th></tr>
-        </thead>
-        <tbody>
-            <?php foreach ($bankAccounts as $b): ?>
-            <tr>
-                <td><?=htmlspecialchars($b['name'])?></td>
-                <td><?=htmlspecialchars($b['iban'])?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <table class="signature" style="margin-top:40px; width:100%;">
-        <tr>
-            <td>Teklif Onayı</td>
-            <td>Müşteri Onayı</td>
-        </tr>
-        <tr>
-            <td>........................................</td>
-            <td>........................................</td>
-        </tr>
-    </table>
-
-    <div class="no-print" style="text-align:center; margin-top:20px;">
-        <button onclick="history.back()">Geri</button>
-        <button onclick="window.print()">Yazdır</button>
-    </div>
-</div>
 </body>
+
 </html>
