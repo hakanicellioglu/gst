@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $hasChanges = false;
         foreach ($newData as $field => $value) {
-            if ($oldData[$field] != $value) {
+            if (!array_key_exists($field, $oldData) || (string)$oldData[$field] !== (string)$value) {
                 $hasChanges = true;
                 break;
             }
