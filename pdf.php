@@ -126,7 +126,7 @@ $grand = $subtotal + $vat;
     <style>
     @page {
         size: A4;
-        margin: 10mm;
+        margin: 5mm;
     }
 
     body {
@@ -181,7 +181,7 @@ $grand = $subtotal + $vat;
 </head>
 
 <body>
-    <div class="container pdf-container">
+    <div class="container">
         <h1 class="text-center text-danger">DEMONTE TEKLİF FORMU</h1>
 
         <div class="no-print d-flex justify-content-end my-3" id="print-container">
