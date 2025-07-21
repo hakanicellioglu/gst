@@ -131,6 +131,7 @@ $grand = $subtotal + $vat;
 
     body {
         font-family: Arial, sans-serif;
+        font-size: 12px;
     }
 
     .pdf-container {
