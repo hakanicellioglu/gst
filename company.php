@@ -88,7 +88,7 @@ $companies = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Firmalar</title>
 </head>
 
 <body class="bg-light">
@@ -126,162 +126,166 @@ $companies = $stmt->fetchAll();
         </div>
 
         <?php if ($view === 'list'): ?>
-            <table class="table table-bordered table-striped responsive-table">
-                <thead>
-                    <tr>
-                        <th>Ad</th>
-                        <th>Telefon</th>
-                        <th>Adres</th>
-                        <th>E-posta</th>
-                        <th class="text-center actions-col">İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($companies as $company): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($company['name']); ?></td>
-                            <td><?php echo htmlspecialchars($company['phone']); ?></td>
-                            <td><?php echo htmlspecialchars($company['address']); ?></td>
-                            <td><?php echo htmlspecialchars($company['email']); ?></td>
-                            <td class="text-center">
-                                <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
-                                    data-bs-target="#editModal<?php echo $company['id']; ?>"><i class="bi bi-pencil"></i></button>
-                                <?php if (is_admin($pdo)): ?>
-                                <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
-                                <?php endif; ?>
-                                <form method="post" action="company" class="d-inline-block"
-                                    onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        <!-- Edit Modal -->
-                        <div class="modal fade" id="editModal<?php echo $company['id']; ?>" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Firma Düzenle</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <form method="post" action="company">
-                                        <div class="modal-body">
-                                            <input type="hidden" name="action" value="edit">
-                                            <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
-                                            <div class="mb-3">
-                                                <label class="form-label">Ad</label>
-                                                <input type="text" name="name"
-                                                    value="<?php echo htmlspecialchars($company['name']); ?>"
-                                                    class="form-control" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Telefon</label>
-                                                <input type="text" name="phone"
-                                                    value="<?php echo htmlspecialchars($company['phone']); ?>"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Adres</label>
-                                                <input type="text" name="address"
-                                                    value="<?php echo htmlspecialchars($company['address']); ?>"
-                                                    class="form-control">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">E-posta</label>
-                                                <input type="email" name="email"
-                                                    value="<?php echo htmlspecialchars($company['email']); ?>"
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Kapat</button>
-                                            <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <div class="row g-3 cards-row">
+        <table class="table table-bordered table-striped responsive-table">
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>Telefon</th>
+                    <th>Adres</th>
+                    <th>E-posta</th>
+                    <th class="text-center actions-col">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
                 <?php foreach ($companies as $company): ?>
-                    <div class="col-12 col-md-4">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($company['name']); ?></h5>
-                                <p class="card-text">
-                                    Telefon: <?php echo htmlspecialchars($company['phone']); ?><br>
-                                    Adres: <?php echo htmlspecialchars($company['address']); ?><br>
-                                    E-posta: <?php echo htmlspecialchars($company['email']); ?>
-                                </p>
-                                <div class="text-end">
-                                    <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
-                                        data-bs-target="#editModal<?php echo $company['id']; ?>"><i class="bi bi-pencil"></i></button>
-                                    <?php if (is_admin($pdo)): ?>
-                                    <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
-                                    <?php endif; ?>
-                                    <form method="post" action="company" class="d-inline-block"
-                                        onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <tr>
+                    <td><?php echo htmlspecialchars($company['name']); ?></td>
+                    <td><?php echo htmlspecialchars($company['phone']); ?></td>
+                    <td><?php echo htmlspecialchars($company['address']); ?></td>
+                    <td><?php echo htmlspecialchars($company['email']); ?></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
+                            data-bs-target="#editModal<?php echo $company['id']; ?>"><i
+                                class="bi bi-pencil"></i></button>
+                        <?php if (is_admin($pdo)): ?>
+                        <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>"
+                            class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                        <?php endif; ?>
+                        <form method="post" action="company" class="d-inline-block"
+                            onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
+                            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
 
-                    <!-- Edit Modal -->
-                    <div class="modal fade" id="editModal<?php echo $company['id']; ?>" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Firma Düzenle</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form method="post" action="company">
-                                    <div class="modal-body">
-                                        <input type="hidden" name="action" value="edit">
-                                        <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
-                                        <div class="mb-3">
-                                            <label class="form-label">Ad</label>
-                                            <input type="text" name="name"
-                                                value="<?php echo htmlspecialchars($company['name']); ?>" class="form-control"
-                                                required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Telefon</label>
-                                            <input type="text" name="phone"
-                                                value="<?php echo htmlspecialchars($company['phone']); ?>" class="form-control">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Adres</label>
-                                            <input type="text" name="address"
-                                                value="<?php echo htmlspecialchars($company['address']); ?>"
-                                                class="form-control">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">E-posta</label>
-                                            <input type="email" name="email"
-                                                value="<?php echo htmlspecialchars($company['email']); ?>" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                                        <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
-                                    </div>
-                                </form>
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editModal<?php echo $company['id']; ?>" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Firma Düzenle</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
+                            <form method="post" action="company">
+                                <div class="modal-body">
+                                    <input type="hidden" name="action" value="edit">
+                                    <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ad</label>
+                                        <input type="text" name="name"
+                                            value="<?php echo htmlspecialchars($company['name']); ?>"
+                                            class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Telefon</label>
+                                        <input type="text" name="phone"
+                                            value="<?php echo htmlspecialchars($company['phone']); ?>"
+                                            class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Adres</label>
+                                        <input type="text" name="address"
+                                            value="<?php echo htmlspecialchars($company['address']); ?>"
+                                            class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">E-posta</label>
+                                        <input type="email" name="email"
+                                            value="<?php echo htmlspecialchars($company['email']); ?>"
+                                            class="form-control">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Kapat</button>
+                                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
+                </div>
                 <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <div class="row g-3 cards-row">
+            <?php foreach ($companies as $company): ?>
+            <div class="col-12 col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo htmlspecialchars($company['name']); ?></h5>
+                        <p class="card-text">
+                            Telefon: <?php echo htmlspecialchars($company['phone']); ?><br>
+                            Adres: <?php echo htmlspecialchars($company['address']); ?><br>
+                            E-posta: <?php echo htmlspecialchars($company['email']); ?>
+                        </p>
+                        <div class="text-end">
+                            <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
+                                data-bs-target="#editModal<?php echo $company['id']; ?>"><i
+                                    class="bi bi-pencil"></i></button>
+                            <?php if (is_admin($pdo)): ?>
+                            <a href="log-list.php?table=companies&id=<?php echo $company['id']; ?>"
+                                class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                            <?php endif; ?>
+                            <form method="post" action="company" class="d-inline-block"
+                                onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal<?php echo $company['id']; ?>" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Firma Düzenle</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="company">
+                            <div class="modal-body">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="id" value="<?php echo $company['id']; ?>">
+                                <div class="mb-3">
+                                    <label class="form-label">Ad</label>
+                                    <input type="text" name="name"
+                                        value="<?php echo htmlspecialchars($company['name']); ?>" class="form-control"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Telefon</label>
+                                    <input type="text" name="phone"
+                                        value="<?php echo htmlspecialchars($company['phone']); ?>" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Adres</label>
+                                    <input type="text" name="address"
+                                        value="<?php echo htmlspecialchars($company['address']); ?>"
+                                        class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">E-posta</label>
+                                    <input type="email" name="email"
+                                        value="<?php echo htmlspecialchars($company['email']); ?>" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
         <?php endif; ?>
     </div>
     <!-- Filter Modal -->
@@ -303,7 +307,8 @@ $companies = $stmt->fetchAll();
                             <label class="form-label">Sıralama</label>
                             <select name="sort" class="form-select">
                                 <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
-                                <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                                <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya
+                                </option>
                             </select>
                         </div>
                     </div>
