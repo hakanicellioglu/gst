@@ -47,21 +47,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtOld->execute([':id' => $id]);
         $oldData = $stmtOld->fetch();
 
-        $stmt = $pdo->prepare("UPDATE customers SET company_id = :company, first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
-        $stmt->execute([
-            ':company' => $_POST['company_id'],
-            ':first' => $_POST['first_name'],
-            ':last' => $_POST['last_name'],
-            ':title' => $_POST['title'],
-            ':email' => $_POST['email'],
-            ':phone' => $_POST['phone'],
-            ':address' => $_POST['address'],
-            ':id' => $id
-        ]);
-        $stmtNew = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
-        $stmtNew->execute([':id' => $id]);
-        $newData = $stmtNew->fetch();
-        logAction($pdo, 'customers', $id, 'update', $oldData, $newData);
+        $newData = [
+            'company_id' => $_POST['company_id'],
+            'first_name' => $_POST['first_name'],
+            'last_name'  => $_POST['last_name'],
+            'title'      => $_POST['title'],
+            'email'      => $_POST['email'],
+            'phone'      => $_POST['phone'],
+            'address'    => $_POST['address']
+        ];
+
+        $hasChanges = false;
+        foreach ($newData as $field => $value) {
+            if ($oldData[$field] != $value) {
+                $hasChanges = true;
+                break;
+            }
+        }
+
+        if ($hasChanges) {
+            $stmt = $pdo->prepare("UPDATE customers SET company_id = :company, first_name = :first, last_name = :last, title = :title, email = :email, phone = :phone, address = :address WHERE id = :id");
+            $stmt->execute([
+                ':company' => $newData['company_id'],
+                ':first' => $newData['first_name'],
+                ':last' => $newData['last_name'],
+                ':title' => $newData['title'],
+                ':email' => $newData['email'],
+                ':phone' => $newData['phone'],
+                ':address' => $newData['address'],
+                ':id' => $id
+            ]);
+            $stmtNew = $pdo->prepare('SELECT * FROM customers WHERE id = :id');
+            $stmtNew->execute([':id' => $id]);
+            $newData = $stmtNew->fetch();
+            logAction($pdo, 'customers', $id, 'update', $oldData, $newData);
+        }
         header('Location: customers');
         exit;
     } elseif ($action === 'delete') {
