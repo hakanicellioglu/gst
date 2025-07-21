@@ -171,6 +171,11 @@ $grand = $subtotal + $vat;
         .no-print {
             display: none;
         }
+
+        #print-container,
+        #print-container * {
+            display: none !important;
+        }
     }
     </style>
 </head>
