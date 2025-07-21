@@ -16,14 +16,16 @@ load_theme_settings($pdo);
 ?>
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Teklifler</title>
     <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
+
 <body class="bg-light">
-<?php
+    <?php
 
 // Load companies and customers
 $companyStmt = $pdo->query("SELECT id, name FROM companies ORDER BY name");
@@ -129,56 +131,62 @@ $cardUrl = 'offer?' . http_build_query($p);
 
 include 'includes/header.php';
 ?>
-<div class="container py-4">
-    <h2 class="mb-4">Teklifler</h2>
-    <?php if (!$canAdd): ?>
+    <div class="container py-4">
+        <h2 class="mb-4">Teklifler</h2>
+        <?php if (!$canAdd): ?>
         <div class="alert alert-warning">
-            Teklif ekleyebilmek için önce <a href="company" class="alert-link">firma</a> ve <a href="customers" class="alert-link">müşteri</a> eklemelisiniz.
+            Teklif ekleyebilmek için önce <a href="company" class="alert-link">firma</a> ve <a href="customers"
+                class="alert-link">müşteri</a> eklemelisiniz.
         </div>
-    <?php endif; ?>
-    <div class="row mb-3">
-        <div class="col-12 text-end">
-            <form method="get" class="form-inline-responsive d-inline-block me-2">
-                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara">
-                <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
-                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
-                <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
-            </form>
-            <form method="get" class="form-inline-responsive d-inline-block me-2">
-                <select name="sort" class="form-select" onchange="this.form.submit()">
-                    <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
-                    <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
-                </select>
-                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-                <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
-            </form>
-            <?php if ($canAdd): ?>
+        <?php endif; ?>
+        <div class="row mb-3">
+            <div class="col-12 text-end">
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                        class="form-control" placeholder="Teklif ara">
+                    <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                    <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
+                </form>
+                <form method="get" class="form-inline-responsive d-inline-block me-2">
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
+                        <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                        <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                    </select>
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                </form>
+                <?php if ($canAdd): ?>
                 <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
-            <?php endif; ?>
-            <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
-                <a href="<?php echo $listUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i class="bi bi-list"></i></a>
-                <a href="<?php echo $cardUrl; ?>" class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i class="bi bi-grid"></i></a>
+                <?php endif; ?>
+                <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
+                    <a href="<?php echo $listUrl; ?>"
+                        class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i
+                            class="bi bi-list"></i></a>
+                    <a href="<?php echo $cardUrl; ?>"
+                        class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i
+                            class="bi bi-grid"></i></a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <?php if ($view === 'list'): ?>
-    <table class="table table-bordered table-striped responsive-table">
-        <thead>
-            <tr>
-                <th>Firma</th>
-                <th>Müşteri</th>
-                <th>Tarih</th>
-                <th>Teslimat Süresi</th>
-                <th>Ödeme Yöntemi</th>
-                <th>Ödeme Süresi</th>
-                <th>Teklif Süresi</th>
-                <th>Vade</th>
-                <th class="text-center actions-col">İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($quotes as $q): ?>
+        <?php if ($view === 'list'): ?>
+        <table class="table table-bordered table-striped responsive-table">
+            <thead>
+                <tr>
+                    <th>Firma</th>
+                    <th>Müşteri</th>
+                    <th>Tarih</th>
+                    <th>Teslimat Süresi</th>
+                    <th>Ödeme Yöntemi</th>
+                    <th>Ödeme Süresi</th>
+                    <th>Teklif Süresi</th>
+                    <th>Vade</th>
+                    <th class="text-center actions-col">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($quotes as $q): ?>
                 <tr>
                     <td><?php echo htmlspecialchars($q['company_name']); ?></td>
                     <td><?php echo htmlspecialchars($q['customer_name']); ?></td>
@@ -189,26 +197,30 @@ include 'includes/header.php';
                     <td><?php echo htmlspecialchars($q['quote_validity']); ?></td>
                     <td><?php echo htmlspecialchars($q['maturity']); ?></td>
                     <td class="text-center">
-                        <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i class="bi bi-pencil"></i></a>
+                        <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i
+                                class="bi bi-pencil"></i></a>
                         <?php if (is_admin($pdo)): ?>
-                        <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                        <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>"
+                            class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                         <?php endif; ?>
-                        <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank" class="btn btn-sm bg-light text-dark" title="PDF">
+                        <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank"
+                            class="btn btn-sm bg-light text-dark" title="PDF">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </a>
-                        <form method="post" action="offer" class="d-inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                        <form method="post" action="offer" class="d-inline-block"
+                            onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
                             <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                         </form>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <?php else: ?>
-    <div class="row g-3 cards-row">
-        <?php foreach ($quotes as $q): ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <div class="row g-3 cards-row">
+            <?php foreach ($quotes as $q): ?>
             <div class="col-12 col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -223,14 +235,18 @@ include 'includes/header.php';
                             Vade: <?php echo htmlspecialchars($q['maturity']); ?>
                         </p>
                         <div class="text-end">
-                            <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i class="bi bi-pencil"></i></a>
+                            <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i
+                                    class="bi bi-pencil"></i></a>
                             <?php if (is_admin($pdo)): ?>
-                            <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
+                            <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>"
+                                class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                             <?php endif; ?>
-                            <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank" class="btn btn-sm bg-light text-dark" title="PDF">
+                            <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank"
+                                class="btn btn-sm bg-light text-dark" title="PDF">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
-                            <form method="post" action="offer" class="d-inline-block" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                            <form method="post" action="offer" class="d-inline-block"
+                                onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?php echo $q['id']; ?>">
                                 <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
@@ -239,38 +255,40 @@ include 'includes/header.php';
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
-</div>
-<!-- Filter Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" method="get" action="offer">
-            <div class="modal-header">
-                <h5 class="modal-title">Filtrele</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Ara</label>
-                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" class="form-control" placeholder="Teklif ara">
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" method="get" action="offer">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filtrele</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Sıralama</label>
-                    <select name="sort" class="form-select">
-                        <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
-                        <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
-                    </select>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Ara</label>
+                        <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                            class="form-control" placeholder="Teklif ara">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sıralama</label>
+                        <select name="sort" class="form-select">
+                            <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                            <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                <button type="submit" class="btn btn-<?php echo get_color(); ?>">Filtrele</button>
-            </div>
-        </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-<?php echo get_color(); ?>">Filtrele</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 </body>
+
 </html>
