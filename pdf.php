@@ -168,6 +168,11 @@ $grand = $subtotal + $vat;
     }
 
     @media print {
+
+        .container {
+            margin: 5svh;
+        }
+
         .no-print {
             display: none;
         }
@@ -226,29 +231,29 @@ $grand = $subtotal + $vat;
         <table class="table table-bordered table-sm">
             <thead class="table-dark">
                 <tr>
-                    <th>RAL Kodu</th>
-                    <th>Cam Rengi</th>
-                    <th>Sistem Tipi</th>
-                    <th>Adet</th>
-                    <th>En (mm)</th>
-                    <th>Boy (mm)</th>
-                    <th>Metraj (m)</th>
-                    <th>Toplam Metraj (m)</th>
-                    <th>Toplam Fiyat ₺</th>
+                    <th class="text-center py-3">RAL Kodu</th>
+                    <th class="text-center py-3">Cam Rengi</th>
+                    <th class="text-center py-3">Sistem Tipi</th>
+                    <th class="text-center py-3">Adet</th>
+                    <th class="text-center py-3">En (mm)</th>
+                    <th class="text-center py-3">Boy (mm)</th>
+                    <th class="text-center py-3">Metraj (m)</th>
+                    <th class="text-center py-3">Toplam Metraj (m)</th>
+                    <th class="text-center py-3">Toplam Fiyat ₺</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($products as $p): ?>
                 <tr>
-                    <td><?=htmlspecialchars($p['ral'])?></td>
-                    <td><?=htmlspecialchars($p['glass'])?></td>
-                    <td><?=htmlspecialchars($p['type'])?></td>
-                    <td><?=$p['qty']?></td>
-                    <td><?=$p['width']?></td>
-                    <td><?=$p['height']?></td>
-                    <td><?=number_format($p['meterage'], 2)?></td>
-                    <td><?=number_format($p['total_meterage'], 2)?></td>
-                    <td><?=number_format($p['total_price'], 2)?></td>
+                    <td class="text-center py-3"><?=htmlspecialchars($p['ral'])?></td>
+                    <td class="text-center py-3"><?=htmlspecialchars($p['glass'])?></td>
+                    <td class="text-center py-3"><?=htmlspecialchars($p['type'])?></td>
+                    <td class="text-center py-3"><?=$p['qty']?></td>
+                    <td class="text-center py-3"><?=$p['width']?></td>
+                    <td class="text-center py-3"><?=$p['height']?></td>
+                    <td class="text-center py-3"><?=number_format($p['meterage'], 2)?></td>
+                    <td class="text-center py-3"><?=number_format($p['total_meterage'], 2)?></td>
+                    <td class="text-center py-3"><?=number_format($p['total_price'], 2)?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -276,12 +281,12 @@ $grand = $subtotal + $vat;
         <table class="table table-bordered table-sm bank-accounts">
             <thead class="table-dark">
                 <tr>
-                    <th colspan="3">Banka Bilgileri</th>
+                    <th colspan="3" class="text-center py-3">Banka Bilgileri</th>
                 </tr>
                 <tr>
-                    <th>Banka Adı</th>
-                    <th>Firma Adı</th>
-                    <th>IBAN</th>
+                    <th class="py-3 text-center">Banka Adı</th>
+                    <th class="py-3 text-center">Firma Adı</th>
+                    <th class="py-3 text-center">IBAN</th>
                 </tr>
             </thead>
             <tbody>
@@ -295,9 +300,9 @@ $grand = $subtotal + $vat;
                 }
             ?>
                 <tr>
-                    <td><?=htmlspecialchars($bankName)?></td>
-                    <td><?=htmlspecialchars($companyName)?></td>
-                    <td><?=htmlspecialchars($b['iban'] ?? '')?></td>
+                    <td style="font-size: 10px"><?=htmlspecialchars($bankName)?></td>
+                    <td style="font-size: 10px"><?=htmlspecialchars($companyName)?></td>
+                    <td style="font-size: 10px"><?=htmlspecialchars($b['iban'] ?? '')?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -309,8 +314,8 @@ $grand = $subtotal + $vat;
                 <td>Müşteri Onayı</td>
             </tr>
             <tr>
-                <td>........................................</td>
-                <td>........................................</td>
+                <td class="py-4"></td>
+                <td class="py-4"></td>
             </tr>
         </table>
 
