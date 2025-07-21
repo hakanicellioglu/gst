@@ -16,6 +16,7 @@ $offerNumber = $_POST['offer_number'] ?? $_GET['offer_number'] ?? '';
 $delivery    = $_POST['delivery']     ?? $_GET['delivery']     ?? '';
 $payment     = $_POST['payment']      ?? $_GET['payment']      ?? '';
 $validity    = $_POST['validity']     ?? $_GET['validity']     ?? '';
+$preparedBy  = $_POST['prepared_by']  ?? $_GET['prepared_by']  ?? (($_SESSION['user']['first_name'] ?? '') . ' ' . ($_SESSION['user']['last_name'] ?? ''));
 
 $products = [];
 $quoteId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -84,12 +85,21 @@ if (empty($products)) {
     }
 }
 
-$banks = $_POST['banks'] ?? $_GET['banks'] ?? [];
-if (!$banks) {
-    $banks = [
-        ['name' => 'Albaraka',       'iban' => $_POST['iban1'] ?? $_GET['iban1'] ?? ''],
-        ['name' => 'Vakıf Katılım',  'iban' => $_POST['iban2'] ?? $_GET['iban2'] ?? ''],
-        ['name' => 'Vakıfbank',      'iban' => $_POST['iban3'] ?? $_GET['iban3'] ?? ''],
+$bankAccounts = $_POST['bank_accounts'] ?? $_GET['bank_accounts'] ?? [];
+if (!$bankAccounts) {
+    $bankAccounts = [
+        [
+            'name' => 'ALBARAKA TÜRK KATILIM BANKASI – ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
+            'iban' => 'TR33 0020 3000 0956 2368 0000 01',
+        ],
+        [
+            'name' => 'VAKIF KATILIM BANKASI – ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
+            'iban' => 'TR55 0021 0000 0008 3591 5000 01',
+        ],
+        [
+            'name' => 'VAKIF BANK – ALUMANN ALÜMİNYUM SANAYİ VE TİCARET A.Ş.',
+            'iban' => 'TR44 0001 5001 5800 7321 3983 24',
+        ],
     ];
 }
 
@@ -127,6 +137,9 @@ $grand = $subtotal + $vat;
 </head>
 <body>
 <div class="container">
+    <div class="no-print" style="text-align:right;">
+        <button onclick="history.back()">Geri</button>
+    </div>
     <h1>DEMONTE TEKLİF FORMU</h1>
     <table class="no-border">
         <tr>
@@ -191,13 +204,14 @@ $grand = $subtotal + $vat;
     <p><strong>Teslimat:</strong> <?=$delivery?></p>
     <p><strong>Ödeme:</strong> <?=$payment?></p>
     <p><strong>Teklif Geçerlilik:</strong> <?=$validity?></p>
+    <p><strong>Teklifi Hazırlayan:</strong> <?=htmlspecialchars($preparedBy)?></p>
 
     <table>
         <thead>
             <tr><th colspan="2">Banka Hesap Bilgileri</th></tr>
         </thead>
         <tbody>
-            <?php foreach ($banks as $b): ?>
+            <?php foreach ($bankAccounts as $b): ?>
             <tr>
                 <td><?=htmlspecialchars($b['name'])?></td>
                 <td><?=htmlspecialchars($b['iban'])?></td>
@@ -218,6 +232,7 @@ $grand = $subtotal + $vat;
     </table>
 
     <div class="no-print" style="text-align:center; margin-top:20px;">
+        <button onclick="history.back()">Geri</button>
         <button onclick="window.print()">Yazdır</button>
     </div>
 </div>
