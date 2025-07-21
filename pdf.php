@@ -139,6 +139,14 @@ $grand = $subtotal + $vat;
         margin: auto;
     }
 
+    .quote-header img {
+        max-height: 60px;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+
     h1 {
         text-align: center;
         color: #c00;
@@ -182,6 +190,10 @@ $grand = $subtotal + $vat;
             page-break-after: auto;
         }
 
+        thead {
+            display: table-row-group;
+        }
+
         .container {
             margin: 5svh;
         }
@@ -194,52 +206,60 @@ $grand = $subtotal + $vat;
         #print-container * {
             display: none !important;
         }
+
+        .page-break {
+            page-break-before: always;
+        }
     }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1 class="text-center text-danger">DEMONTE TEKLİF FORMU</h1>
+        <header class="quote-header text-center mb-3">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5+BFwADhgHqvh2xAAAAAElFTkSuQmCC" alt="Logo" class="mb-2" />
+            <h1 class="text-danger">DEMONTE TEKLİF FORMU</h1>
+
+            <div class="row justify-content-center">
+                <!-- Sol Sütun -->
+                <div class="col-md-6">
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Firma:</div>
+                        <div class="col-8"><?php echo htmlspecialchars($company); ?></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Sayın:</div>
+                        <div class="col-8"><?php echo htmlspecialchars($contact); ?></div>
+                    </div>
+                </div>
+
+                <!-- Sağ Sütun -->
+                <div class="col-md-6">
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Teklif No:</div>
+                        <div class="col-8"><?php echo $offerNumber; ?></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Teklif Tarihi:</div>
+                        <div class="col-8"><?php echo $offerDate; ?></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">Hazırlayan:</div>
+                        <div class="col-8"><?php echo htmlspecialchars($preparedBy); ?></div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-bold">E-posta:</div>
+                        <div class="col-8">siparis@alumann.com</div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
         <div class="no-print d-flex justify-content-end my-3" id="print-container">
             <button id="print-btn" class="btn btn-primary">Yazdır</button>
         </div>
 
-        <div class="row">
-            <!-- Sol Sütun -->
-            <div class="col-md-6">
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold">Firma:</div>
-                    <div class="col-8"><?php echo htmlspecialchars($company); ?></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold">Sayın:</div>
-                    <div class="col-8"><?php echo htmlspecialchars($contact); ?></div>
-                </div>
-            </div>
-
-            <!-- Sağ Sütun -->
-            <div class="col-md-6">
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold">Teklif No:</div>
-                    <div class="col-8"><?php echo $offerNumber; ?></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold">Teklif Tarihi:</div>
-                    <div class="col-8"><?php echo $offerDate; ?></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold">Hazırlayan:</div>
-                    <div class="col-8"><?php echo htmlspecialchars($preparedBy); ?></div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-4 fw-bold">E-posta:</div>
-                    <div class="col-8">siparis@alumann.com</div>
-                </div>
-            </div>
-        </div>
-
+        <div class="page-break"></div>
 
         <table class="table table-bordered table-sm">
             <thead class="table-dark">
