@@ -311,12 +311,24 @@ $grand = $subtotal + $vat;
         <table class="table table-bordered table-sm mt-3">
             <thead class="table-dark">
                 <tr>
-                    <th>Explanations</th>
+                    <th>Açıklamalar</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Unpaid orders will be invoiced based on the price valid on the shipment date. A 5% price difference will be added for deferred payments. Orders will only be scheduled after being checked and approved by the customer. For all custom-sized products, a production tolerance of ±10% applies, and the goods produced under this condition will be delivered to the customer. Shipping costs belong to the customer.</td>
+                    <td>ÖDEMESİ YAPILMAMIŞ SİPARİŞLER, SEVK TARİHİNDEKİ FİYATTAN FATURA EDİLİR.</td>
+                </tr>
+                <tr>
+                    <td>VADELİ ÖDEMELERDE %5 FİYAT FARKI EKLENECEKTİR.</td>
+                </tr>
+                <tr>
+                    <td>SİPARİŞLER MÜŞTERİ TARAFINDAN KONTROL EDİLİP ONAYLANDIKTAN SONRA PLANLAMAYA ALINIR.</td>
+                </tr>
+                <tr>
+                    <td>ÖZEL BOY TÜM ÜRÜNLERDE +-%10 ÜRETİLEBİLİR. BU DURUMDA ÜRETİLEN MAL MÜŞTERİYE SEVK EDİLİR.</td>
+                </tr>
+                <tr>
+                    <td>SİPARİŞLERDE NAKLİYE ÜCRETİ MÜŞTERİYE AİTTİR.</td>
                 </tr>
             </tbody>
         </table>
