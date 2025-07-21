@@ -118,47 +118,41 @@ $grand = $subtotal + $vat;
 <head>
 <meta charset="UTF-8">
 <title>DEMONTE TEKLİF FORMU</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
 <style>
     @page { size: A4; margin: 10mm; }
-    body { font-family: Arial, sans-serif; margin: 0; }
-    .container { width: 190mm; margin: auto; }
+    body { font-family: Arial, sans-serif; }
+    .pdf-container { width: 190mm; margin: auto; }
     h1 { text-align: center; color: #c00; margin-top: 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #000; padding: 4px; font-size: 12px; }
-    thead th { background: #c00; color: #fff; }
-    tfoot td { text-align: right; }
-    .no-border td { border: none; }
+    table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+    .table-bordered td, .table-bordered th { border: 1px solid #000 !important; }
     .signature td { height: 60px; text-align: center; border: none; }
-    .bank-accounts td { width: 33%; text-align: center; vertical-align: top; }
-    @media print {
-        .no-print { display: none; }
-    }
+    .bank-accounts td { text-align: center; vertical-align: top; }
+    @media print { .no-print { display: none; } }
 </style>
 </head>
 
 <body>
-<div class="container">
+<div class="container pdf-container">
     <div class="no-print" style="text-align:right;">
-        <button onclick="history.back()">Geri</button>
+        <button class="btn btn-secondary" onclick="history.back()">Geri</button>
     </div>
-    <h1>DEMONTE TEKLİF FORMU</h1>
-    <table class="no-border">
-        <tr>
-            <td><strong>Firma</strong></td>
-            <td><?=htmlspecialchars($company)?></td>
-            <td><strong>İlgili</strong></td>
-            <td><?=htmlspecialchars($contact)?></td>
-        </tr>
-        <tr>
-            <td><strong>Teklif Tarihi</strong></td>
-            <td><?=$offerDate?></td>
-            <td><strong>Teklif No</strong></td>
-            <td><?=$offerNumber?></td>
-        </tr>
-    </table>
+    <h1 class="text-center text-danger">DEMONTE TEKLİF FORMU</h1>
+    <div class="row mb-2">
+        <div class="col-3 fw-bold">Firma</div>
+        <div class="col-3"><?php echo htmlspecialchars($company); ?></div>
+        <div class="col-3 fw-bold">İlgili</div>
+        <div class="col-3"><?php echo htmlspecialchars($contact); ?></div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-3 fw-bold">Teklif Tarihi</div>
+        <div class="col-3"><?php echo $offerDate; ?></div>
+        <div class="col-3 fw-bold">Teklif No</div>
+        <div class="col-3"><?php echo $offerNumber; ?></div>
+    </div>
 
-    <table>
-        <thead>
+    <table class="table table-bordered table-sm">
+        <thead class="table-dark">
             <tr>
                 <th>RAL Kodu</th>
                 <th>Cam Rengi</th>
@@ -207,8 +201,8 @@ $grand = $subtotal + $vat;
     <p><strong>Teklif Geçerlilik:</strong> <?=$validity?></p>
     <p><strong>Teklifi Hazırlayan:</strong> <?=htmlspecialchars($preparedBy)?></p>
 
-    <table class="bank-accounts">
-        <thead>
+    <table class="table table-bordered table-sm bank-accounts">
+        <thead class="table-dark">
             <tr><th colspan="3">Banka Hesap Bilgileri</th></tr>
         </thead>
         <tbody>
@@ -223,7 +217,7 @@ $grand = $subtotal + $vat;
         </tbody>
     </table>
 
-    <table class="signature" style="margin-top:40px; width:100%;">
+    <table class="table table-bordered table-sm signature mt-4 w-100">
         <tr>
             <td>Teklif Onayı</td>
             <td>Müşteri Onayı</td>
@@ -235,8 +229,8 @@ $grand = $subtotal + $vat;
     </table>
 
     <div class="no-print" style="text-align:center; margin-top:20px;">
-        <button onclick="history.back()">Geri</button>
-        <button onclick="window.print()">Yazdır</button>
+        <button class="btn btn-secondary" onclick="history.back()">Geri</button>
+        <button class="btn btn-primary" onclick="window.print()">Yazdır</button>
     </div>
 </div>
 </body>
