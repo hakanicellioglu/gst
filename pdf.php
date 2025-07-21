@@ -168,6 +168,19 @@ $grand = $subtotal + $vat;
     }
 
     @media print {
+        tr {
+            page-break-inside: avoid;
+        }
+
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+            page-break-inside: avoid !important;
+            page-break-after: auto;
+        }
 
         .container {
             margin: 5svh;
@@ -277,6 +290,30 @@ $grand = $subtotal + $vat;
         <p><strong>Ödeme:</strong> <?=$payment?></p>
         <p><strong>Teklif Geçerlilik:</strong> <?=$validity?></p>
 
+        <table class="table table-bordered table-sm mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center py-3">Açıklamalar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ÖDEMESİ YAPILMAMIŞ SİPARİŞLER, SEVK TARİHİNDEKİ FİYATTAN FATURA EDİLİR.</td>
+                </tr>
+                <tr>
+                    <td>VADELİ ÖDEMELERDE %5 FİYAT FARKI EKLENECEKTİR.</td>
+                </tr>
+                <tr>
+                    <td>SİPARİŞLER MÜŞTERİ TARAFINDAN KONTROL EDİLİP ONAYLANDIKTAN SONRA PLANLAMAYA ALINIR.</td>
+                </tr>
+                <tr>
+                    <td>ÖZEL BOY TÜM ÜRÜNLERDE ±%10 ÜRETİLEBİLİR. BU DURUMDA ÜRETİLEN MAL MÜŞTERİYE SEVK EDİLİR.</td>
+                </tr>
+                <tr>
+                    <td>SİPARİŞLERDE NAKLİYE ÜCRETİ MÜŞTERİYE AİTTİR.</td>
+                </tr>
+            </tbody>
+        </table>
 
         <table class="table table-bordered table-sm bank-accounts">
             <thead class="table-dark">
@@ -305,31 +342,6 @@ $grand = $subtotal + $vat;
                     <td style="font-size: 10px"><?=htmlspecialchars($b['iban'] ?? '')?></td>
                 </tr>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
-
-        <table class="table table-bordered table-sm mt-3">
-            <thead class="table-dark">
-                <tr>
-                    <th>Açıklamalar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>ÖDEMESİ YAPILMAMIŞ SİPARİŞLER, SEVK TARİHİNDEKİ FİYATTAN FATURA EDİLİR.</td>
-                </tr>
-                <tr>
-                    <td>VADELİ ÖDEMELERDE %5 FİYAT FARKI EKLENECEKTİR.</td>
-                </tr>
-                <tr>
-                    <td>SİPARİŞLER MÜŞTERİ TARAFINDAN KONTROL EDİLİP ONAYLANDIKTAN SONRA PLANLAMAYA ALINIR.</td>
-                </tr>
-                <tr>
-                    <td>ÖZEL BOY TÜM ÜRÜNLERDE +-%10 ÜRETİLEBİLİR. BU DURUMDA ÜRETİLEN MAL MÜŞTERİYE SEVK EDİLİR.</td>
-                </tr>
-                <tr>
-                    <td>SİPARİŞLERDE NAKLİYE ÜCRETİ MÜŞTERİYE AİTTİR.</td>
-                </tr>
             </tbody>
         </table>
 
