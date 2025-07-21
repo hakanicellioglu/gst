@@ -61,22 +61,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtOld->execute([':id' => $id]);
         $oldData = $stmtOld->fetch();
 
-        $stmt = $pdo->prepare("UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id");
-        $stmt->execute([
-            ':company'  => $_POST['company_id'],
-            ':contact'  => $_POST['contact_id'],
-            ':date'     => $_POST['quote_date'],
-            ':delivery' => $_POST['delivery_term'],
-            ':method'   => $_POST['payment_method'],
-            ':due'      => $_POST['payment_due'],
-            ':validity' => $_POST['quote_validity'],
-            ':maturity' => $_POST['maturity'],
-            ':id'       => $id
-        ]);
-        $stmtNew = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
-        $stmtNew->execute([':id' => $id]);
-        $newData = $stmtNew->fetch();
-        logAction($pdo, 'master_quotes', $id, 'update', $oldData, $newData);
+        $hasChanges = $oldData['company_id'] != $_POST['company_id'] ||
+                      $oldData['contact_id'] != $_POST['contact_id'] ||
+                      $oldData['quote_date'] !== $_POST['quote_date'] ||
+                      $oldData['delivery_term'] !== $_POST['delivery_term'] ||
+                      $oldData['payment_method'] !== $_POST['payment_method'] ||
+                      $oldData['payment_due'] !== $_POST['payment_due'] ||
+                      $oldData['quote_validity'] !== $_POST['quote_validity'] ||
+                      $oldData['maturity'] !== $_POST['maturity'];
+
+        if ($hasChanges) {
+            $stmt = $pdo->prepare("UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id");
+            $stmt->execute([
+                ':company'  => $_POST['company_id'],
+                ':contact'  => $_POST['contact_id'],
+                ':date'     => $_POST['quote_date'],
+                ':delivery' => $_POST['delivery_term'],
+                ':method'   => $_POST['payment_method'],
+                ':due'      => $_POST['payment_due'],
+                ':validity' => $_POST['quote_validity'],
+                ':maturity' => $_POST['maturity'],
+                ':id'       => $id
+            ]);
+            $stmtNew = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
+            $stmtNew->execute([':id' => $id]);
+            $newData = $stmtNew->fetch();
+            logAction($pdo, 'master_quotes', $id, 'update', $oldData, $newData);
+        }
         header('Location: offer');
         exit;
     } elseif ($action === 'delete') {

@@ -74,21 +74,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $imageData = $oldData['image_data'];
             $imageType = $oldData['image_type'];
         }
-        $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category, image_data = :image_data, image_type = :image_type WHERE id = :id");
-        $stmt->bindParam(':name', $_POST['name']);
-        $stmt->bindParam(':code', $_POST['code']);
-        $stmt->bindParam(':unit', $unit);
-        $stmt->bindParam(':measure_value', $measureValue);
-        $stmt->bindParam(':unit_price', $_POST['unit_price']);
-        $stmt->bindParam(':category', $category);
-        $stmt->bindParam(':image_data', $imageData, PDO::PARAM_LOB);
-        $stmt->bindParam(':image_type', $imageType);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $stmtNew = $pdo->prepare('SELECT * FROM products WHERE id = :id');
-        $stmtNew->execute([':id' => $id]);
-        $newData = $stmtNew->fetch();
-        logAction($pdo, 'products', $id, 'update', $oldData, $newData);
+
+        $hasChanges = $oldData['name'] !== $_POST['name'] ||
+                      $oldData['code'] !== $_POST['code'] ||
+                      $oldData['unit'] !== $unit ||
+                      (float)$oldData['measure_value'] != (float)$measureValue ||
+                      (float)$oldData['unit_price'] != (float)$_POST['unit_price'] ||
+                      $oldData['category'] !== $category ||
+                      $oldData['image_data'] !== $imageData ||
+                      $oldData['image_type'] !== $imageType;
+
+        if ($hasChanges) {
+            $stmt = $pdo->prepare("UPDATE products SET name = :name, code = :code, unit = :unit, measure_value = :measure_value, unit_price = :unit_price, category = :category, image_data = :image_data, image_type = :image_type WHERE id = :id");
+            $stmt->bindParam(':name', $_POST['name']);
+            $stmt->bindParam(':code', $_POST['code']);
+            $stmt->bindParam(':unit', $unit);
+            $stmt->bindParam(':measure_value', $measureValue);
+            $stmt->bindParam(':unit_price', $_POST['unit_price']);
+            $stmt->bindParam(':category', $category);
+            $stmt->bindParam(':image_data', $imageData, PDO::PARAM_LOB);
+            $stmt->bindParam(':image_type', $imageType);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            $stmtNew = $pdo->prepare('SELECT * FROM products WHERE id = :id');
+            $stmtNew->execute([':id' => $id]);
+            $newData = $stmtNew->fetch();
+            logAction($pdo, 'products', $id, 'update', $oldData, $newData);
+        }
         header('Location: product');
         exit;
     } elseif ($action === 'delete') {
