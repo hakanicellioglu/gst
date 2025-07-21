@@ -17,7 +17,6 @@ $delivery    = $_POST['delivery']     ?? $_GET['delivery']     ?? '';
 $payment     = $_POST['payment']      ?? $_GET['payment']      ?? '';
 $validity    = $_POST['validity']     ?? $_GET['validity']     ?? '';
 $preparedBy  = $_POST['prepared_by']  ?? $_GET['prepared_by']  ?? (($_SESSION['user']['first_name'] ?? '') . ' ' . ($_SESSION['user']['last_name'] ?? ''));
-
 $products = [];
 $quoteId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($quoteId) {
@@ -136,6 +135,7 @@ $grand = $subtotal + $vat;
     }
 </style>
 </head>
+
 <body>
 <div class="container">
     <div class="no-print" style="text-align:right;">
@@ -240,4 +240,5 @@ $grand = $subtotal + $vat;
     </div>
 </div>
 </body>
+
 </html>
