@@ -303,6 +303,19 @@ $grand = $subtotal + $vat;
             </tbody>
         </table>
 
+        <table class="table table-bordered table-sm mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Explanations</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Unpaid orders will be invoiced based on the price valid on the shipment date. A 5% price difference will be added for deferred payments. Orders will only be scheduled after being checked and approved by the customer. For all custom-sized products, a production tolerance of ±10% applies, and the goods produced under this condition will be delivered to the customer. Shipping costs belong to the customer.</td>
+                </tr>
+            </tbody>
+        </table>
+
         <table class="table table-bordered table-sm signature mt-4 w-100">
             <tr>
                 <td>Teklif Onayı</td>
