@@ -179,8 +179,8 @@ $grand = $subtotal + $vat;
     <div class="container pdf-container">
         <h1 class="text-center text-danger">DEMONTE TEKLİF FORMU</h1>
 
-        <div class="no-print d-flex justify-content-end my-3">
-            <button class="btn btn-primary" onclick="window.print()">Yazdır</button>
+        <div class="no-print d-flex justify-content-end my-3" id="print-container">
+            <button id="print-btn" class="btn btn-primary">Yazdır</button>
         </div>
 
         <div class="row">
@@ -311,6 +311,14 @@ $grand = $subtotal + $vat;
 
 
     </div>
+    <script>
+    document.getElementById('print-btn').addEventListener('click', function() {
+        var container = document.getElementById('print-container');
+        container.style.display = 'none';
+        window.print();
+        container.style.display = '';
+    });
+    </script>
 </body>
 
 </html>
