@@ -224,11 +224,11 @@ $grand = $subtotal + $vat;
             <div class="row justify-content-center">
                 <!-- Sol Sütun -->
                 <div class="col-md-6">
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-4 fw-bold">Firma:</div>
                         <div class="col-8"><?php echo htmlspecialchars($company); ?></div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-4 fw-bold">Sayın:</div>
                         <div class="col-8"><?php echo htmlspecialchars($contact); ?></div>
                     </div>
@@ -236,19 +236,19 @@ $grand = $subtotal + $vat;
 
                 <!-- Sağ Sütun -->
                 <div class="col-md-6">
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-4 fw-bold">Teklif No:</div>
                         <div class="col-8"><?php echo $offerNumber; ?></div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-4 fw-bold">Teklif Tarihi:</div>
                         <div class="col-8"><?php echo $offerDate; ?></div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-4 fw-bold">Hazırlayan:</div>
                         <div class="col-8"><?php echo htmlspecialchars($preparedBy); ?></div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-4 fw-bold">E-posta:</div>
                         <div class="col-8">siparis@alumann.com</div>
                     </div>
@@ -260,7 +260,6 @@ $grand = $subtotal + $vat;
             <button id="print-btn" class="btn btn-primary">Yazdır</button>
         </div>
 
-        <div class="page-break"></div>
 
         <table class="table table-bordered table-sm">
             <thead class="table-dark">
@@ -310,6 +309,8 @@ $grand = $subtotal + $vat;
         <p><strong>Teslimat:</strong> <?=$delivery?></p>
         <p><strong>Ödeme:</strong> <?=$payment?></p>
         <p><strong>Teklif Geçerlilik:</strong> <?=$validity?></p>
+
+        <div class="page-break"></div>
 
         <table class="table table-bordered table-sm mt-3">
             <thead class="table-dark">
