@@ -1,6 +1,11 @@
 (function () {
     const BREAKPOINT = 768; // matches CSS @media breakpoint
 
+    // Bu sayfada çalışmasını istemiyoruz
+    if (window.location.pathname.includes('optimization.php')) {
+        return;
+    }
+
     function expectedView() {
         return window.innerWidth < BREAKPOINT ? 'card' : 'list';
     }
