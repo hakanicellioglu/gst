@@ -21,6 +21,7 @@ Ardından tarayıcınızdan `http://localhost:8000` adresini ziyaret edin.
 - Ürün görsellerini veritabanında saklama
 - Teklifleri PDF olarak dışa aktarma
 - Kullanıcı işlemlerini kaydeden denetim (audit) yapısı
+- Uygulama ve kullanıcı bazında ayarlanabilen genel ayar sistemi
 
 ## Örnek
 

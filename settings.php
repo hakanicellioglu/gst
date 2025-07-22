@@ -3,6 +3,7 @@ require_once 'config.php';
 require_once 'helpers/theme.php';
 require_once 'helpers/audit.php';
 require_once 'helpers/notifications.php';
+require_once 'helpers/settings.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -20,43 +21,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme = $_POST['theme'] ?? 'light';
     $color = $_POST['color'] ?? 'primary';
     $notify = isset($_POST['notify_email']) ? (bool)$_POST['notify_email'] : true;
+    $orderEmail = trim($_POST['order_email'] ?? '');
+    $currency   = trim($_POST['currency'] ?? '');
+    $timezone   = trim($_POST['timezone'] ?? '');
+    $dateFormat = trim($_POST['date_format'] ?? '');
     set_theme($theme);
     set_color($color);
     set_notification_pref($notify);
 
     try {
         $pdo->beginTransaction();
-        // Save theme setting
         $stmt = $pdo->prepare(
-            "INSERT INTO settings (user_id, `key`, value) " .
-            "VALUES (:user, 'theme', :val) " .
+            "INSERT INTO settings (user_id, `key`, value) VALUES (:user, :key, :val) " .
             "ON DUPLICATE KEY UPDATE value = VALUES(value)"
         );
-        $stmt->execute([
-            ':user' => $_SESSION['user']['id'],
-            ':val'  => json_encode($theme)
-        ]);
-
-        // Save color setting
-        $stmt = $pdo->prepare(
-            "INSERT INTO settings (user_id, `key`, value) " .
-            "VALUES (:user, 'color', :val) " .
-            "ON DUPLICATE KEY UPDATE value = VALUES(value)"
-        );
-        $stmt->execute([
-            ':user' => $_SESSION['user']['id'],
-            ':val'  => json_encode($color)
-        ]);
-        // Save notification preference
-        $stmt = $pdo->prepare(
-            "INSERT INTO settings (user_id, `key`, value) " .
-            "VALUES (:user, 'notify_email', :val) " .
-            "ON DUPLICATE KEY UPDATE value = VALUES(value)"
-        );
-        $stmt->execute([
-            ':user' => $_SESSION['user']['id'],
-            ':val'  => json_encode($notify)
-        ]);
+        $pairs = [
+            ['theme', $theme],
+            ['color', $color],
+            ['notify_email', $notify],
+            ['order_email', $orderEmail],
+            ['currency', $currency],
+            ['timezone', $timezone],
+            ['date_format', $dateFormat]
+        ];
+        foreach ($pairs as [$k, $v]) {
+            $stmt->execute([
+                ':user' => $_SESSION['user']['id'],
+                ':key'  => $k,
+                ':val'  => json_encode($v)
+            ]);
+        }
         $pdo->commit();
         logAction($pdo, 'settings', $_SESSION['user']['id'], 'update');
         $success = 'Ayarlar kaydedildi.';
@@ -82,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <ul class="nav flex-column position-sticky" style="top:2rem">
                     <li class="nav-item"><a class="nav-link active" href="#theme-settings">Tema Ayarları</a></li>
                     <li class="nav-item"><a class="nav-link" href="#notification-settings">Bildirim Ayarları</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#app-settings">Genel Ayarlar</a></li>
                 </ul>
             </nav>
             <div class="col-md-9">
@@ -129,6 +124,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <option value="1" <?php echo get_notification_pref() ? 'selected' : ''; ?>>Açık</option>
                                     <option value="0" <?php echo !get_notification_pref() ? 'selected' : ''; ?>>Kapalı</option>
                                 </select>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="app-settings" class="card mb-5">
+                        <div class="card-body">
+                            <h5 class="card-title">Genel Ayarlar</h5>
+                            <div class="mb-3">
+                                <label class="form-label" for="order_email">Sipariş E-posta</label>
+                                <input type="email" id="order_email" name="order_email" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'order_email')); ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="currency">Para Birimi</label>
+                                <input type="text" id="currency" name="currency" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'currency')); ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="timezone">Zaman Dilimi</label>
+                                <input type="text" id="timezone" name="timezone" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'timezone')); ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="date_format">Tarih Formatı</label>
+                                <input type="text" id="date_format" name="date_format" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'date_format')); ?>">
                             </div>
                         </div>
                     </section>
