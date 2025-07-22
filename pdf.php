@@ -9,8 +9,10 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-$company     = $_POST['company']      ?? $_GET['company']      ?? '';
-$contact     = $_POST['contact']      ?? $_GET['contact']      ?? '';
+$company        = $_POST['company']        ?? $_GET['company']        ?? '';
+$contact        = $_POST['contact']        ?? $_GET['contact']        ?? '';
+$contactEmail   = $_POST['contact_email']  ?? $_GET['contact_email']  ?? '';
+$contactPhone   = $_POST['contact_phone']  ?? $_GET['contact_phone']  ?? '';
 $offerDate   = $_POST['offer_date']   ?? $_GET['offer_date']   ?? date('d.m.Y');
 $offerNumber = $_POST['offer_number'] ?? $_GET['offer_number'] ?? '';
 $delivery    = $_POST['delivery']     ?? $_GET['delivery']     ?? '';
@@ -22,7 +24,8 @@ $quoteId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($quoteId) {
     $stmt = $pdo->prepare(
         'SELECT mq.*, co.name AS company_name, ' .
-        'CONCAT(cu.first_name, " ", cu.last_name) AS contact_name ' .
+        'CONCAT(cu.first_name, " ", cu.last_name) AS contact_name, ' .
+        'cu.email AS contact_email, cu.phone AS contact_phone ' .
         'FROM master_quotes mq ' .
         'LEFT JOIN companies co ON mq.company_id = co.id ' .
         'LEFT JOIN customers cu ON mq.contact_id = cu.id ' .
@@ -30,13 +33,15 @@ if ($quoteId) {
     );
     $stmt->execute([$quoteId]);
     if ($row = $stmt->fetch()) {
-        $company     = $row['company_name'];
-        $contact     = $row['contact_name'];
-        $offerDate   = date('d.m.Y', strtotime($row['quote_date']));
-        $offerNumber = 'TKF-' . $row['id'];
-        $delivery    = $row['delivery_term'];
-        $payment     = $row['payment_method'];
-        $validity    = $row['quote_validity'];
+        $company      = $row['company_name'];
+        $contact      = $row['contact_name'];
+        $contactEmail = $row['contact_email'] ?? '';
+        $contactPhone = $row['contact_phone'] ?? '';
+        $offerDate    = date('d.m.Y', strtotime($row['quote_date']));
+        $offerNumber  = 'TKF-' . $row['id'];
+        $delivery     = $row['delivery_term'];
+        $payment      = $row['payment_method'];
+        $validity     = $row['quote_validity'];
     }
 
     $gStmt = $pdo->prepare(
@@ -231,6 +236,14 @@ $grand = $subtotal + $vat;
                     <div class="row">
                         <div class="col-4 fw-bold">Sayın:</div>
                         <div class="col-8"><?php echo htmlspecialchars($contact); ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 fw-bold">Telefon:</div>
+                        <div class="col-8"><?php echo htmlspecialchars($contactPhone); ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 fw-bold">E-posta:</div>
+                        <div class="col-8"><?php echo htmlspecialchars($contactEmail); ?></div>
                     </div>
                 </div>
 
