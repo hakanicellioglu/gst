@@ -35,7 +35,8 @@
 }
 
 .actions-col {
-    width: 150px;
+    min-width: 150px;
+    white-space: nowrap;
 }
 
 .opt-img {

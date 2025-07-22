@@ -175,7 +175,7 @@ $customers = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($customer['email']); ?></td>
                             <td><?php echo htmlspecialchars($customer['phone']); ?></td>
                             <td><?php echo htmlspecialchars($customer['address']); ?></td>
-                            <td class="text-center">
+                            <td class="text-center actions-col">
                                 <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $customer['id']; ?>"><i class="bi bi-pencil"></i></button>
                                 <?php if (is_admin($pdo)): ?>
