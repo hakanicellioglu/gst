@@ -17,8 +17,16 @@ $quantity = 1;
 $glass_type = 'Isıcam';
 $profit_margin = 0;
 $returnPrice = false;
+$offerId = 0;
+$offerExists = true;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $offerId = (int) ($_POST['id'] ?? 0);
+    if ($offerId) {
+        $stmt = $pdo->prepare('SELECT id FROM master_quotes WHERE id = ?');
+        $stmt->execute([$offerId]);
+        $offerExists = $stmt->fetchColumn() !== false;
+    }
     $width = (float) ($_POST['width'] ?? 0);
     $height = (float) ($_POST['height'] ?? 0);
     $quantity = max(1, (int) ($_POST['quantity'] ?? 1));
@@ -192,6 +200,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <h2 class="mb-4">Optimizasyon Hesaplama</h2>
+        <?php if (!$offerExists && $offerId): ?>
+            <div class="alert alert-warning">Teklif bulunmadı.</div>
+        <?php endif; ?>
         <form method="post" class="mb-4">
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Genişliği</label>
@@ -221,6 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     value="<?php echo htmlspecialchars($profit_margin); ?>">
             </div>
             <input type="hidden" name="gid" value="<?php echo htmlspecialchars($_POST['gid'] ?? ''); ?>">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($_POST['id'] ?? $offerId); ?>">
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
         <?php if ($results): ?>

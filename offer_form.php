@@ -619,6 +619,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                 const quantity = document.getElementById('giyotinQty').value || 1;
                 const glass = document.getElementById('giyotinGlass').value;
                 const gid = document.getElementById('giyotinId').value;
+                const offerId = <?php echo json_encode($id); ?>;
 
                 if (!width || !height) {
                     alert('Lütfen genişlik ve yükseklik giriniz.');
@@ -634,7 +635,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                     '<input type="hidden" name="height" value="' + height + '">' +
                     '<input type="hidden" name="quantity" value="' + quantity + '">' +
                     '<input type="hidden" name="glass_type" value="' + glass + '">' +
-                    '<input type="hidden" name="gid" value="' + gid + '">';
+                    '<input type="hidden" name="gid" value="' + gid + '">' +
+                    '<input type="hidden" name="id" value="' + offerId + '">';
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
