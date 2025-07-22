@@ -210,7 +210,7 @@ $products = $stmt->fetchAll();
                             <td><?php echo htmlspecialchars($product['measure_value']); ?></td>
                             <td><?php echo htmlspecialchars($product['unit_price']); ?></td>
                             <td><?php echo htmlspecialchars($product['category']); ?></td>
-                            <td class="text-center">
+                            <td class="text-center actions-col">
                                 <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                                     data-bs-target="#editModal<?php echo $product['id']; ?>"><i class="bi bi-pencil"></i></button>
                                 <?php if (is_admin($pdo)): ?>

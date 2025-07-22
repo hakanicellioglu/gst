@@ -143,7 +143,7 @@ $companies = $stmt->fetchAll();
                     <td><?php echo htmlspecialchars($company['phone']); ?></td>
                     <td><?php echo htmlspecialchars($company['address']); ?></td>
                     <td><?php echo htmlspecialchars($company['email']); ?></td>
-                    <td class="text-center">
+                    <td class="text-center actions-col">
                         <button class="btn btn-sm bg-light text-dark" data-bs-toggle="modal"
                             data-bs-target="#editModal<?php echo $company['id']; ?>"><i
                                 class="bi bi-pencil"></i></button>

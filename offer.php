@@ -185,7 +185,7 @@ include 'includes/header.php';
                     <td><?php echo htmlspecialchars($q['payment_due']); ?></td>
                     <td><?php echo htmlspecialchars($q['quote_validity']); ?></td>
                     <td><?php echo htmlspecialchars($q['maturity']); ?></td>
-                    <td class="text-center">
+                    <td class="text-center actions-col">
                         <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i
                                 class="bi bi-pencil"></i></a>
                         <?php if (is_admin($pdo)): ?>
