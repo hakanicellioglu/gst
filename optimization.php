@@ -17,18 +17,30 @@ $quantity = 1;
 $glass_type = 'Isıcam';
 $profit_margin = 0;
 $returnPrice = false;
+$offerId = 0;
+$offerExists = true;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $width = (float) ($_POST['width'] ?? 0);
-    $height = (float) ($_POST['height'] ?? 0);
-    $quantity = max(1, (int) ($_POST['quantity'] ?? 1));
-    $glass_type = $_POST['glass_type'] ?? $glass_type;
-    $profit_margin = (float) ($_POST['profit_margin'] ?? 0);
-    $returnPrice = isset($_POST['return']);
+$input = array_merge($_GET, $_POST);
+$hasInput = $_SERVER['REQUEST_METHOD'] === 'POST' ||
+    (!empty($input['width']) && !empty($input['height']));
 
-    if (!empty($_POST['gid'])) {
+if ($hasInput) {
+    $offerId = (int) ($input['id'] ?? 0);
+    if ($offerId) {
+        $stmt = $pdo->prepare('SELECT id FROM master_quotes WHERE id = ?');
+        $stmt->execute([$offerId]);
+        $offerExists = $stmt->fetchColumn() !== false;
+    }
+    $width = (float) ($input['width'] ?? 0);
+    $height = (float) ($input['height'] ?? 0);
+    $quantity = max(1, (int) ($input['quantity'] ?? 1));
+    $glass_type = $input['glass_type'] ?? $glass_type;
+    $profit_margin = (float) ($input['profit_margin'] ?? 0);
+    $returnPrice = isset($input['return']);
+
+    if (!empty($input['gid'])) {
         $stmt = $pdo->prepare('SELECT glass_type FROM guillotine_quotes WHERE id = ?');
-        $stmt->execute([$_POST['gid']]);
+        $stmt->execute([$input['gid']]);
         $dbGlass = $stmt->fetchColumn();
         if ($dbGlass !== false) {
             $glass_type = $dbGlass;
@@ -192,6 +204,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <h2 class="mb-4">Optimizasyon Hesaplama</h2>
+        <?php if (!$offerExists && $offerId): ?>
+            <div class="alert alert-warning">Teklif bulunmadı.</div>
+        <?php endif; ?>
         <form method="post" class="mb-4">
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Genişliği</label>
@@ -220,7 +235,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="number" step="0.01" name="profit_margin" class="form-control"
                     value="<?php echo htmlspecialchars($profit_margin); ?>">
             </div>
-            <input type="hidden" name="gid" value="<?php echo htmlspecialchars($_POST['gid'] ?? ''); ?>">
+            <input type="hidden" name="gid" value="<?php echo htmlspecialchars($input['gid'] ?? ''); ?>">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($offerId); ?>">
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
         <?php if ($results): ?>

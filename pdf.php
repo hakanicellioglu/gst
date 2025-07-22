@@ -217,7 +217,8 @@ $grand = $subtotal + $vat;
 <body>
     <div class="container">
         <header class="quote-header text-center mb-3">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5+BFwADhgHqvh2xAAAAAElFTkSuQmCC" alt="Logo" class="mb-2" />
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5+BFwADhgHqvh2xAAAAAElFTkSuQmCC"
+                alt="Logo" class="mb-2" />
             <h1 class="text-danger">DEMONTE TEKLİF FORMU</h1>
 
             <div class="row justify-content-center">
