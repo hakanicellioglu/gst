@@ -45,7 +45,7 @@ if ($quoteId) {
     }
 
     $gStmt = $pdo->prepare(
-        'SELECT ral_code, glass_color, system_type, system_qty, width_mm, height_mm '
+        'SELECT ral_code, glass_color, system_type, system_qty, width_mm, height_mm, total_price '
         . 'FROM guillotine_quotes WHERE master_quote_id=?'
     );
     $gStmt->execute([$quoteId]);
@@ -58,6 +58,7 @@ if ($quoteId) {
             'width'  => $p['width_mm'],
             'height' => $p['height_mm'],
             'unit'   => 0,
+            'total_price' => $p['total_price'] ?? 0,
         ];
     }
 
@@ -75,6 +76,7 @@ if ($quoteId) {
             'width'  => $p['width_mm'],
             'height' => $p['height_mm'],
             'unit'   => 0,
+            'total_price' => 0,
         ];
     }
 }
@@ -114,7 +116,9 @@ $subtotal = 0;
 foreach ($products as &$p) {
     $p['meterage']       = (($p['width'] + $p['height']) * 2) / 1000;
     $p['total_meterage'] = $p['meterage'] * $p['qty'];
-    $p['total_price']    = $p['total_meterage'] * $p['unit'];
+    if (!isset($p['total_price'])) {
+        $p['total_price'] = $p['total_meterage'] * $p['unit'];
+    }
     $subtotal += $p['total_price'];
 }
 unset($p);
