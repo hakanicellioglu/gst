@@ -148,10 +148,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         (int) $_POST['system_qty'],
         $_POST['glass_type']
     );
-    $perUnit = $total / max(1, (int) $_POST['system_qty']);
     $stmt = $pdo->prepare(
-        "INSERT INTO guillotine_quotes (master_quote_id, system_type, width_mm, height_mm, system_qty, glass_type, glass_color, motor_system, remote_qty, ral_code, cost_per_unit, total_amount) " .
-        "VALUES (:master, 'Giyotin', :width, :height, :qty, :glass, :color, :motor, :remote_qty, :ral, :cost, :total)"
+        "INSERT INTO guillotine_quotes (master_quote_id, system_type, width_mm, height_mm, system_qty, glass_type, glass_color, motor_system, remote_qty, ral_code, total_amount) " .
+        "VALUES (:master, 'Giyotin', :width, :height, :qty, :glass, :color, :motor, :remote_qty, :ral, :total)"
     );
     $stmt->execute([
         ':master' => $id,
@@ -163,7 +162,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         ':motor' => $_POST['motor_system'],
         ':remote_qty' => $_POST['remote_qty'],
         ':ral' => $_POST['ral_code'],
-        ':cost' => $perUnit,
         ':total' => $total
     ]);
     $newId = $pdo->lastInsertId();
@@ -216,10 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
         (int) $_POST['system_qty'],
         $_POST['glass_type']
     );
-    $perUnit = $total / max(1, (int) $_POST['system_qty']);
-
     $stmt = $pdo->prepare(
-        "UPDATE guillotine_quotes SET width_mm=:width, height_mm=:height, system_qty=:qty, glass_type=:glass, glass_color=:color, motor_system=:motor, remote_qty=:remote_qty, ral_code=:ral, cost_per_unit=:cost, total_amount=:total WHERE id=:gid AND master_quote_id=:master"
+        "UPDATE guillotine_quotes SET width_mm=:width, height_mm=:height, system_qty=:qty, glass_type=:glass, glass_color=:color, motor_system=:motor, remote_qty=:remote_qty, ral_code=:ral, total_amount=:total WHERE id=:gid AND master_quote_id=:master"
     );
     $stmt->execute([
         ':width' => $_POST['width_mm'],
@@ -230,7 +226,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
         ':motor' => $_POST['motor_system'],
         ':remote_qty' => $_POST['remote_qty'],
         ':ral' => $_POST['ral_code'],
-        ':cost' => $perUnit,
         ':total' => $total,
         ':gid' => $_POST['gid'],
         ':master' => $id
