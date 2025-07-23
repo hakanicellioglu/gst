@@ -144,7 +144,8 @@ CREATE TABLE `guillotine_quotes` (
   `remote_qty` int(10) UNSIGNED DEFAULT NULL,
   `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `glass_type` varchar(50) DEFAULT NULL,
-  `glass_color` varchar(50) DEFAULT NULL
+  `glass_color` varchar(50) DEFAULT NULL,
+  `total_price` decimal(14,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------

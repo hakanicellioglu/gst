@@ -188,6 +188,11 @@ if ($hasInput) {
     }
     $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
     $sales_price = $total_cost * (1 + $profit_margin / 100);
+
+    if ($offerId && $offerExists && !empty($input['gid'])) {
+        $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=? WHERE id=?');
+        $stmt->execute([round($sales_price, 2), (int)$input['gid']]);
+    }
 }
 ?>
 <!DOCTYPE html>
