@@ -1,6 +1,21 @@
 <?php
 require_once 'config.php';
-require_once __DIR__ . '/vendor/autoload.php';
+
+$autoloadPaths = [
+    __DIR__ . '/vendor/autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+];
+$autoloadLoaded = false;
+foreach ($autoloadPaths as $autoload) {
+    if (file_exists($autoload)) {
+        require_once $autoload;
+        $autoloadLoaded = true;
+        break;
+    }
+}
+if (!$autoloadLoaded || !class_exists('\\Mpdf\\Mpdf')) {
+    die('mPDF library not found. Run "composer install" to install dependencies.');
+}
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
