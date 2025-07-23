@@ -1,5 +1,7 @@
 <?php
 require_once 'config.php';
+require_once __DIR__ . '/vendor/autoload.php';
+use Mpdf\Mpdf;
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -120,6 +122,8 @@ foreach ($products as &$p) {
 unset($p);
 $vat   = $subtotal * 0.20;
 $grand = $subtotal + $vat;
+$mpdf = new Mpdf(['format' => 'A4']);
+ob_start();
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -269,9 +273,7 @@ $grand = $subtotal + $vat;
             </div>
         </header>
 
-        <div class="no-print d-flex justify-content-end my-3" id="print-container">
-            <button id="print-btn" class="btn btn-primary">Yazdır</button>
-        </div>
+
 
 
         <table class="table table-bordered table-sm">
@@ -393,14 +395,10 @@ $grand = $subtotal + $vat;
 
 
     </div>
-    <script>
-    document.getElementById('print-btn').addEventListener('click', function() {
-        var container = document.getElementById('print-container');
-        container.style.display = 'none';
-        window.print();
-        container.style.display = '';
-    });
-    </script>
 </body>
-
 </html>
+<?php
+$html = ob_get_clean();
+$mpdf->WriteHTML($html);
+$mpdf->Output('teklif.pdf', 'I');
+?>
