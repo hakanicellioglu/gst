@@ -98,7 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Fetch quotes
 $search = $_GET['search'] ?? '';
 $sort = (isset($_GET['sort']) && $_GET['sort'] === 'desc') ? 'DESC' : 'ASC';
-$query = "SELECT mq.*, co.name AS company_name, CONCAT(cu.first_name,' ',cu.last_name) AS customer_name
+$query = "SELECT mq.*,
+                 co.name AS company_name,
+                 CONCAT(cu.first_name,' ',cu.last_name) AS customer_name,
+                 (SELECT COUNT(*) FROM guillotine_quotes gq WHERE gq.master_quote_id = mq.id) AS g_count,
+                 (SELECT COUNT(*) FROM sliding_quotes sq WHERE sq.master_quote_id = mq.id) AS s_count
           FROM master_quotes mq
           LEFT JOIN companies co ON mq.company_id = co.id
           LEFT JOIN customers cu ON mq.contact_id = cu.id
@@ -176,6 +180,7 @@ include 'includes/header.php';
             </thead>
             <tbody>
                 <?php foreach ($quotes as $q): ?>
+                <?php $hasProducts = ($q['g_count'] + $q['s_count']) > 0; ?>
                 <tr>
                     <td><?php echo htmlspecialchars($q['company_name']); ?></td>
                     <td><?php echo htmlspecialchars($q['customer_name']); ?></td>
@@ -192,8 +197,8 @@ include 'includes/header.php';
                         <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>"
                             class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                         <?php endif; ?>
-                        <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank"
-                            class="btn btn-sm bg-light text-dark" title="PDF">
+                        <a <?php if ($hasProducts): ?>href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank"<?php endif; ?>
+                            class="btn btn-sm bg-light text-dark<?php echo $hasProducts ? '' : ' disabled'; ?>" title="PDF">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </a>
                         <form method="post" action="offer" class="d-inline-block"
@@ -210,6 +215,7 @@ include 'includes/header.php';
         <?php else: ?>
         <div class="row g-3 cards-row">
             <?php foreach ($quotes as $q): ?>
+            <?php $hasProducts = ($q['g_count'] + $q['s_count']) > 0; ?>
             <div class="col-12 col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -230,8 +236,8 @@ include 'includes/header.php';
                             <a href="log-list.php?table=master_quotes&id=<?php echo $q['id']; ?>"
                                 class="btn btn-sm bg-light text-dark" title="Logları Gör"><i class="bi bi-eye"></i></a>
                             <?php endif; ?>
-                            <a href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank"
-                                class="btn btn-sm bg-light text-dark" title="PDF">
+                            <a <?php if ($hasProducts): ?>href="pdf.php?id=<?php echo $q['id']; ?>" target="_blank"<?php endif; ?>
+                                class="btn btn-sm bg-light text-dark<?php echo $hasProducts ? '' : ' disabled'; ?>" title="PDF">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
                             <form method="post" action="offer" class="d-inline-block"
