@@ -150,8 +150,12 @@ if ($hasInput) {
 
     $total_cost = 0;
     foreach ($results as &$row) {
+        $lookupName = $row['name'];
+        if (in_array($lookupName, ['Yatay Tek Cam Çıtası', 'Dikey Tek Cam Çıtası'])) {
+            $lookupName = 'Tek Cam Çıtası';
+        }
         $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
-        $stmt->execute([$row['name']]);
+        $stmt->execute([$lookupName]);
         $product = $stmt->fetch();
         $row['cost'] = null;
         $row['category'] = $nameCategoryMap[$row['name']] ?? ($product['category'] ?? 'Diğer');
