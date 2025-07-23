@@ -145,6 +145,8 @@ CREATE TABLE `guillotine_quotes` (
   `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `glass_type` varchar(50) DEFAULT NULL,
   `glass_color` varchar(50) DEFAULT NULL,
+  `cost_per_unit` decimal(14,2) DEFAULT NULL,
+  `total_amount` decimal(14,2) DEFAULT NULL,
   `discount_rate` decimal(5,2) DEFAULT NULL,
   `discount_amount` decimal(14,2) DEFAULT NULL,
   `vat_rate` decimal(5,2) DEFAULT NULL,
