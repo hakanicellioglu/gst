@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 16 Tem 2025, 08:14:33
+-- Üretim Zamanı: 23 Tem 2025, 10:48:03
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -144,7 +144,12 @@ CREATE TABLE `guillotine_quotes` (
   `remote_qty` int(10) UNSIGNED DEFAULT NULL,
   `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `glass_type` varchar(50) DEFAULT NULL,
-  `glass_color` varchar(50) DEFAULT NULL
+  `glass_color` varchar(50) DEFAULT NULL,
+  `discount_rate` decimal(5,2) DEFAULT NULL,
+  `discount_amount` decimal(14,2) DEFAULT NULL,
+  `vat_rate` decimal(5,2) DEFAULT NULL,
+  `vat_amount` decimal(14,2) DEFAULT NULL,
+  `total_with_tax` decimal(14,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 -- --------------------------------------------------------
@@ -209,7 +214,7 @@ CREATE TABLE `products` (
   `measure_value` decimal(10,3) NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
   `category` varchar(50) DEFAULT NULL,
-  `image_data` LONGBLOB,
+  `image_data` longblob DEFAULT NULL,
   `image_type` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
