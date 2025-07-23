@@ -15,7 +15,12 @@ if (!isset($_SESSION['user'])) {
 $errors = [];
 $success = '';
 load_theme_settings($pdo);
+
 load_notification_settings($pdo);
+
+$currencyOptions = ['USD', 'EUR', 'TRY', 'GBP', 'JPY'];
+$timezoneOptions = timezone_identifiers_list();
+$dateFormatOptions = ['Y-m-d H:i', 'd/m/Y H:i', 'm/d/Y h:i A', 'd.m.Y H:i'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme = $_POST['theme'] ?? 'light';
@@ -136,15 +141,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="currency">Para Birimi</label>
-                                <input type="text" id="currency" name="currency" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'currency')); ?>">
+                                <select id="currency" name="currency" class="form-select">
+                                    <?php
+                                    $currentCurrency = get_setting($pdo, 'currency');
+                                    foreach ($currencyOptions as $cur) {
+                                        $sel = $currentCurrency === $cur ? 'selected' : '';
+                                        echo "<option value=\"$cur\" $sel>$cur</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="timezone">Zaman Dilimi</label>
-                                <input type="text" id="timezone" name="timezone" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'timezone')); ?>">
+                                <select id="timezone" name="timezone" class="form-select">
+                                    <?php
+                                    $currentTz = get_setting($pdo, 'timezone');
+                                    foreach ($timezoneOptions as $tz) {
+                                        $sel = $currentTz === $tz ? 'selected' : '';
+                                        echo "<option value=\"$tz\" $sel>$tz</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="date_format">Tarih Formatı</label>
-                                <input type="text" id="date_format" name="date_format" class="form-control" value="<?php echo htmlspecialchars(get_setting($pdo, 'date_format')); ?>">
+                                <select id="date_format" name="date_format" class="form-select">
+                                    <?php
+                                    $currentFormat = get_setting($pdo, 'date_format');
+                                    foreach ($dateFormatOptions as $fmt) {
+                                        $sel = $currentFormat === $fmt ? 'selected' : '';
+                                        echo "<option value=\"$fmt\" $sel>" . date($fmt) . "</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                     </section>
