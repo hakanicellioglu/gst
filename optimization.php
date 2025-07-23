@@ -104,7 +104,7 @@ if ($hasInput) {
         ['name' => 'Alt Kasa', 'length' => $alt_kasa, 'count' => $alt_kasa_qty],
         ['name' => 'Tutamak', 'length' => $tutamak, 'count' => $tutamak_qty],
         ['name' => 'Kenetli Baza', 'length' => $kenetli_baza, 'count' => $kenetli_baza_qty],
-        ['name' => 'Küpeşte Baza', 'length' => $kupeste_baza, 'count' => $kupeste_baza_qty],
+        ['name' => 'Küpeşte Bazası', 'length' => $kupeste_baza, 'count' => $kupeste_baza_qty],
         ['name' => 'Küpeşte', 'length' => $kupeste, 'count' => $kupeste_qty],
         ['name' => 'Yatay Tek Cam Çıtası', 'length' => $yatak_citasi, 'count' => $yatay_citasi_qty],
         ['name' => 'Dikey Tek Cam Çıtası', 'length' => $dikey_citasi, 'count' => $dikey_citasi_qty],
@@ -214,7 +214,7 @@ if ($hasInput) {
     <div class="container py-4">
         <h2 class="mb-4">Optimizasyon Hesaplama</h2>
         <?php if (!$offerExists && $offerId): ?>
-            <div class="alert alert-warning">Teklif bulunmadı.</div>
+        <div class="alert alert-warning">Teklif bulunmadı.</div>
         <?php endif; ?>
         <form method="post" class="mb-4">
             <div class="mb-3">
@@ -249,21 +249,21 @@ if ($hasInput) {
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
         <?php if ($results): ?>
-            <table class="table table-bordered mb-4">
-                <thead>
-                    <tr class="table-secondary">
-                        <th colspan="4">Cam</th>
-                    </tr>
-                    <tr>
-                        <th>En</th>
-                        <th>Boy</th>
-                        <th>Adet</th>
-                        <th>m²</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
-                        <?php
+        <table class="table table-bordered mb-4">
+            <thead>
+                <tr class="table-secondary">
+                    <th colspan="4">Cam</th>
+                </tr>
+                <tr>
+                    <th>En</th>
+                    <th>Boy</th>
+                    <th>Adet</th>
+                    <th>m²</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
+                <?php
                         $dims = preg_split('/[xX]/', $row['length']);
                         $en = isset($dims[0]) && is_numeric(trim($dims[0])) ? round(trim($dims[0])) : trim($dims[0] ?? '');
                         $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round(trim($dims[1])) : trim($dims[1] ?? '');
@@ -272,118 +272,120 @@ if ($hasInput) {
                             ? number_format($en * $boy * $row['count'] / 1e6, 2)
                             : '-';
                         ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($en); ?></td>
-                            <td><?php echo htmlspecialchars($boy); ?></td>
-                            <td><?php echo htmlspecialchars($adet); ?></td>
-                            <td><?php echo $m2; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                <tr>
+                    <td><?php echo htmlspecialchars($en); ?></td>
+                    <td><?php echo htmlspecialchars($boy); ?></td>
+                    <td><?php echo htmlspecialchars($adet); ?></td>
+                    <td><?php echo $m2; ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-            <table class="table table-bordered mb-4">
-                <thead>
-                    <tr>
-                        <tr class="table-secondary">
-                            <th colspan="4">Alüminyum</th>
-                        </tr>
-                        <th>Parça</th>
-                        <th>Uzunluk</th>
-                        <th>Adet</th>
-                        <th>Maliyet</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($groupedResults['Alüminyum'] ?? [] as $row): ?>
-                        <tr>
-                            <th>
-                                <?php if (!empty($row['image_src'])): ?>
-                                    <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" class="me-2 opt-img">
-                                <?php endif; ?>
-                                <?php echo htmlspecialchars($row['name']); ?>
-                            </th>
-                            <td>
-                                <?php
+        <table class="table table-bordered mb-4">
+            <thead>
+                <tr>
+                <tr class="table-secondary">
+                    <th colspan="4">Alüminyum</th>
+                </tr>
+                <th>Parça</th>
+                <th>Uzunluk</th>
+                <th>Adet</th>
+                <th>Maliyet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($groupedResults['Alüminyum'] ?? [] as $row): ?>
+                <tr>
+                    <th>
+                        <?php if (!empty($row['image_src'])): ?>
+                        <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" class="me-2 opt-img">
+                        <?php endif; ?>
+                        <?php echo htmlspecialchars($row['name']); ?>
+                    </th>
+                    <td>
+                        <?php
                                 echo is_numeric($row['length'])
                                     ? round($row['length'])
                                     : htmlspecialchars($row['length']);
                                 ?>
-                            </td>
-                            <td><?php echo htmlspecialchars($row['count']); ?></td>
-                            <td>
-                                <?php
-                                echo is_null($row['cost'])
+                    </td>
+                    <td><?php echo htmlspecialchars($row['count']); ?></td>
+                    <td>
+                        <?php
+                                echo is_null($row['cost']) 
                                     ? '-'
                                     : number_format(round($row['cost']), 0);
                                 ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-            <table class="table table-bordered mb-4">
-                <thead>
-                    <tr class="table-secondary">
-                        <th colspan="4">Aksesuar ve Fitil</th>
-                    </tr>
-                    <tr>
-                        <th>Parça</th>
-                        <th>Uzunluk</th>
-                        <th>Adet</th>
-                        <th>Maliyet</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach (['Aksesuar', 'Fitil', 'Diğer'] as $cat): ?>
-                        <?php if (!empty($groupedResults[$cat])): ?>
-                            <?php foreach ($groupedResults[$cat] as $row): ?>
-                                <tr>
-                                    <th>
-                                        <?php if (!empty($row['image_src'])): ?>
-                                            <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" class="me-2 opt-img">
-                                        <?php endif; ?>
-                                        <?php echo htmlspecialchars($row['name']); ?>
-                                    </th>
-                                    <td>
-                                        <?php
+        <table class="table table-bordered mb-4">
+            <thead>
+                <tr class="table-secondary">
+                    <th colspan="4">Aksesuar ve Fitil</th>
+                </tr>
+                <tr>
+                    <th>Parça</th>
+                    <th>Uzunluk</th>
+                    <th>Adet</th>
+                    <th>Maliyet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach (['Aksesuar', 'Fitil', 'Diğer'] as $cat): ?>
+                <?php if (!empty($groupedResults[$cat])): ?>
+                <?php foreach ($groupedResults[$cat] as $row): ?>
+                <tr>
+                    <th>
+                        <?php if (!empty($row['image_src'])): ?>
+                        <img src="<?php echo htmlspecialchars($row['image_src']); ?>" alt="" class="me-2 opt-img">
+                        <?php endif; ?>
+                        <?php echo htmlspecialchars($row['name']); ?>
+                    </th>
+                    <td>
+                        <?php
                                         echo is_numeric($row['length'])
                                             ? round($row['length'])
                                             : htmlspecialchars($row['length']);
                                         ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($row['count']); ?></td>
-                                    <td>
-                                        <?php
+                    </td>
+                    <td><?php echo htmlspecialchars($row['count']); ?></td>
+                    <td>
+                        <?php
                                         echo is_null($row['cost'])
                                             ? '-'
                                             : number_format(round($row['cost']), 0);
                                         ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    <tr>
-                        <th colspan="3" class="text-end">Toplam Maliyet</th>
-                        <th><?php echo number_format(round($total_cost), 0); ?></th>
-                    </tr>
-                    <tr>
-                        <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
-                        <th><?php echo number_format(round($sales_price), 0); ?></th>
-                    </tr>
-                </tbody>
-            </table>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                <?php endif; ?>
+                <?php endforeach; ?>
+                <tr>
+                    <th colspan="3" class="text-end">Toplam Maliyet</th>
+                    <th><?php echo number_format(round($total_cost), 0); ?></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
+                    <th><?php echo number_format(round($sales_price), 0); ?></th>
+                </tr>
+            </tbody>
+        </table>
         <?php endif; ?>
     </div>
     <?php if ($returnPrice && $results): ?>
-        <script>
-            if (window.opener) {
-                window.opener.postMessage({price: <?php echo json_encode(round($sales_price, 2)); ?>}, '*');
-                window.close();
-            }
-        </script>
+    <script>
+    if (window.opener) {
+        window.opener.postMessage({
+            price: <?php echo json_encode(round($sales_price, 2)); ?>
+        }, '*');
+        window.close();
+    }
+    </script>
     <?php endif; ?>
 </body>
 
