@@ -10,6 +10,32 @@ if (!isset($_SESSION['user'])) {
 }
 load_theme_settings($pdo);
 
+function to_ascii(string $str): string {
+    $map = [
+        'Ç' => 'C', 'ç' => 'c',
+        'Ğ' => 'G', 'ğ' => 'g',
+        'İ' => 'I', 'I' => 'I',
+        'ı' => 'i', 'Ö' => 'O', 'ö' => 'o',
+        'Ş' => 'S', 'ş' => 's',
+        'Ü' => 'U', 'ü' => 'u',
+    ];
+    return strtr($str, $map);
+}
+
+function fetchProductByName(PDO $pdo, string $name) {
+    $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
+    $stmt->execute([$name]);
+    $product = $stmt->fetch();
+    if (!$product) {
+        $altName = to_ascii($name);
+        if ($altName !== $name) {
+            $stmt->execute([$altName]);
+            $product = $stmt->fetch();
+        }
+    }
+    return $product ?: false;
+}
+
 $results = [];
 $width = '';
 $height = '';
@@ -150,9 +176,7 @@ if ($hasInput) {
 
     $total_cost = 0;
     foreach ($results as &$row) {
-        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
-        $stmt->execute([$row['name']]);
-        $product = $stmt->fetch();
+        $product = fetchProductByName($pdo, trim($row['name']));
         $row['cost'] = null;
         $row['category'] = $nameCategoryMap[$row['name']] ?? ($product['category'] ?? 'Diğer');
         if (!empty($product['image_data'])) {
