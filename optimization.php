@@ -162,6 +162,7 @@ if ($hasInput) {
         $stmt->execute([$lookupName]);
         $product = $stmt->fetch();
         $row['cost'] = null;
+        $row['weight'] = null;
         $row['category'] = $product['category'] ?? 'Diğer';
         if (!empty($product['image_data'])) {
             $row['image_src'] = 'data:' . $product['image_type'] . ';base64,' . base64_encode($product['image_data']);
@@ -183,8 +184,9 @@ if ($hasInput) {
                         $row['cost'] = $count * $product['unit_price'];
                         break;
                     case 'kg':
-                        $weight = $length * $product['measure_value'];
-                        $row['cost'] = $weight * $count * $product['unit_price'];
+                        $rowWeight = $length * $product['measure_value'] * $count;
+                        $row['cost'] = $rowWeight * $product['unit_price'];
+                        $row['weight'] = $rowWeight;
                         break;
                     default: // metre
                         $row['cost'] = $length * $count * $product['unit_price'];
@@ -360,11 +362,12 @@ if ($hasInput) {
             <thead>
                 <tr>
                 <tr class="table-secondary">
-                    <th colspan="4">Alüminyum</th>
+                    <th colspan="5">Alüminyum</th>
                 </tr>
                 <th>Parça</th>
                 <th>Uzunluk</th>
                 <th>Adet</th>
+                <th>Kg</th>
                 <th>Maliyet</th>
                 </tr>
             </thead>
@@ -387,7 +390,13 @@ if ($hasInput) {
                     <td><?php echo htmlspecialchars($row['count']); ?></td>
                     <td>
                         <?php
-                                echo is_null($row['cost']) 
+                                echo is_null($row['weight'])
+                                    ? '-' : number_format($row['weight'], 2);
+                                ?>
+                    </td>
+                    <td>
+                        <?php
+                                echo is_null($row['cost'])
                                     ? '-'
                                     : number_format(round($row['cost']), 0);
                                 ?>
