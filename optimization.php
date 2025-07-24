@@ -124,8 +124,8 @@ if ($hasInput) {
         ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincir_qty],
         ['name' => 'Flatbelt Kayış', 'length' => $flatbelt_kayis, 'count' => '-'],
         ['name' => 'Motor Borusu', 'length' => $motor_borusu, 'count' => $motor_borusu_qty],
-        ['name' => 'Motor Kutu Contası (m)', 'length' => '-', 'count' => $motor_kutu_contasi],
-        ['name' => 'Kanat Contası (m)', 'length' => '-', 'count' => $kanat_contasi],
+        ['name' => 'Motor Kutu Contası (m)', 'length' => $motor_kutu_contasi, 'count' => 1],
+        ['name' => 'Kanat Contası (m)', 'length' => $kanat_contasi, 'count' => $kanat_contasi],
         ['name' => 'Kenet Fitili (m)', 'length' => '-', 'count' => $kenet_fitili],
         ['name' => 'Kıl Fitil (m)', 'length' => '-', 'count' => $kil_fitil],
     ];
@@ -213,28 +213,28 @@ if ($hasInput) {
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Genişliği</label>
                 <input type="number" step="0.01" name="width" class="form-control" required
-                    value="<?php echo htmlspecialchars($width); ?>">
+                    value="<?php echo htmlspecialchars($width); ?>" disabled>
             </div>
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Yüksekliği</label>
                 <input type="number" step="0.01" name="height" class="form-control" required
-                    value="<?php echo htmlspecialchars($height); ?>">
+                    value="<?php echo htmlspecialchars($height); ?>" disabled>
             </div>
             <div class="mb-3">
                 <label class="form-label">Adet</label>
                 <input type="number" name="quantity" class="form-control" min="1"
-                    value="<?php echo htmlspecialchars($quantity); ?>">
+                    value="<?php echo htmlspecialchars($quantity); ?>" disabled>
             </div>
             <div class="mb-3">
                 <label class="form-label">Cam Tipi</label>
-                <select name="glass_type" class="form-select">
+                <select name="glass_type" class="form-select" disabled>
                     <option value="Isıcam" <?php echo $glass_type === 'Isıcam' ? 'selected' : ''; ?>>Isıcam</option>
                     <option value="Tek Cam" <?php echo $glass_type === 'Tek Cam' ? 'selected' : ''; ?>>Tek Cam</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label">Kar Marjı (%)</label>
-                <input type="number" step="0.01" name="profit_margin" class="form-control"
+                <input type="number" step="5.0" name="profit_margin" class="form-control"
                     value="<?php echo htmlspecialchars($profit_margin); ?>">
             </div>
             <input type="hidden" name="gid" value="<?php echo htmlspecialchars($input['gid'] ?? ''); ?>">
