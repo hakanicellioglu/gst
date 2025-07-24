@@ -241,17 +241,17 @@ if ($hasInput) {
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Genişliği</label>
                 <input type="number" step="0.01" name="width" class="form-control" required
-                    value="<?php echo htmlspecialchars($width); ?>" disabled>
+                    value="<?php echo htmlspecialchars($width); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Yüksekliği</label>
                 <input type="number" step="0.01" name="height" class="form-control" required
-                    value="<?php echo htmlspecialchars($height); ?>" disabled>
+                    value="<?php echo htmlspecialchars($height); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">Adet</label>
                 <input type="number" name="quantity" class="form-control" min="1"
-                    value="<?php echo htmlspecialchars($quantity); ?>" disabled>
+                    value="<?php echo htmlspecialchars($quantity); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">Cam Tipi</label>
@@ -259,6 +259,7 @@ if ($hasInput) {
                     <option value="Isıcam" <?php echo $glass_type === 'Isıcam' ? 'selected' : ''; ?>>Isıcam</option>
                     <option value="Tek Cam" <?php echo $glass_type === 'Tek Cam' ? 'selected' : ''; ?>>Tek Cam</option>
                 </select>
+                <input type="hidden" name="glass_type" value="<?php echo htmlspecialchars($glass_type); ?>">
             </div>
             <div class="mb-3">
                 <label class="form-label">Kar Marjı (%)</label>
