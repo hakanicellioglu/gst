@@ -249,89 +249,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
         </div>
     <?php else: ?>
         <form method="post">
-            <fieldset class="border p-3 mb-4">
-                <legend class="w-auto px-2">Firma ve Müşteri</legend>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Firma</label>
-                        <select name="company_id" class="form-select" required>
-                            <?php foreach ($companies as $co): ?>
-                                <option value="<?php echo $co['id']; ?>" <?php echo ($quote && $quote['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Müşteri</label>
-                        <select name="contact_id" class="form-select" required>
-                            <?php foreach ($customers as $cu): ?>
-                                <option value="<?php echo $cu['id']; ?>" <?php echo ($quote && $quote['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="border p-3 mb-4">
-                <legend class="w-auto px-2">Teslimat Bilgileri</legend>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Tarih</label>
-                        <input type="date" name="quote_date" class="form-control"
-                            value="<?php echo $quote ? htmlspecialchars($quote['quote_date']) : ''; ?>" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Teslimat Süresi</label>
-                        <input type="text" name="delivery_term" class="form-control"
-                            value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset class="border p-3 mb-4">
-                <legend class="w-auto px-2">Ödeme Bilgileri</legend>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Ödeme Yöntemi</label>
-                        <select name="payment_method" class="form-select">
-                            <?php
-                            $methods = ['Nakit', 'Havale/EFT', 'Kredi Kartı', 'Çek', 'Senet'];
-                            $current = $quote['payment_method'] ?? '';
-                            foreach ($methods as $method): ?>
-                                <option value="<?php echo $method; ?>" <?php echo $current === $method ? 'selected' : ''; ?>>
-                                    <?php echo $method; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Ödeme Süresi</label>
-                        <input type="text" name="payment_due" class="form-control"
-                            value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Teklif Süresi</label>
-                        <input type="text" name="quote_validity" class="form-control"
-                            value="<?php echo $quote ? htmlspecialchars($quote['quote_validity']) : ''; ?>">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Vade</label>
-                        <input type="text" name="maturity" class="form-control"
-                            value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Montaj</label>
-                        <select name="assembly_type" class="form-select">
-                            <?php
-                            $assemblyOptions = ['Demonte', 'Müşteri Montajlı', 'Bayi Montajlı'];
-                            $currentAssembly = $quote['assembly_type'] ?? '';
-                            foreach ($assemblyOptions as $opt): ?>
-                                <option value="<?php echo $opt; ?>" <?php echo $currentAssembly === $opt ? 'selected' : ''; ?>><?php echo $opt; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-            </fieldset>
+            <div class="mb-3">
+                <label class="form-label">Firma</label>
+                <select name="company_id" class="form-select" required>
+                    <?php foreach ($companies as $co): ?>
+                        <option value="<?php echo $co['id']; ?>" <?php echo ($quote && $quote['company_id'] == $co['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($co['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Müşteri</label>
+                <select name="contact_id" class="form-select" required>
+                    <?php foreach ($customers as $cu): ?>
+                        <option value="<?php echo $cu['id']; ?>" <?php echo ($quote && $quote['contact_id'] == $cu['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cu['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tarih</label>
+                <input type="date" name="quote_date" class="form-control"
+                    value="<?php echo $quote ? htmlspecialchars($quote['quote_date']) : ''; ?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Teslimat Süresi</label>
+                <input type="text" name="delivery_term" class="form-control"
+                    value="<?php echo $quote ? htmlspecialchars($quote['delivery_term']) : ''; ?>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ödeme Yöntemi</label>
+                <select name="payment_method" class="form-select">
+                    <?php
+                    $methods = ['Nakit', 'Havale/EFT', 'Kredi Kartı', 'Çek', 'Senet'];
+                    $current = $quote['payment_method'] ?? '';
+                    foreach ($methods as $method): ?>
+                        <option value="<?php echo $method; ?>" <?php echo $current === $method ? 'selected' : ''; ?>>
+                            <?php echo $method; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ödeme Süresi</label>
+                <input type="text" name="payment_due" class="form-control"
+                    value="<?php echo $quote ? htmlspecialchars($quote['payment_due']) : ''; ?>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Teklif Süresi</label>
+                <input type="text" name="quote_validity" class="form-control"
+                    value="<?php echo $quote ? htmlspecialchars($quote['quote_validity']) : ''; ?>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Vade</label>
+                <input type="text" name="maturity" class="form-control"
+                    value="<?php echo $quote ? htmlspecialchars($quote['maturity']) : ''; ?>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Montaj</label>
+                <select name="assembly_type" class="form-select">
+                    <?php
+                    $assemblyOptions = ['Demonte', 'Müşteri Montajlı', 'Bayi Montajlı'];
+                    $currentAssembly = $quote['assembly_type'] ?? '';
+                    foreach ($assemblyOptions as $opt): ?>
+                        <option value="<?php echo $opt; ?>" <?php echo $currentAssembly === $opt ? 'selected' : ''; ?>><?php echo $opt; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Kaydet</button>
         </form>
         <!-- Giyotin Modal -->
