@@ -10,6 +10,9 @@ if (!isset($_SESSION['user'])) {
 }
 load_theme_settings($pdo);
 
+// Default aluminum price per kilogram in TRY
+const ALUMINUM_COST_PER_KG = 202.39;
+
 $results = [];
 $width = '';
 $height = '';
@@ -187,10 +190,11 @@ if ($hasInput) {
                     case 'kg':
                         $weightPerPiece = $length * $product['measure_value'];
                         $row['weight'] = $weightPerPiece * $count;
-                        $row['cost'] = $row['weight'] * $product['unit_price'];
                         if (strtolower($product['category']) === 'alüminyum') {
+                            $product['unit_price'] = ALUMINUM_COST_PER_KG;
                             $total_weight += $row['weight'];
                         }
+                        $row['cost'] = $row['weight'] * $product['unit_price'];
                         break;
                     default: // metre
                         $row['cost'] = $length * $count * $product['unit_price'];
