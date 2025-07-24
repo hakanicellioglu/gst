@@ -91,8 +91,8 @@ if ($hasInput) {
     $dikey_baza_qty = 4 * $quantity;
     $zincir_qty = 2 * $quantity;
     $motor_borusu_qty = $quantity;
-    $motor_kutu_contasi = (($motor_kutusu * $quantity) + ($alt_kasa * $quantity)) / 1000;
-    $kanat_contasi = $kanat * $quantity * 2 / 1000;
+    $motor_kutu_contasi = (($motor_kutusu * $motor_kutusu_qty) + ($alt_kasa * $alt_kasa_qty)) / 1000;
+    $kanat_contasi = ($kanat * $kanat_qty) / 1000;
     $kenet_fitili = (($tutamak * $quantity) + ($kenetli_baza * $quantity)) / 1000;
     $kil_fitil = (($dikme * $quantity) + ($orta_dikme * $quantity * 2) + ($son_kapatma * $quantity) + ($kanat * $quantity)) / 1000;
 
