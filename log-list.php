@@ -96,6 +96,7 @@ if ($table && $recordId) {
         <?php endif; ?>
     </div>
     <?php include 'includes/footer.php'; ?>
+<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -114,6 +115,8 @@ if ($table && $recordId) {
         });
     });
     </script>
+=======
+>>>>>>> 028c5bbd4a52d4fc792c3e2f4c20cd83b0766502
 </body>
 
 </html>
