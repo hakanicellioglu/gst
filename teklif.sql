@@ -290,6 +290,7 @@ CREATE TABLE `master_quotes` (
   `payment_due` varchar(50) DEFAULT NULL,
   `quote_validity` varchar(50) DEFAULT NULL,
   `maturity` varchar(50) DEFAULT NULL,
+  `assembly_type` varchar(50) DEFAULT NULL,
   `total_amount` decimal(14,2) DEFAULT NULL,
   `discount_rate` decimal(5,2) DEFAULT NULL,
   `discount_amount` decimal(14,2) DEFAULT NULL,
@@ -302,8 +303,8 @@ CREATE TABLE `master_quotes` (
 -- Tablo döküm verisi `master_quotes`
 --
 
-INSERT INTO `master_quotes` (`id`, `company_id`, `contact_id`, `quote_date`, `prepared_by`, `delivery_term`, `payment_method`, `payment_due`, `quote_validity`, `maturity`, `total_amount`, `discount_rate`, `discount_amount`, `vat_rate`, `vat_amount`, `taxes_included_total`) VALUES
-(4, 1, 1, '2025-07-21', 1, '30', 'Nakit', '30', '10', '30', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `master_quotes` (`id`, `company_id`, `contact_id`, `quote_date`, `prepared_by`, `delivery_term`, `payment_method`, `payment_due`, `quote_validity`, `maturity`, `assembly_type`, `total_amount`, `discount_rate`, `discount_amount`, `vat_rate`, `vat_amount`, `taxes_included_total`) VALUES
+(4, 1, 1, '2025-07-21', 1, '30', 'Nakit', '30', '10', '30', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
