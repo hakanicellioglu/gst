@@ -51,11 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         ':master' => $id,
         ':width' => $_POST['width_mm'],
         ':height' => $_POST['height_mm'],
-        ':qty' => $_POST['system_qty'],
+        ':qty' => max(0, (int)$_POST['system_qty']),
         ':glass' => $_POST['glass_type'],
         ':color' => $_POST['glass_color'],
         ':motor' => $_POST['motor_system'],
-        ':remote_qty' => $_POST['remote_qty'],
+        ':remote_qty' => isset($_POST['remote_qty']) ? max(0, (int)$_POST['remote_qty']) : 0,
         ':ral' => $_POST['ral_code']
     ]);
     $newId = $pdo->lastInsertId();
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sliding']) && $id
         ':fastening' => $_POST['fastening_type'],
         ':glass' => $_POST['glass_type'],
         ':color' => $_POST['glass_color'],
-        ':qty' => $_POST['system_qty'],
+        ':qty' => max(0, (int)$_POST['system_qty']),
         ':ral' => $_POST['ral_code'],
         ':locking' => $_POST['locking']
     ]);
@@ -107,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
     $stmt->execute([
         ':width' => $_POST['width_mm'],
         ':height' => $_POST['height_mm'],
-        ':qty' => $_POST['system_qty'],
+        ':qty' => max(0, (int)$_POST['system_qty']),
         ':glass' => $_POST['glass_type'],
         ':color' => $_POST['glass_color'],
         ':motor' => $_POST['motor_system'],
-        ':remote_qty' => $_POST['remote_qty'],
+        ':remote_qty' => isset($_POST['remote_qty']) ? max(0, (int)$_POST['remote_qty']) : 0,
         ':ral' => $_POST['ral_code'],
         ':gid' => $_POST['gid'],
         ':master' => $id
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_sliding']) && $i
         ':fastening' => $_POST['fastening_type'],
         ':glass' => $_POST['glass_type'],
         ':color' => $_POST['glass_color'],
-        ':qty' => $_POST['system_qty'],
+        ':qty' => max(0, (int)$_POST['system_qty']),
         ':ral' => $_POST['ral_code'],
         ':locking' => $_POST['locking'],
         ':sid' => $_POST['sid'],
@@ -360,7 +360,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Adet</label>
-                                <input type="number" name="system_qty" id="giyotinQty" class="form-control" required>
+                                <input type="number" name="system_qty" id="giyotinQty" class="form-control" min="0" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Motor Sistemi</label>
@@ -393,7 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Kumanda Adedi</label>
-                                <input type="number" name="remote_qty" id="giyotinRemoteQty" class="form-control">
+                                <input type="number" name="remote_qty" id="giyotinRemoteQty" class="form-control" min="0">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">RAL Kod</label>
@@ -461,7 +461,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Sistem Adedi</label>
-                                <input type="number" name="system_qty" id="surmeQty" class="form-control" required>
+                                <input type="number" name="system_qty" id="surmeQty" class="form-control" min="0" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">RAL Kod</label>
