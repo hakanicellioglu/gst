@@ -94,7 +94,14 @@ if ($hasInput) {
     $motor_kutu_contasi = (($motor_kutusu * $motor_kutusu_qty) + ($alt_kasa * $alt_kasa_qty)) / 1000;
     $kanat_contasi = ($kanat * $kanat_qty) / 1000;
     $kenet_fitili = (($tutamak * $quantity) + ($kenetli_baza * $quantity)) / 1000;
-    $kil_fitil = (($dikme * $quantity) + ($orta_dikme * $quantity * 2) + ($son_kapatma * $quantity) + ($kanat * $quantity)) / 1000;
+    $kil_fitil = (
+        ($tutamak * $tutamak_qty) +
+        ($kenetli_baza * $kenetli_baza_qty) +
+        ($dikme * $dikme_qty) +
+        ($orta_dikme * $orta_dikme_qty * 2) +
+        ($son_kapatma * $son_kapatma_qty) +
+        ($kanat * $kanat_qty)
+    ) / 1000;
 
     $cam_adet = ($kanat_qty + $dikey_baza_qty) / 2;
 
