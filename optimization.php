@@ -124,10 +124,10 @@ if ($hasInput) {
         ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincir_qty],
         ['name' => 'Flatbelt Kayış', 'length' => $flatbelt_kayis, 'count' => '-'],
         ['name' => 'Motor Borusu', 'length' => $motor_borusu, 'count' => $motor_borusu_qty],
-        ['name' => 'Motor Kutu Contası (m)', 'length' => $motor_kutu_contasi, 'count' => '-'],
-        ['name' => 'Kanat Contası (m)', 'length' => $kanat_contasi, 'count' => '-'],
-        ['name' => 'Kenet Fitili (m)', 'length' => $kenet_fitili, 'count' => '-'],
-        ['name' => 'Kıl Fitil (m)', 'length' => $kil_fitil, 'count' => '-'],
+        ['name' => 'Motor Kutu Contası (m)', 'length' => '-', 'count' => $motor_kutu_contasi],
+        ['name' => 'Kanat Contası (m)', 'length' => '-', 'count' => $kanat_contasi],
+        ['name' => 'Kenet Fitili (m)', 'length' => '-', 'count' => $kenet_fitili],
+        ['name' => 'Kıl Fitil (m)', 'length' => '-', 'count' => $kil_fitil],
     ];
 
 
