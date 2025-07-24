@@ -156,12 +156,14 @@ if ($hasInput) {
         "Kıl Fitil (m)" => "Kıl Fitil",
     ];
     $total_cost = 0;
+    $total_weight = 0;
     foreach ($results as &$row) {
         $lookupName = $nameAliasMap[$row['name']] ?? $row['name'];
         $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
         $stmt->execute([$lookupName]);
         $product = $stmt->fetch();
         $row['cost'] = null;
+        $row['weight'] = null;
         $row['category'] = $product['category'] ?? 'Diğer';
         if (!empty($product['image_data'])) {
             $row['image_src'] = 'data:' . $product['image_type'] . ';base64,' . base64_encode($product['image_data']);
@@ -183,8 +185,12 @@ if ($hasInput) {
                         $row['cost'] = $count * $product['unit_price'];
                         break;
                     case 'kg':
-                        $weight = $length * $product['measure_value'];
-                        $row['cost'] = $weight * $count * $product['unit_price'];
+                        $weightPerPiece = $length * $product['measure_value'];
+                        $row['weight'] = $weightPerPiece * $count;
+                        $row['cost'] = $row['weight'] * $product['unit_price'];
+                        if (strtolower($product['category']) === 'alüminyum') {
+                            $total_weight += $row['weight'];
+                        }
                         break;
                     default: // metre
                         $row['cost'] = $length * $count * $product['unit_price'];
@@ -360,11 +366,12 @@ if ($hasInput) {
             <thead>
                 <tr>
                 <tr class="table-secondary">
-                    <th colspan="4">Alüminyum</th>
+                    <th colspan="5">Alüminyum</th>
                 </tr>
                 <th>Parça</th>
                 <th>Uzunluk</th>
                 <th>Adet</th>
+                <th>Ağırlık (kg)</th>
                 <th>Maliyet</th>
                 </tr>
             </thead>
@@ -387,13 +394,24 @@ if ($hasInput) {
                     <td><?php echo htmlspecialchars($row['count']); ?></td>
                     <td>
                         <?php
-                                echo is_null($row['cost']) 
+                                echo is_null($row['weight'])
+                                    ? '-' : number_format($row['weight'], 2);
+                                ?>
+                    </td>
+                    <td>
+                        <?php
+                                echo is_null($row['cost'])
                                     ? '-'
                                     : number_format(round($row['cost']), 0);
                                 ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <tr>
+                    <th colspan="3" class="text-end">Toplam Ağırlık</th>
+                    <th><?php echo number_format($total_weight, 2); ?></th>
+                    <th></th>
+                </tr>
             </tbody>
         </table>
 
