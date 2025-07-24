@@ -18,6 +18,7 @@ $offerNumber = $_POST['offer_number'] ?? $_GET['offer_number'] ?? '';
 $delivery    = $_POST['delivery']     ?? $_GET['delivery']     ?? '';
 $payment     = $_POST['payment']      ?? $_GET['payment']      ?? '';
 $validity    = $_POST['validity']     ?? $_GET['validity']     ?? '';
+$assemblyType = $_POST["assembly_type"] ?? $_GET["assembly_type"] ?? "Demonte";
 $preparedBy  = $_POST['prepared_by']  ?? $_GET['prepared_by']  ?? (($_SESSION['user']['first_name'] ?? '') . ' ' . ($_SESSION['user']['last_name'] ?? ''));
 $products = [];
 $quoteId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -42,6 +43,7 @@ if ($quoteId) {
         $delivery     = $row['delivery_term'];
         $payment      = $row['payment_method'];
         $validity     = $row['quote_validity'];
+        $assemblyType = $row["assembly_type"] ?? $assemblyType;
     }
 
     $gStmt = $pdo->prepare(
@@ -239,7 +241,7 @@ $grand = $subtotal + $vat;
         <header class="quote-header text-center mb-3">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/5+BFwADhgHqvh2xAAAAAElFTkSuQmCC"
                 alt="Logo" class="mb-2" />
-            <h1 class="text-danger">DEMONTE TEKLİF FORMU</h1>
+            <h1 class="text-danger"><?php echo htmlspecialchars(mb_strtoupper($assemblyType, 'UTF-8')); ?> TEKLİF FORMU</h1>
 
             <div class="row justify-content-center">
                 <!-- Sol Sütun -->
