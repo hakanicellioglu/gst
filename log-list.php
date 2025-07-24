@@ -28,23 +28,25 @@ if ($table && $recordId) {
 ?>
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Log Kayıtları</title>
     <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
+
 <body class="bg-light">
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <a href="javascript:history.back()" class="btn btn-secondary mb-3">Geri Dön</a>
         <?php if (!$table || !$recordId): ?>
-            <div class="alert alert-warning">Gerekli parametreler bulunamadı.</div>
+        <div class="alert alert-warning">Gerekli parametreler bulunamadı.</div>
         <?php elseif (!$logs): ?>
-            <div class="alert alert-warning">Kayıt bulunamadı.</div>
+        <div class="alert alert-warning">Kayıt bulunamadı.</div>
         <?php else: ?>
-            <?php foreach ($logs as $log): ?>
-                <?php
+        <?php foreach ($logs as $log): ?>
+        <?php
                     $old = json_decode($log['old_value'], true) ?: [];
                     $new = json_decode($log['new_value'], true) ?: [];
                     $keys = array_unique(array_merge(array_keys($old), array_keys($new)));
@@ -57,48 +59,55 @@ if ($table && $recordId) {
                         }
                     }
                 ?>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="text-muted small"><?php echo htmlspecialchars($log['action_time']); ?></div>
-                            <div>
-                                <span class="badge bg-primary"><?php echo htmlspecialchars($log['username'] ?? ''); ?></span>
-                                <span class="badge bg-info text-dark"><?php echo htmlspecialchars($log['action_name'] ?? ''); ?></span>
-                            </div>
-                        </div>
-                        <?php if (!empty($log['description'])): ?>
-                            <p class="text-secondary mb-2"><?php echo htmlspecialchars($log['description']); ?></p>
-                        <?php endif; ?>
-                        <?php if ($changes): ?>
-                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#log<?php echo $log['id']; ?>" aria-expanded="false" aria-controls="log<?php echo $log['id']; ?>">Değişiklikleri Göster</button>
-                            <div class="collapse mt-2" id="log<?php echo $log['id']; ?>">
-                                <?php foreach ($changes as $field => $diff): ?>
-                                    <div class="border-start border-3 ps-2 py-1 my-1">
-                                        <strong><?php echo htmlspecialchars($field); ?>:</strong>
-                                        <div>
-                                            <span class="text-danger">Eski: <?php echo htmlspecialchars(var_export($diff['old'], true)); ?></span> <br>
-                                            <span class="text-success">Yeni: <?php echo htmlspecialchars(var_export($diff['new'], true)); ?></span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="text-muted small"><?php echo htmlspecialchars($log['action_time']); ?></div>
+                    <div>
+                        <span class="badge bg-primary"><?php echo htmlspecialchars($log['username'] ?? ''); ?></span>
+                        <span
+                            class="badge bg-info text-dark"><?php echo htmlspecialchars($log['action_name'] ?? ''); ?></span>
                     </div>
                 </div>
-            <?php endforeach; ?>
+                <?php if (!empty($log['description'])): ?>
+                <p class="text-secondary mb-2"><?php echo htmlspecialchars($log['description']); ?></p>
+                <?php endif; ?>
+                <?php if ($changes): ?>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#log<?php echo $log['id']; ?>" aria-expanded="false"
+                    aria-controls="log<?php echo $log['id']; ?>">Değişiklikleri Göster</button>
+                <div class="collapse mt-2" id="log<?php echo $log['id']; ?>">
+                    <?php foreach ($changes as $field => $diff): ?>
+                    <div class="border-start border-3 ps-2 py-1 my-1">
+                        <strong><?php echo htmlspecialchars($field); ?>:</strong>
+                        <div>
+                            <span class="text-danger">Eski:
+                                <?php echo htmlspecialchars(var_export($diff['old'], true)); ?></span> <br>
+                            <span class="text-success">Yeni:
+                                <?php echo htmlspecialchars(var_export($diff['new'], true)); ?></span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
         <?php endif; ?>
-</div>
+    </div>
     <?php include 'includes/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (btn) {
-            btn.addEventListener('click', function (e) {
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
                 var target = document.querySelector(btn.getAttribute('data-bs-target'));
                 if (!target) return;
                 var collapse = bootstrap.Collapse.getInstance(target);
                 if (!collapse) {
-                    collapse = new bootstrap.Collapse(target, { toggle: false });
+                    collapse = new bootstrap.Collapse(target, {
+                        toggle: false
+                    });
                 }
                 collapse.toggle();
             });
@@ -106,4 +115,5 @@ if ($table && $recordId) {
     });
     </script>
 </body>
+
 </html>
