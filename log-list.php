@@ -96,27 +96,6 @@ if ($table && $recordId) {
         <?php endif; ?>
     </div>
     <?php include 'includes/footer.php'; ?>
-<<<<<<< HEAD
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                var target = document.querySelector(btn.getAttribute('data-bs-target'));
-                if (!target) return;
-                var collapse = bootstrap.Collapse.getInstance(target);
-                if (!collapse) {
-                    collapse = new bootstrap.Collapse(target, {
-                        toggle: false
-                    });
-                }
-                collapse.toggle();
-            });
-        });
-    });
-    </script>
-=======
->>>>>>> 028c5bbd4a52d4fc792c3e2f4c20cd83b0766502
 </body>
 
 </html>
