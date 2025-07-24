@@ -94,7 +94,14 @@ if ($hasInput) {
     $motor_kutu_contasi = (($motor_kutusu * $motor_kutusu_qty) + ($alt_kasa * $alt_kasa_qty)) / 1000;
     $kanat_contasi = ($kanat * $kanat_qty) / 1000;
     $kenet_fitili = (($tutamak * $quantity) + ($kenetli_baza * $quantity)) / 1000;
-    $kil_fitil = (($dikme * $quantity) + ($orta_dikme * $quantity * 2) + ($son_kapatma * $quantity) + ($kanat * $quantity)) / 1000;
+    $kil_fitil = (
+        ($tutamak * $tutamak_qty) +
+        ($kenetli_baza * $kenetli_baza_qty) +
+        ($dikme * $dikme_qty) +
+        ($orta_dikme * $orta_dikme_qty * 2) +
+        ($son_kapatma * $son_kapatma_qty) +
+        ($kanat * $kanat_qty)
+    ) / 1000;
 
     $cam_adet = ($kanat_qty + $dikey_baza_qty) / 2;
 
@@ -123,42 +130,23 @@ if ($hasInput) {
         ['name' => 'Kıl Fitil (m)', 'length' => $kil_fitil, 'count' => '-'],
     ];
 
-    $nameCategoryMap = [
-        'Motor Kutusu' => 'Alüminyum',
-        'Motor Kapak' => 'Alüminyum',
-        'Alt Kasa' => 'Alüminyum',
-        'Tutamak' => 'Alüminyum',
-        'Kenetli Baza' => 'Alüminyum',
-        'Küpeşte Baza' => 'Alüminyum',
-        'Küpeşte' => 'Alüminyum',
-        'Yatay Tek Cam Çıtası' => 'Alüminyum',
-        'Dikey Tek Cam Çıtası' => 'Alüminyum',
-        'Dikme' => 'Alüminyum',
-        'Orta Dikme' => 'Alüminyum',
-        'Son Kapatma' => 'Alüminyum',
-        'Kanat' => 'Alüminyum',
-        'Dikey Baza' => 'Alüminyum',
-        'Motor Borusu' => 'Alüminyum',
-        'Cam' => 'Cam',
-        'Zincir' => 'Aksesuar',
-        'Flatbelt Kayış' => 'Aksesuar',
-        'Motor Kutu Contası (m)' => 'Fitil',
-        'Kanat Contası (m)' => 'Fitil',
-        'Kenet Fitili (m)' => 'Fitil',
-        'Kıl Fitil (m)' => 'Fitil',
-    ];
 
+    $nameAliasMap = [
+        "Yatay Tek Cam Çıtası" => "Tek Cam Çıtası",
+        "Dikey Tek Cam Çıtası" => "Tek Cam Çıtası",
+        "Motor Kutu Contası (m)" => "Motor Kutu Contası",
+        "Kanat Contası (m)" => "Kanat Contası",
+        "Kenet Fitili (m)" => "Kenet Fitili",
+        "Kıl Fitil (m)" => "Kıl Fitil",
+    ];
     $total_cost = 0;
     foreach ($results as &$row) {
-        $lookupName = $row['name'];
-        if (in_array($lookupName, ['Yatay Tek Cam Çıtası', 'Dikey Tek Cam Çıtası'])) {
-            $lookupName = 'Tek Cam Çıtası';
-        }
+        $lookupName = $nameAliasMap[$row['name']] ?? $row['name'];
         $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
         $stmt->execute([$lookupName]);
         $product = $stmt->fetch();
         $row['cost'] = null;
-        $row['category'] = $nameCategoryMap[$row['name']] ?? ($product['category'] ?? 'Diğer');
+        $row['category'] = $product['category'] ?? 'Diğer';
         if (!empty($product['image_data'])) {
             $row['image_src'] = 'data:' . $product['image_type'] . ';base64,' . base64_encode($product['image_data']);
         } else {
