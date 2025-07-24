@@ -70,7 +70,7 @@ if ($table && $recordId) {
                             <p class="text-secondary mb-2"><?php echo htmlspecialchars($log['description']); ?></p>
                         <?php endif; ?>
                         <?php if ($changes): ?>
-                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#log<?php echo $log['id']; ?>">Değişiklikleri Göster</button>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#log<?php echo $log['id']; ?>" aria-expanded="false" aria-controls="log<?php echo $log['id']; ?>">Değişiklikleri Göster</button>
                             <div class="collapse mt-2" id="log<?php echo $log['id']; ?>">
                                 <?php foreach ($changes as $field => $diff): ?>
                                     <div class="border-start border-3 ps-2 py-1 my-1">
@@ -90,5 +90,20 @@ if ($table && $recordId) {
 </div>
     <?php include 'includes/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                var target = document.querySelector(btn.getAttribute('data-bs-target'));
+                if (!target) return;
+                var collapse = bootstrap.Collapse.getInstance(target);
+                if (!collapse) {
+                    collapse = new bootstrap.Collapse(target, { toggle: false });
+                }
+                collapse.toggle();
+            });
+        });
+    });
+    </script>
 </body>
 </html>
