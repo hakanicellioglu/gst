@@ -19,6 +19,7 @@ $profit_margin = 0;
 $returnPrice = false;
 $offerId = 0;
 $offerExists = true;
+$errors = [];
 
 $input = array_merge($_GET, $_POST);
 $hasInput = $_SERVER['REQUEST_METHOD'] === 'POST' ||
@@ -33,9 +34,24 @@ if ($hasInput) {
     }
     $width = (float) ($input['width'] ?? 0);
     $height = (float) ($input['height'] ?? 0);
-    $quantity = max(1, (int) ($input['quantity'] ?? 1));
+    $quantity = (int) ($input['quantity'] ?? 1);
     $glass_type = $input['glass_type'] ?? $glass_type;
     $profit_margin = (float) ($input['profit_margin'] ?? 0);
+    if ($width <= 0) {
+        $errors[] = 'Genişlik 0 veya negatif olamaz.';
+    }
+    if ($height <= 0) {
+        $errors[] = 'Yükseklik 0 veya negatif olamaz.';
+    }
+    if ($quantity <= 0) {
+        $errors[] = 'Adet 0 veya negatif olamaz.';
+        $quantity = 1;
+    }
+    if ($profit_margin < 0) {
+        $errors[] = 'Kar marjı negatif olamaz.';
+        $profit_margin = 0;
+    }
+    $quantity = max(1, $quantity);
     $returnPrice = isset($input['return']);
 
     if (!empty($input['gid'])) {
@@ -175,7 +191,11 @@ if ($hasInput) {
                         break;
                 }
             }
+            $row['cost'] = max(0, $row['cost']);
             $total_cost += $row['cost'];
+        } else {
+            $errors[] = $row['name'] . ' için ürün bulunamadı.';
+            $row['cost'] = 0;
         }
     }
     unset($row);
@@ -184,7 +204,10 @@ if ($hasInput) {
         $groupedResults[$r['category']][] = $r;
     }
     $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
-    $sales_price = $total_cost * (1 + $profit_margin / 100);
+    if ($total_cost < 0) {
+        $total_cost = 0;
+    }
+    $sales_price = max(0, $total_cost * (1 + $profit_margin / 100));
 
     if ($offerId && $offerExists && !empty($input['gid'])) {
         $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=? WHERE id=?');
@@ -206,6 +229,11 @@ if ($hasInput) {
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
         <h2 class="mb-4">Optimizasyon Hesaplama</h2>
+        <?php if ($errors): ?>
+        <div class="alert alert-danger">
+            <?php echo implode('<br>', array_map('htmlspecialchars', $errors)); ?>
+        </div>
+        <?php endif; ?>
         <?php if (!$offerExists && $offerId): ?>
         <div class="alert alert-warning">Teklif bulunmadı.</div>
         <?php endif; ?>
