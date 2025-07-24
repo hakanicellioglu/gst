@@ -158,17 +158,22 @@ if ($hasInput) {
             if (strpos($row['name'], '(m)') === false && is_numeric($row['length'])) {
                 $length = $row['length'] / 1000; // convert mm to m
             }
-            switch (strtolower($product['unit'])) {
-                case 'adet':
-                    $row['cost'] = $count * $product['unit_price'];
-                    break;
-                case 'kg':
-                    $weight = $length * $product['measure_value'];
-                    $row['cost'] = $weight * $count * $product['unit_price'];
-                    break;
-                default: // metre
-                    $row['cost'] = $length * $count * $product['unit_price'];
-                    break;
+            if (strtolower($product['category']) === 'fitil') {
+                // Fitil kategorisinde maliyet hesaplaması metre x birim fiyat şeklinde
+                $row['cost'] = $length * $count * $product['unit_price'];
+            } else {
+                switch (strtolower($product['unit'])) {
+                    case 'adet':
+                        $row['cost'] = $count * $product['unit_price'];
+                        break;
+                    case 'kg':
+                        $weight = $length * $product['measure_value'];
+                        $row['cost'] = $weight * $count * $product['unit_price'];
+                        break;
+                    default: // metre
+                        $row['cost'] = $length * $count * $product['unit_price'];
+                        break;
+                }
             }
             $total_cost += $row['cost'];
         }
