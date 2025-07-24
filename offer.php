@@ -38,7 +38,7 @@ $canAdd = count($companies) > 0 && count($customers) > 0;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     if ($action === 'add') {
-        $stmt = $pdo->prepare("INSERT INTO master_quotes (company_id, contact_id, quote_date, prepared_by, delivery_term, payment_method, payment_due, quote_validity, maturity) VALUES (:company, :contact, :date, :prepared, :delivery, :method, :due, :validity, :maturity)");
+        $stmt = $pdo->prepare("INSERT INTO master_quotes (company_id, contact_id, quote_date, prepared_by, delivery_term, payment_method, payment_due, quote_validity, maturity, assembly_type) VALUES (:company, :contact, :date, :prepared, :delivery, :method, :due, :validity, :maturity, :assembly)");
         $stmt->execute([
             ':company'   => $_POST['company_id'],
             ':contact'   => $_POST['contact_id'],
@@ -48,7 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':method'    => $_POST['payment_method'],
             ':due'       => $_POST['payment_due'],
             ':validity'  => $_POST['quote_validity'],
-            ':maturity'  => $_POST['maturity']
+            ':maturity'  => $_POST['maturity'],
+            ':assembly'  => $_POST['assembly_type']
         ]);
         $newId = $pdo->lastInsertId();
         $stmtData = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtOld->execute([':id' => $id]);
         $oldData = $stmtOld->fetch();
 
-        $stmt = $pdo->prepare("UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity WHERE id=:id");
+        $stmt = $pdo->prepare("UPDATE master_quotes SET company_id=:company, contact_id=:contact, quote_date=:date, delivery_term=:delivery, payment_method=:method, payment_due=:due, quote_validity=:validity, maturity=:maturity, assembly_type=:assembly WHERE id=:id");
         $stmt->execute([
             ':company'  => $_POST['company_id'],
             ':contact'  => $_POST['contact_id'],
@@ -73,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':due'      => $_POST['payment_due'],
             ':validity' => $_POST['quote_validity'],
             ':maturity' => $_POST['maturity'],
+            ':assembly' => $_POST['assembly_type'],
             ':id'       => $id
         ]);
         $stmtNew = $pdo->prepare('SELECT * FROM master_quotes WHERE id = :id');
@@ -171,6 +173,7 @@ include 'includes/header.php';
                     <th>Ödeme Süresi</th>
                     <th>Teklif Süresi</th>
                     <th>Vade</th>
+                    <th>Montaj</th>
                     <th class="text-center actions-col">İşlemler</th>
                 </tr>
             </thead>
@@ -185,6 +188,7 @@ include 'includes/header.php';
                     <td><?php echo htmlspecialchars($q['payment_due']); ?></td>
                     <td><?php echo htmlspecialchars($q['quote_validity']); ?></td>
                     <td><?php echo htmlspecialchars($q['maturity']); ?></td>
+                    <td><?php echo htmlspecialchars($q['assembly_type']); ?></td>
                     <td class="text-center actions-col">
                         <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i
                                 class="bi bi-pencil"></i></a>
@@ -221,7 +225,8 @@ include 'includes/header.php';
                             Ödeme Yöntemi: <?php echo htmlspecialchars($q['payment_method']); ?><br>
                             Ödeme Süresi: <?php echo htmlspecialchars($q['payment_due']); ?><br>
                             Teklif Süresi: <?php echo htmlspecialchars($q['quote_validity']); ?><br>
-                            Vade: <?php echo htmlspecialchars($q['maturity']); ?>
+                            Vade: <?php echo htmlspecialchars($q['maturity']); ?><br>
+                            Montaj: <?php echo htmlspecialchars($q['assembly_type']); ?>
                         </p>
                         <div class="text-end">
                             <a href="offer_form?id=<?php echo $q['id']; ?>" class="btn btn-sm bg-light text-dark"><i
