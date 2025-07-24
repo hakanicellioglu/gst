@@ -199,6 +199,34 @@ if ($hasInput) {
         }
     }
     unset($row);
+
+    // Calculate glass cost based on area and add as a new result item
+    $glassArea = 0;
+    foreach ($results as $r) {
+        if (strtolower($r['name']) === 'cam') {
+            $dims = preg_split('/[xX]/', $r['length']);
+            if (count($dims) >= 2 && is_numeric(trim($dims[0])) && is_numeric(trim($dims[1])) && is_numeric($r['count'])) {
+                $w = (float) trim($dims[0]) / 1000; // convert mm to m
+                $h = (float) trim($dims[1]) / 1000; // convert mm to m
+                $glassArea = $w * $h * $r['count'];
+            }
+            break;
+        }
+    }
+
+    if ($glassArea > 0) {
+        $glassCost = $glassArea * 1295.26; // sabit fiyat ₺/m²
+        $results[] = [
+            'name' => 'Glass Cost (m²)',
+            'length' => $glassArea,
+            'count' => '-',
+            'cost' => $glassCost,
+            'category' => 'Cam',
+            'image_src' => null,
+        ];
+        $total_cost += $glassCost;
+    }
+
     $groupedResults = [];
     foreach ($results as $r) {
         $groupedResults[$r['category']][] = $r;
@@ -300,6 +328,30 @@ if ($hasInput) {
                     <td><?php echo htmlspecialchars($adet); ?></td>
                     <td><?php echo $m2; ?></td>
                 </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <table class="table table-bordered mb-4">
+            <thead>
+                <tr class="table-secondary">
+                    <th colspan="3">Cam Maliyeti</th>
+                </tr>
+                <tr>
+                    <th>Parça</th>
+                    <th>m²</th>
+                    <th>Maliyet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
+                <?php if ($row['name'] === 'Glass Cost (m²)'): ?>
+                <tr>
+                    <th><?php echo htmlspecialchars($row['name']); ?></th>
+                    <td><?php echo number_format($row['length'], 2); ?></td>
+                    <td><?php echo number_format(round($row['cost']), 0); ?></td>
+                </tr>
+                <?php endif; ?>
                 <?php endforeach; ?>
             </tbody>
         </table>
