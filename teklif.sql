@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 23 Tem 2025, 15:21:35
+-- Üretim Zamanı: 25 Tem 2025, 15:09:15
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -152,7 +152,28 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action_time`, `table_name`, `column_
 (83, 1, '2025-07-23 14:40:11', 'products', NULL, 17, '{\"id\":17,\"name\":\"Motor Kutu Contası\",\"code\":\"AKS13\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"1.00\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', '{\"id\":17,\"name\":\"Motor Kutu Contası\",\"code\":\"AKS13\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"32.36\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', NULL, 4),
 (84, 1, '2025-07-23 14:40:26', 'products', NULL, 14, '{\"id\":14,\"name\":\"Zincir\",\"code\":\"AKS10\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"1.00\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', '{\"id\":14,\"name\":\"Zincir\",\"code\":\"AKS10\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"809.10\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', NULL, 4),
 (85, 1, '2025-07-23 15:14:27', 'guillotine_quotes', NULL, 6, '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Şeffaf\",\"total_price\":null}', '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Şeffaf\",\"total_price\":null}', NULL, 4),
-(86, 1, '2025-07-23 15:14:50', 'guillotine_quotes', NULL, 7, NULL, '{\"id\":7,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Somfy\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Isıcam\",\"glass_color\":\"Şeffaf\",\"total_price\":null}', NULL, 3);
+(86, 1, '2025-07-23 15:14:50', 'guillotine_quotes', NULL, 7, NULL, '{\"id\":7,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Somfy\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Isıcam\",\"glass_color\":\"Şeffaf\",\"total_price\":null}', NULL, 3),
+(87, 1, '2025-07-24 09:52:47', 'master_quotes', NULL, 4, '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":null}', '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Demonte\"}', NULL, 4),
+(88, 1, '2025-07-24 09:52:52', 'master_quotes', NULL, 4, '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Demonte\"}', '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Müşteri Montajlı\"}', NULL, 4),
+(89, 1, '2025-07-24 09:58:43', 'master_quotes', NULL, 4, '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Müşteri Montajlı\"}', '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Demonte\"}', NULL, 4),
+(90, 1, '2025-07-24 09:59:18', 'master_quotes', NULL, 4, '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Demonte\"}', '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Müşteri Montajlı\"}', NULL, 4),
+(91, 1, '2025-07-24 09:59:26', 'master_quotes', NULL, 4, '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Müşteri Montajlı\"}', '{\"id\":4,\"company_id\":1,\"contact_id\":1,\"quote_date\":\"2025-07-21\",\"prepared_by\":1,\"delivery_term\":\"30\",\"payment_method\":\"Nakit\",\"payment_due\":\"30\",\"quote_validity\":\"10\",\"maturity\":\"30\",\"total_amount\":null,\"discount_rate\":null,\"discount_amount\":null,\"vat_rate\":null,\"vat_amount\":null,\"taxes_included_total\":null,\"assembly_type\":\"Demonte\"}', NULL, 4),
+(92, 1, '2025-07-24 10:35:12', 'products', NULL, 17, '{\"id\":17,\"name\":\"Motor Kutu Contası\",\"code\":\"AKS13\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"32.36\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', '{\"id\":17,\"name\":\"Motor Kutu Contası\",\"code\":\"AKS13\",\"unit\":\"kg\",\"measure_value\":\"1.000\",\"unit_price\":\"32.36\",\"category\":\"Alüminyum\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(93, 1, '2025-07-24 10:35:43', 'products', NULL, 18, '{\"id\":18,\"name\":\"Kanat Contası\",\"code\":\"AKS14\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"28.32\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', '{\"id\":18,\"name\":\"Kanat Contası\",\"code\":\"AKS14\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"28.32\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(94, 1, '2025-07-24 10:35:59', 'products', NULL, 17, '{\"id\":17,\"name\":\"Motor Kutu Contası\",\"code\":\"AKS13\",\"unit\":\"kg\",\"measure_value\":\"1.000\",\"unit_price\":\"32.36\",\"category\":\"Alüminyum\",\"image_data\":null,\"image_type\":null}', '{\"id\":17,\"name\":\"Motor Kutu Contası\",\"code\":\"AKS13\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"32.36\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(95, 1, '2025-07-24 10:39:46', 'products', NULL, 19, NULL, '{\"id\":19,\"name\":\"Kenet Fitili\",\"code\":\"FTL01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"4.05\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 3),
+(96, 1, '2025-07-24 10:40:16', 'products', NULL, 19, '{\"id\":19,\"name\":\"Kenet Fitili\",\"code\":\"FTL01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"4.05\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', '{\"id\":19,\"name\":\"Kıl Fitil\",\"code\":\"FTL01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"4.05\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(97, 1, '2025-07-24 10:40:46', 'products', NULL, 19, '{\"id\":19,\"name\":\"Kıl Fitil\",\"code\":\"FTL01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"4.05\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', '{\"id\":19,\"name\":\"Kıl Fitil\",\"code\":\"FTL01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"8.10\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(98, 1, '2025-07-24 10:41:00', 'products', NULL, 18, '{\"id\":18,\"name\":\"Kanat Contası\",\"code\":\"AKS14\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"28.32\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', '{\"id\":18,\"name\":\"Kanat Contası\",\"code\":\"FTL12\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"28.32\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(99, 1, '2025-07-24 10:42:08', 'products', NULL, 18, '{\"id\":18,\"name\":\"Kanat Contası\",\"code\":\"FTL12\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"28.32\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', '{\"id\":18,\"name\":\"Kanat Contası\",\"code\":\"FTL12\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"32.36\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 4),
+(100, 1, '2025-07-24 13:05:34', 'guillotine_quotes', NULL, 7, '{\"id\":7,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Somfy\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Isıcam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"1781.23\"}', NULL, NULL, 5),
+(101, 1, '2025-07-24 13:46:46', 'guillotine_quotes', NULL, 6, '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"9448.51\"}', '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Isıcam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"9448.51\"}', NULL, 4),
+(102, 1, '2025-07-24 13:47:04', 'guillotine_quotes', NULL, 6, '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Isıcam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"1781.23\"}', '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"1781.23\"}', NULL, 4),
+(103, 1, '2025-07-24 13:51:53', 'guillotine_quotes', NULL, 6, '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"4795.77\"}', '{\"id\":6,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":1,\"ral_code\":\"7016\",\"glass_type\":\"Isıcam\",\"glass_color\":\"Şeffaf\",\"total_price\":\"4795.77\"}', NULL, 4),
+(104, 1, '2025-07-24 13:53:18', 'guillotine_quotes', NULL, 8, NULL, '{\"id\":8,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":2,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Füme\",\"total_price\":null}', NULL, 3),
+(105, 1, '2025-07-24 14:04:08', 'guillotine_quotes', NULL, 8, '{\"id\":8,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":2,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Füme\",\"total_price\":\"4795.77\"}', NULL, NULL, 5),
+(106, 1, '2025-07-25 11:40:05', 'settings', NULL, 1, NULL, NULL, NULL, 4),
+(107, 1, '2025-07-25 11:44:51', 'products', NULL, 20, NULL, '{\"id\":20,\"name\":\"Cam\",\"code\":\"CAM01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"1296.88\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -262,16 +283,17 @@ CREATE TABLE `guillotine_quotes` (
   `ral_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `glass_type` varchar(50) DEFAULT NULL,
   `glass_color` varchar(50) DEFAULT NULL,
-  `total_price` decimal(12,2) DEFAULT NULL
+  `total_price` decimal(12,2) DEFAULT NULL,
+  `profit_margin_rate` decimal(5,2) DEFAULT NULL COMMENT 'Yüzde cinsinden kâr marjı oranı',
+  `profit_margin_amount` decimal(12,2) DEFAULT NULL COMMENT 'Toplam fiyat üzerinden hesaplanan kâr tutarı'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
 -- Tablo döküm verisi `guillotine_quotes`
 --
 
-INSERT INTO `guillotine_quotes` (`id`, `master_quote_id`, `system_type`, `width_mm`, `height_mm`, `system_qty`, `motor_system`, `remote_system`, `remote_qty`, `ral_code`, `glass_type`, `glass_color`, `total_price`) VALUES
-(6, 4, 'Giyotin', 1000.00, 1000.00, 1, 'Cuppon', NULL, 1, '7016', 'Tek Cam', 'Şeffaf', 4572.19),
-(7, 4, 'Giyotin', 1000.00, 1000.00, 1, 'Somfy', NULL, 1, '7016', 'Isıcam', 'Şeffaf', 4300.05);
+INSERT INTO `guillotine_quotes` (`id`, `master_quote_id`, `system_type`, `width_mm`, `height_mm`, `system_qty`, `motor_system`, `remote_system`, `remote_qty`, `ral_code`, `glass_type`, `glass_color`, `total_price`, `profit_margin_rate`, `profit_margin_amount`) VALUES
+(6, 4, 'Giyotin', 1000.00, 1000.00, 1, 'Cuppon', NULL, 1, '7016', 'Isıcam', 'Şeffaf', 5731.50, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -290,21 +312,21 @@ CREATE TABLE `master_quotes` (
   `payment_due` varchar(50) DEFAULT NULL,
   `quote_validity` varchar(50) DEFAULT NULL,
   `maturity` varchar(50) DEFAULT NULL,
-  `assembly_type` varchar(50) DEFAULT NULL,
   `total_amount` decimal(14,2) DEFAULT NULL,
   `discount_rate` decimal(5,2) DEFAULT NULL,
   `discount_amount` decimal(14,2) DEFAULT NULL,
   `vat_rate` decimal(5,2) DEFAULT NULL,
   `vat_amount` decimal(14,2) DEFAULT NULL,
-  `taxes_included_total` decimal(14,2) DEFAULT NULL
+  `taxes_included_total` decimal(14,2) DEFAULT NULL,
+  `assembly_type` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
 
 --
 -- Tablo döküm verisi `master_quotes`
 --
 
-INSERT INTO `master_quotes` (`id`, `company_id`, `contact_id`, `quote_date`, `prepared_by`, `delivery_term`, `payment_method`, `payment_due`, `quote_validity`, `maturity`, `assembly_type`, `total_amount`, `discount_rate`, `discount_amount`, `vat_rate`, `vat_amount`, `taxes_included_total`) VALUES
-(4, 1, 1, '2025-07-21', 1, '30', 'Nakit', '30', '10', '30', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `master_quotes` (`id`, `company_id`, `contact_id`, `quote_date`, `prepared_by`, `delivery_term`, `payment_method`, `payment_due`, `quote_validity`, `maturity`, `total_amount`, `discount_rate`, `discount_amount`, `vat_rate`, `vat_amount`, `taxes_included_total`, `assembly_type`) VALUES
+(4, 1, 1, '2025-07-21', 1, '30', 'Nakit', '30', '10', '30', NULL, NULL, NULL, NULL, NULL, NULL, 'Demonte');
 
 -- --------------------------------------------------------
 
@@ -370,8 +392,10 @@ INSERT INTO `products` (`id`, `name`, `code`, `unit`, `measure_value`, `unit_pri
 (14, 'Zincir', 'AKS10', 'adet', 1.000, 809.10, 'Aksesuar', NULL, NULL),
 (15, 'Flatbelt Kayış 20mm', 'AKS11', 'adet', 1.000, 525.91, 'Aksesuar', NULL, NULL),
 (16, 'Motor Borusu', 'AKS12', 'adet', 1.000, 161.82, 'Aksesuar', NULL, NULL),
-(17, 'Motor Kutu Contası', 'AKS13', 'adet', 1.000, 32.36, 'Aksesuar', NULL, NULL),
-(18, 'Kanat Contası', 'AKS14', 'adet', 1.000, 28.32, 'Aksesuar', NULL, NULL);
+(17, 'Motor Kutu Contası', 'AKS13', 'metre', 1.000, 32.36, 'Fitil', NULL, NULL),
+(18, 'Kanat Contası', 'FTL12', 'metre', 1.000, 32.36, 'Fitil', NULL, NULL),
+(19, 'Kıl Fitil', 'FTL01', 'metre', 1.000, 8.10, 'Fitil', NULL, NULL),
+(20, 'Cam', 'CAM01', 'metre', 1.000, 1296.88, 'Fitil', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -616,7 +640,7 @@ ALTER TABLE `actions`
 -- Tablo için AUTO_INCREMENT değeri `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `companies`
@@ -652,7 +676,7 @@ ALTER TABLE `customers`
 -- Tablo için AUTO_INCREMENT değeri `guillotine_quotes`
 --
 ALTER TABLE `guillotine_quotes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `master_quotes`
@@ -670,7 +694,7 @@ ALTER TABLE `permissions`
 -- Tablo için AUTO_INCREMENT değeri `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roles`
@@ -682,7 +706,7 @@ ALTER TABLE `roles`
 -- Tablo için AUTO_INCREMENT değeri `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `sliding_quotes`
