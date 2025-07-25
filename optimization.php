@@ -40,6 +40,7 @@ if ($hasInput) {
     $quantity = (int) ($input['quantity'] ?? 1);
     $glass_type = $input['glass_type'] ?? $glass_type;
     $profit_margin = (float) ($input['profit_margin'] ?? 0);
+    $stored_price = null;
     if ($width <= 0) {
         $errors[] = 'Genişlik 0 veya negatif olamaz.';
     }
@@ -58,11 +59,14 @@ if ($hasInput) {
     $returnPrice = isset($input['return']);
 
     if (!empty($input['gid'])) {
-        $stmt = $pdo->prepare('SELECT glass_type FROM guillotine_quotes WHERE id = ?');
+        $stmt = $pdo->prepare('SELECT glass_type, total_price FROM guillotine_quotes WHERE id = ?');
         $stmt->execute([$input['gid']]);
-        $dbGlass = $stmt->fetchColumn();
-        if ($dbGlass !== false) {
-            $glass_type = $dbGlass;
+        $dbRow = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($dbRow !== false) {
+            if (!empty($dbRow['glass_type'])) {
+                $glass_type = $dbRow['glass_type'];
+            }
+            $stored_price = isset($dbRow['total_price']) ? (float) $dbRow['total_price'] : null;
         }
     }
 
@@ -259,6 +263,9 @@ if ($hasInput) {
 
     if ($total_cost < 0) {
         $total_cost = 0;
+    }
+    if ($profit_margin === 0 && $stored_price !== null && $stored_price > 0) {
+        $profit_margin = (($stored_price - $total_cost) / $stored_price) * 100;
     }
     $sales_price = max(0, $total_cost * (1 + $profit_margin / 100));
 
