@@ -254,6 +254,10 @@ if ($hasInput) {
         $total_cost = 0;
     }
     $sales_price = max(0, $total_cost * (1 + $profit_margin / 100));
+    $calculated_margin = 0;
+    if ($sales_price > 0) {
+        $calculated_margin = (($sales_price - $total_cost) / $sales_price) * 100;
+    }
 
     if ($offerId && $offerExists && !empty($input['gid'])) {
         $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=? WHERE id=?');
@@ -486,6 +490,10 @@ if ($hasInput) {
                 <tr>
                     <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
                     <th><?php echo number_format(round($sales_price), 0); ?></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Kar Marjı (%)</th>
+                    <th><?php echo number_format($calculated_margin, 2); ?></th>
                 </tr>
             </tbody>
         </table>
