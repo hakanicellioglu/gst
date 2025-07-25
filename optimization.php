@@ -11,7 +11,7 @@ if (!isset($_SESSION['user'])) {
 load_theme_settings($pdo);
 
 // Default aluminum price per kilogram in TRY
-const ALUMINUM_COST_PER_KG = 202.39;
+const ALUMINUM_COST_PER_KG = 202.77;
 
 $results = [];
 $width = '';
