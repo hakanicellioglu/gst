@@ -315,7 +315,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (!empty($input['width']) && !empty(
         }
         $returnPrice = isset($input['return']);
         $data = calculateOptimization($input, $pdo);
-        if ($offerId && $offerExists && !empty($input['gid']) && empty($data['errors'])) {
+        if (
+            $_SERVER['REQUEST_METHOD'] === 'POST' &&
+            isset($input['profit_margin']) &&
+            $offerId && $offerExists && !empty($input['gid']) &&
+            empty($data['errors'])
+        ) {
             try {
                 $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=?, profit_margin_rate=?, profit_margin_amount=? WHERE id=?');
                 $stmt->execute([
