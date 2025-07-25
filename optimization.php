@@ -417,8 +417,8 @@ $glass_type = $inputs['glass_type'];
                 <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
                 <?php
                     $dims = preg_split('/[xX]/', (string) $row['length']);
-                    $en = isset($dims[0]) && is_numeric(trim($dims[0])) ? round(trim($dims[0])) : trim($dims[0] ?? '');
-                    $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round(trim($dims[1])) : trim($dims[1] ?? '');
+                    $en = isset($dims[0]) && is_numeric(trim($dims[0])) ? round((float) trim($dims[0])) : trim($dims[0] ?? '');
+                    $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round((float) trim($dims[1])) : trim($dims[1] ?? '');
                     $adet = is_numeric($row['count']) ? (int) $row['count'] : $row['count'];
                     $m2 = (is_numeric($en) && is_numeric($boy) && is_numeric($row['count']))
                         ? fmt_currency($en * $boy * $row['count'] / 1e6, 2)
@@ -480,7 +480,7 @@ $glass_type = $inputs['glass_type'];
                         <?php endif; ?>
                         <?php echo htmlspecialchars($row['name']); ?>
                     </th>
-                    <td><?php echo is_numeric($row['length']) ? round($row['length']) : htmlspecialchars((string)$row['length']); ?></td>
+                    <td><?php echo is_numeric($row['length']) ? round((float) $row['length']) : htmlspecialchars((string)$row['length']); ?></td>
                     <td><?php echo htmlspecialchars((string)$row['count']); ?></td>
                     <td><?php echo is_null($row['weight']) ? '-' : fmt_currency($row['weight'], 2); ?></td>
                     <td><?php echo is_null($row['cost']) ? '-' : fmt_currency($row['cost']); ?></td>
@@ -527,7 +527,7 @@ $glass_type = $inputs['glass_type'];
                         <?php endif; ?>
                         <?php echo htmlspecialchars($row['name']); ?>
                     </th>
-                    <td><?php echo is_numeric($row['length']) ? round($row['length']) : htmlspecialchars((string)$row['length']); ?></td>
+                    <td><?php echo is_numeric($row['length']) ? round((float) $row['length']) : htmlspecialchars((string)$row['length']); ?></td>
                     <td><?php echo htmlspecialchars((string)$row['count']); ?></td>
                     <td><?php echo is_null($row['cost']) ? '-' : fmt_currency($row['cost']); ?></td>
                 </tr>
