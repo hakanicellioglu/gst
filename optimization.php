@@ -192,6 +192,7 @@ if ($hasInput) {
                         $row['weight'] = $weightPerPiece * $count;
                         if (strtolower($product['category']) === 'alüminyum') {
                             $product['unit_price'] = ALUMINUM_COST_PER_KG;
+                            $row['weight'] *= 1.01; // account for waste
                             $total_weight += $row['weight'];
                         }
                         $row['cost'] = $row['weight'] * $product['unit_price'];
