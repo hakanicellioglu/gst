@@ -2,6 +2,7 @@
 require_once 'config.php';
 require_once 'helpers/theme.php';
 require_once 'helpers/audit.php';
+require_once 'helpers/validation.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -16,15 +17,19 @@ $success = '';
 $userId = $_SESSION['user']['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $firstName = trim($_POST['first_name'] ?? '');
-    $lastName  = trim($_POST['last_name'] ?? '');
-    $username  = trim($_POST['username'] ?? '');
-    $email     = trim($_POST['email'] ?? '');
+    $firstName = sanitize_string($_POST['first_name'] ?? '');
+    $lastName  = sanitize_string($_POST['last_name'] ?? '');
+    $username  = sanitize_string($_POST['username'] ?? '');
+    $email     = validate_email($_POST['email'] ?? '') ?? '';
     $password  = $_POST['password'] ?? '';
 
-    if ($firstName === '' || $lastName === '' || $username === '' || $email === '') {
+    if ($firstName === '' || $lastName === '' || $username === '') {
         $errors[] = 'Tüm alanları doldurun.';
-    } else {
+    }
+    if (!$email) {
+        $errors[] = 'Geçersiz e-posta adresi.';
+    }
+    if (!$errors) {
         try {
             $stmt = $pdo->prepare('SELECT id FROM users WHERE (username = ? OR email = ?) AND id != ?');
             $stmt->execute([$username, $email, $userId]);
