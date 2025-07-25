@@ -12,6 +12,7 @@ load_theme_settings($pdo);
 
 // Default aluminum price per kilogram in TRY
 const ALUMINUM_COST_PER_KG = 202.77;
+const MONTHLY_INTEREST_RATE = 0.05; // 5% monthly interest
 
 $results = [];
 $width = '';
@@ -259,6 +260,7 @@ if ($hasInput) {
         $calculated_margin = (($sales_price - $total_cost) / $sales_price) * 100;
     }
     $profit_margin_amount = $sales_price - $total_cost;
+    $price_with_interest = max(0, $sales_price * (1 + MONTHLY_INTEREST_RATE));
 
     if ($offerId && $offerExists && !empty($input['gid'])) {
         $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=?, profit_margin_rate=?, profit_margin_amount=? WHERE id=?');
@@ -496,6 +498,10 @@ if ($hasInput) {
                 <tr>
                     <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
                     <th><?php echo number_format(round($sales_price), 0); ?></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Taksitli Fiyat (Aylık %5 Vade Farkı)</th>
+                    <th><?php echo number_format(round($price_with_interest), 0); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Kar Marjı (%)</th>
