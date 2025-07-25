@@ -141,7 +141,6 @@ $customers = $stmt->fetchAll();
                             <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
                         </form>
                     </div>
-
                     <!-- Müşteri Ekle -->
                     <div class="col-auto">
                         <?php if ($canAddCustomer): ?>

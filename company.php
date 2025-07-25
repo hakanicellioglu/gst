@@ -135,6 +135,7 @@ $companies = $stmt->fetchAll();
             </div>
         </div>
 
+
         <?php if ($view === 'list'): ?>
         <table class="table table-bordered table-striped responsive-table">
             <thead>

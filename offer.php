@@ -169,6 +169,7 @@ include 'includes/header.php';
                     </div>
                 </div>
             </div>
+
         </div>
 
         <?php if ($view === 'list'): ?>
