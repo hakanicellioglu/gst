@@ -51,6 +51,7 @@ function calculate_guillotine_material_cost(PDO $pdo, array $quote): float
 
     $alCost = $baseAlCost + $wasteCost;
 
+
     return round($glassCost + $alCost, 2);
 }
 ?>
