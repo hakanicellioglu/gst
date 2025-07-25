@@ -258,10 +258,16 @@ if ($hasInput) {
     if ($sales_price > 0) {
         $calculated_margin = (($sales_price - $total_cost) / $sales_price) * 100;
     }
+    $profit_margin_amount = $sales_price - $total_cost;
 
     if ($offerId && $offerExists && !empty($input['gid'])) {
-        $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=? WHERE id=?');
-        $stmt->execute([round($sales_price, 2), (int)$input['gid']]);
+        $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=?, profit_margin_rate=?, profit_margin_amount=? WHERE id=?');
+        $stmt->execute([
+            round($sales_price, 2),
+            round($calculated_margin, 2),
+            round($profit_margin_amount, 2),
+            (int)$input['gid']
+        ]);
     }
 }
 ?>
