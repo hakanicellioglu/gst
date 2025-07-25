@@ -4,10 +4,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 const APP_DEFAULT_SETTINGS = [
-    'order_email' => 'orders@example.com',
-    'currency'    => 'USD',
-    'timezone'    => 'UTC',
-    'date_format' => 'Y-m-d H:i',
+    'order_email'           => 'orders@example.com',
+    'currency'              => 'USD',
+    'timezone'              => 'UTC',
+    'date_format'           => 'Y-m-d H:i',
+    // Pricing related defaults
+    'aluminum_cost_per_kg'  => 202.77,
+    'glass_cost_per_sqm'    => 1295.26,
+    'monthly_interest_rate' => 0.05,
 ];
 
 function get_setting(PDO $pdo, string $key)

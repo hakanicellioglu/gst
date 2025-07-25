@@ -1,187 +1,194 @@
 <?php
+declare(strict_types=1);
+
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/settings.php';
+require_once 'helpers/validation.php';
+require_once 'helpers/utils.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 if (!isset($_SESSION['user'])) {
     header('Location: /login');
     exit;
 }
+
 load_theme_settings($pdo);
 
-// Default aluminum price per kilogram in TRY
-const ALUMINUM_COST_PER_KG = 202.77;
-const MONTHLY_INTEREST_RATE = 0.05; // 5% monthly interest
+/**
+ * Main optimization calculation.
+ *
+ * @param array $input
+ * @param PDO   $pdo
+ * @return array
+ */
+function calculateOptimization(array $input, PDO $pdo): array
+{
+    $errors = [];
 
-$results = [];
-$width = '';
-$height = '';
-$quantity = 1;
-$glass_type = 'Isıcam';
-$profit_margin = 0;
-$returnPrice = false;
-$offerId = 0;
-$offerExists = true;
-$errors = [];
+    $width  = validate_float($input['width'] ?? null);
+    $height = validate_float($input['height'] ?? null);
+    $quantity = validate_int($input['quantity'] ?? 1) ?? 1;
+    $glassType = sanitize_string($input['glass_type'] ?? 'Isıcam');
+    $profitMargin = validate_float($input['profit_margin'] ?? 0.0) ?? 0.0;
 
-$input = array_merge($_GET, $_POST);
-$hasInput = $_SERVER['REQUEST_METHOD'] === 'POST' ||
-    (!empty($input['width']) && !empty($input['height']));
-
-if ($hasInput) {
-    $offerId = (int) ($input['id'] ?? 0);
-    if ($offerId) {
-        $stmt = $pdo->prepare('SELECT id FROM master_quotes WHERE id = ?');
-        $stmt->execute([$offerId]);
-        $offerExists = $stmt->fetchColumn() !== false;
+    if ($width === null || $width <= 0) {
+        $errors[] = 'Width must be greater than zero.';
     }
-    $width = (float) ($input['width'] ?? 0);
-    $height = (float) ($input['height'] ?? 0);
-    $quantity = (int) ($input['quantity'] ?? 1);
-    $glass_type = $input['glass_type'] ?? $glass_type;
-    $profit_margin = (float) ($input['profit_margin'] ?? 0);
-    if ($width <= 0) {
-        $errors[] = 'Genişlik 0 veya negatif olamaz.';
-    }
-    if ($height <= 0) {
-        $errors[] = 'Yükseklik 0 veya negatif olamaz.';
+    if ($height === null || $height <= 0) {
+        $errors[] = 'Height must be greater than zero.';
     }
     if ($quantity <= 0) {
-        $errors[] = 'Adet 0 veya negatif olamaz.';
+        $errors[] = 'Quantity must be positive.';
         $quantity = 1;
     }
-    if ($profit_margin < 0) {
-        $errors[] = 'Kar marjı negatif olamaz.';
-        $profit_margin = 0;
+    if ($profitMargin < 0) {
+        $errors[] = 'Profit margin cannot be negative.';
+        $profitMargin = 0.0;
     }
-    $quantity = max(1, $quantity);
-    $returnPrice = isset($input['return']);
 
-    if (!empty($input['gid'])) {
-        $stmt = $pdo->prepare('SELECT glass_type FROM guillotine_quotes WHERE id = ?');
-        $stmt->execute([$input['gid']]);
-        $dbGlass = $stmt->fetchColumn();
-        if ($dbGlass !== false) {
-            $glass_type = $dbGlass;
+    if ($errors) {
+        return ['errors' => $errors];
+    }
+
+    $motorKutusu = $width - 14;
+    $motorKapak = $motorKutusu - 1;
+    $altKasa = $width;
+    $tutamak = $width - 185;
+    $kenetliBaza = $width - 185;
+    $kupesteBaza = $width - 185;
+    $kupeste = $width - 185;
+    $dikeyBaza = ($height - 290) / 3;
+    $kanat = $dikeyBaza;
+    $dikme = $height - 166;
+    $ortaDikme = $dikme;
+    $sonKapatma = $height - $kanat - 221;
+    $yatakCitasi = $kenetliBaza - 52;
+    $dikeyCitasi = $dikeyBaza - 5;
+    $zincir = $sonKapatma + 600;
+    $flatbeltKayis = $sonKapatma + 600;
+    $motorBorusu = $width - 59;
+
+    $camEn = round($width - 219);
+    $camBoy = round($dikeyBaza + 28 - 2);
+
+    $motorKutusuQty = $quantity;
+    $motorKapakQty = $quantity;
+    $altKasaQty = $quantity;
+    $kenetliBazaQty = 2 * $quantity;
+    $kupesteBazaQty = 2 * $quantity;
+    $tutamakQty = 6 * $quantity - $kenetliBazaQty - $kupesteBazaQty;
+    $kupesteQty = $quantity;
+    if (strtolower($glassType) === 'tek cam') {
+        $yatayCitasiQty = 6 * $quantity;
+        $dikeyCitasiQty = 6 * $quantity;
+    } else {
+        $yatayCitasiQty = 0;
+        $dikeyCitasiQty = 0;
+    }
+    $dikmeQty = 2 * $quantity;
+    $ortaDikmeQty = 2 * $quantity;
+    $sonKapatmaQty = 2 * $quantity;
+    $kanatQty = 2 * $quantity;
+    $dikeyBazaQty = 4 * $quantity;
+    $zincirQty = 2 * $quantity;
+    $motorBorusuQty = $quantity;
+    $motorKutuContasi = (($motorKutusu * $motorKutusuQty) + ($altKasa * $altKasaQty)) / 1000;
+    $kanatContasi = ($kanat * $kanatQty) / 1000;
+    $kenetFitili = (($tutamak * $quantity) + ($kenetliBaza * $quantity)) / 1000;
+    $kilFitil = (
+        ($tutamak * $tutamakQty) +
+        ($kenetliBaza * $kenetliBazaQty) +
+        ($dikme * $dikmeQty) +
+        ($ortaDikme * $ortaDikmeQty * 2) +
+        ($sonKapatma * $sonKapatmaQty) +
+        ($kanat * $kanatQty)
+    ) / 1000;
+
+    $camAdet = ($kanatQty + $dikeyBazaQty) / 2;
+
+    $results = [
+        ['name' => 'Motor Kutusu', 'length' => $motorKutusu, 'count' => $motorKutusuQty],
+        ['name' => 'Motor Kapak', 'length' => $motorKapak, 'count' => $motorKapakQty],
+        ['name' => 'Alt Kasa', 'length' => $altKasa, 'count' => $altKasaQty],
+        ['name' => 'Tutamak', 'length' => $tutamak, 'count' => $tutamakQty],
+        ['name' => 'Kenetli Baza', 'length' => $kenetliBaza, 'count' => $kenetliBazaQty],
+        ['name' => 'Küpeşte Bazası', 'length' => $kupesteBaza, 'count' => $kupesteBazaQty],
+        ['name' => 'Küpeşte', 'length' => $kupeste, 'count' => $kupesteQty],
+        ['name' => 'Yatay Tek Cam Çıtası', 'length' => $yatakCitasi, 'count' => $yatayCitasiQty],
+        ['name' => 'Dikey Tek Cam Çıtası', 'length' => $dikeyCitasi, 'count' => $dikeyCitasiQty],
+        ['name' => 'Dikme', 'length' => $dikme, 'count' => $dikmeQty],
+        ['name' => 'Orta Dikme', 'length' => $ortaDikme, 'count' => $ortaDikmeQty],
+        ['name' => 'Son Kapatma', 'length' => $sonKapatma, 'count' => $sonKapatmaQty],
+        ['name' => 'Kanat', 'length' => $kanat, 'count' => $kanatQty],
+        ['name' => 'Dikey Baza', 'length' => $dikeyBaza, 'count' => $dikeyBazaQty],
+        ['name' => 'Cam', 'length' => $camEn . ' x ' . $camBoy, 'count' => $camAdet],
+        ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincirQty],
+        ['name' => 'Flatbelt Kayış', 'length' => $flatbeltKayis, 'count' => $quantity],
+        ['name' => 'Motor Borusu', 'length' => $motorBorusu, 'count' => $motorBorusuQty],
+        ['name' => 'Motor Kutu Contası (m)', 'length' => $motorKutuContasi, 'count' => 1],
+        ['name' => 'Kanat Contası (m)', 'length' => $kanatContasi, 'count' => 1],
+        ['name' => 'Kenet Fitili (m)', 'length' => $kenetFitili, 'count' => 1],
+        ['name' => 'Kıl Fitil (m)', 'length' => $kilFitil, 'count' => 1],
+    ];
+
+    $nameAliasMap = [
+        'Yatay Tek Cam Çıtası' => 'Tek Cam Çıtası',
+        'Dikey Tek Cam Çıtası' => 'Tek Cam Çıtası',
+        'Motor Kutu Contası (m)' => 'Motor Kutu Contası',
+        'Kanat Contası (m)' => 'Kanat Contası',
+        'Kenet Fitili (m)' => 'Kenet Fitili',
+        'Kıl Fitil (m)' => 'Kıl Fitil',
+    ];
+
+    $lookup = [];
+    foreach ($results as $row) {
+        $lookupName = $nameAliasMap[$row['name']] ?? $row['name'];
+        $lookup[$lookupName] = true;
+    }
+
+    $products = [];
+    if ($lookup) {
+        $placeholders = rtrim(str_repeat('?,', count($lookup)), ',');
+        try {
+            $stmt = $pdo->prepare(
+                "SELECT name, unit, measure_value, unit_price, category, image_data, image_type" .
+                " FROM products WHERE name IN ($placeholders)"
+            );
+            $stmt->execute(array_keys($lookup));
+            foreach ($stmt->fetchAll() as $p) {
+                $products[$p['name']] = $p;
+            }
+        } catch (PDOException $e) {
+            $errors[] = 'Product lookup failed: ' . $e->getMessage();
         }
     }
 
-    $motor_kutusu = $width - 14;
-    $motor_kapak = $motor_kutusu - 1;
-    $alt_kasa = $width;
-    $tutamak = $width - 185;
-    $kenetli_baza = $width - 185;
-    $kupeste_baza = $width - 185;
-    $kupeste = $width - 185;
-    $dikey_baza = ($height - 290) / 3;
-    $kanat = $dikey_baza;
-    $dikme = $height - 166;
-    $orta_dikme = $dikme;
-    $son_kapatma = $height - $kanat - 221;
-    $yatak_citasi = $kenetli_baza - 52;
-    $dikey_citasi = $dikey_baza - 5;
-    $zincir = $son_kapatma + 600;
-    $flatbelt_kayis = $son_kapatma + 600;
-    $motor_borusu = $width - 59;
+    $totalCost = 0.0;
+    $totalWeight = 0.0;
 
-    // Cam ölçüleri
-    $cam_en = round($width - 219);
-    $cam_boy = round($dikey_baza + 28 - 2);
+    $aluminumPrice = (float) get_setting($pdo, 'aluminum_cost_per_kg');
 
-    // parça adet hesapları
-    $motor_kutusu_qty = $quantity;
-    $motor_kapak_qty = $quantity;
-    $alt_kasa_qty = $quantity;
-    $kenetli_baza_qty = 2 * $quantity;
-    $kupeste_baza_qty = 2 * $quantity;
-    $tutamak_qty = 6 * $quantity - $kenetli_baza_qty - $kupeste_baza_qty;
-    $kupeste_qty = $quantity;
-    if (strtolower($glass_type) === 'tek cam') {
-        $yatay_citasi_qty = 6 * $quantity;
-        $dikey_citasi_qty = 6 * $quantity;
-    } else {
-        $yatay_citasi_qty = 0;
-        $dikey_citasi_qty = 0;
-    }
-    $dikme_qty = 2 * $quantity;
-    $orta_dikme_qty = 2 * $quantity;
-    $son_kapatma_qty = 2 * $quantity;
-    $kanat_qty = 2 * $quantity;
-    $dikey_baza_qty = 4 * $quantity;
-    $zincir_qty = 2 * $quantity;
-    $motor_borusu_qty = $quantity;
-    $motor_kutu_contasi = (($motor_kutusu * $motor_kutusu_qty) + ($alt_kasa * $alt_kasa_qty)) / 1000;
-    $kanat_contasi = ($kanat * $kanat_qty) / 1000;
-    $kenet_fitili = (($tutamak * $quantity) + ($kenetli_baza * $quantity)) / 1000;
-    $kil_fitil = (
-        ($tutamak * $tutamak_qty) +
-        ($kenetli_baza * $kenetli_baza_qty) +
-        ($dikme * $dikme_qty) +
-        ($orta_dikme * $orta_dikme_qty * 2) +
-        ($son_kapatma * $son_kapatma_qty) +
-        ($kanat * $kanat_qty)
-    ) / 1000;
-
-    $cam_adet = ($kanat_qty + $dikey_baza_qty) / 2;
-
-    $results = [
-        ['name' => 'Motor Kutusu', 'length' => $motor_kutusu, 'count' => $motor_kutusu_qty],
-        ['name' => 'Motor Kapak', 'length' => $motor_kapak, 'count' => $motor_kapak_qty],
-        ['name' => 'Alt Kasa', 'length' => $alt_kasa, 'count' => $alt_kasa_qty],
-        ['name' => 'Tutamak', 'length' => $tutamak, 'count' => $tutamak_qty],
-        ['name' => 'Kenetli Baza', 'length' => $kenetli_baza, 'count' => $kenetli_baza_qty],
-        ['name' => 'Küpeşte Bazası', 'length' => $kupeste_baza, 'count' => $kupeste_baza_qty],
-        ['name' => 'Küpeşte', 'length' => $kupeste, 'count' => $kupeste_qty],
-        ['name' => 'Yatay Tek Cam Çıtası', 'length' => $yatak_citasi, 'count' => $yatay_citasi_qty],
-        ['name' => 'Dikey Tek Cam Çıtası', 'length' => $dikey_citasi, 'count' => $dikey_citasi_qty],
-        ['name' => 'Dikme', 'length' => $dikme, 'count' => $dikme_qty],
-        ['name' => 'Orta Dikme', 'length' => $orta_dikme, 'count' => $orta_dikme_qty],
-        ['name' => 'Son Kapatma', 'length' => $son_kapatma, 'count' => $son_kapatma_qty],
-        ['name' => 'Kanat', 'length' => $kanat, 'count' => $kanat_qty],
-        ['name' => 'Dikey Baza', 'length' => $dikey_baza, 'count' => $dikey_baza_qty],
-        ['name' => 'Cam', 'length' => $cam_en . ' x ' . $cam_boy, 'count' => $cam_adet],
-        ['name' => 'Zincir', 'length' => $zincir, 'count' => $zincir_qty],
-        ['name' => 'Flatbelt Kayış', 'length' => $flatbelt_kayis, 'count' => '-'],
-        ['name' => 'Motor Borusu', 'length' => $motor_borusu, 'count' => $motor_borusu_qty],
-        ['name' => 'Motor Kutu Contası (m)', 'length' => $motor_kutu_contasi, 'count' => 1],
-        ['name' => 'Kanat Contası (m)', 'length' => $kanat_contasi, 'count' => $kanat_contasi],
-        ['name' => 'Kenet Fitili (m)', 'length' => '-', 'count' => $kenet_fitili],
-        ['name' => 'Kıl Fitil (m)', 'length' => '-', 'count' => $kil_fitil],
-    ];
-
-
-    $nameAliasMap = [
-        "Yatay Tek Cam Çıtası" => "Tek Cam Çıtası",
-        "Dikey Tek Cam Çıtası" => "Tek Cam Çıtası",
-        "Motor Kutu Contası (m)" => "Motor Kutu Contası",
-        "Kanat Contası (m)" => "Kanat Contası",
-        "Kenet Fitili (m)" => "Kenet Fitili",
-        "Kıl Fitil (m)" => "Kıl Fitil",
-    ];
-    $total_cost = 0;
-    $total_weight = 0;
     foreach ($results as &$row) {
         $lookupName = $nameAliasMap[$row['name']] ?? $row['name'];
-        $stmt = $pdo->prepare('SELECT unit, measure_value, unit_price, category, image_data, image_type FROM products WHERE name = ? LIMIT 1');
-        $stmt->execute([$lookupName]);
-        $product = $stmt->fetch();
+        $product = $products[$lookupName] ?? null;
         $row['cost'] = null;
         $row['weight'] = null;
         $row['category'] = $product['category'] ?? 'Diğer';
-        if (!empty($product['image_data'])) {
+        $row['image_src'] = null;
+        if ($product && !empty($product['image_data'])) {
             $row['image_src'] = 'data:' . $product['image_type'] . ';base64,' . base64_encode($product['image_data']);
-        } else {
-            $row['image_src'] = null;
         }
         if ($product) {
-            $count = is_numeric($row['count']) ? (float) $row['count'] : 0;
-            $length = is_numeric($row['length']) ? (float) $row['length'] : 0;
+            $count = (float) $row['count'];
+            $length = is_numeric($row['length']) ? (float) $row['length'] : 0.0;
             if (strpos($row['name'], '(m)') === false && is_numeric($row['length'])) {
-                $length = $row['length'] / 1000; // convert mm to m
+                $length = $row['length'] / 1000;
             }
             if (strtolower($product['category']) === 'fitil') {
-                // Fitil kategorisinde maliyet hesaplaması metre x birim fiyat şeklinde
                 $row['cost'] = $length * $count * $product['unit_price'];
             } else {
                 switch (strtolower($product['unit'])) {
@@ -192,97 +199,165 @@ if ($hasInput) {
                         $weightPerPiece = $length * $product['measure_value'];
                         $row['weight'] = $weightPerPiece * $count;
                         if (strtolower($product['category']) === 'alüminyum') {
-                            $product['unit_price'] = ALUMINUM_COST_PER_KG;
-                            $row['weight'] *= 1.01; // account for waste
-                            $total_weight += $row['weight'];
+                            $product['unit_price'] = $aluminumPrice;
+                            $row['weight'] *= 1.01;
+                            $totalWeight += $row['weight'];
                         }
                         $row['cost'] = $row['weight'] * $product['unit_price'];
                         break;
-                    default: // metre
+                    default:
                         $row['cost'] = $length * $count * $product['unit_price'];
                         break;
                 }
             }
             $row['cost'] = max(0, $row['cost']);
-            $total_cost += $row['cost'];
+            $totalCost += $row['cost'];
         } else {
             $errors[] = $row['name'] . ' için ürün bulunamadı.';
-            $row['cost'] = 0;
+            $row['cost'] = 0.0;
         }
     }
     unset($row);
 
-    // Calculate glass cost based on area and add as a new result item
-    $glassArea = 0;
+    $glassArea = 0.0;
     foreach ($results as $r) {
         if (strtolower($r['name']) === 'cam') {
-            $dims = preg_split('/[xX]/', $r['length']);
-            if (count($dims) >= 2 && is_numeric(trim($dims[0])) && is_numeric(trim($dims[1])) && is_numeric($r['count'])) {
-                $w = (float) trim($dims[0]) / 1000; // convert mm to m
-                $h = (float) trim($dims[1]) / 1000; // convert mm to m
-                $glassArea = $w * $h * $r['count'];
+            $dims = preg_split('/[xX]/', (string) $r['length']);
+            if (count($dims) >= 2 && is_numeric(trim($dims[0])) && is_numeric(trim($dims[1]))) {
+                $w = (float) trim($dims[0]) / 1000;
+                $h = (float) trim($dims[1]) / 1000;
+                $glassArea = $w * $h * (float) $r['count'];
             }
             break;
         }
     }
 
+    $glassPrice = (float) get_setting($pdo, 'glass_cost_per_sqm');
     if ($glassArea > 0) {
-        $glassCost = $glassArea * 1295.26; // sabit fiyat ₺/m²
+        $glassCost = $glassArea * $glassPrice;
         $results[] = [
             'name' => 'Glass Cost (m²)',
             'length' => $glassArea,
-            'count' => '-',
+            'count' => null,
             'cost' => $glassCost,
             'category' => 'Cam',
             'image_src' => null,
         ];
-        $total_cost += $glassCost;
+        $totalCost += $glassCost;
     }
 
     $groupedResults = [];
     foreach ($results as $r) {
         $groupedResults[$r['category']][] = $r;
     }
-    $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
 
-    // Calculate additional aluminum waste and integrate its cost
-    $aluminum_waste = $total_weight * 0.07;
-    $aluminum_waste_cost = $aluminum_waste * ALUMINUM_COST_PER_KG;
-    $aluminum_total_cost = ($total_weight + $aluminum_waste) * ALUMINUM_COST_PER_KG;
-    $total_cost += $aluminum_waste_cost;
+    $aluminumWaste = $totalWeight * 0.07;
+    $aluminumWasteCost = $aluminumWaste * $aluminumPrice;
+    $aluminumTotalCost = ($totalWeight + $aluminumWaste) * $aluminumPrice;
+    $totalCost += $aluminumWasteCost;
 
-    if ($total_cost < 0) {
-        $total_cost = 0;
+    if ($totalCost < 0) {
+        $totalCost = 0.0;
     }
-    $sales_price = max(0, $total_cost * (1 + $profit_margin / 100));
-    $calculated_margin = 0;
-    if ($sales_price > 0) {
-        $calculated_margin = (($sales_price - $total_cost) / $sales_price) * 100;
-    }
-    $profit_margin_amount = $sales_price - $total_cost;
-    $price_with_interest = max(0, $sales_price * (1 + MONTHLY_INTEREST_RATE));
 
-    if ($offerId && $offerExists && !empty($input['gid'])) {
-        $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=?, profit_margin_rate=?, profit_margin_amount=? WHERE id=?');
-        $stmt->execute([
-            round($sales_price, 2),
-            round($calculated_margin, 2),
-            round($profit_margin_amount, 2),
-            (int)$input['gid']
-        ]);
+    $salesPrice = max(0, $totalCost * (1 + $profitMargin / 100));
+    $calculatedMargin = $salesPrice > 0 ? (($salesPrice - $totalCost) / $salesPrice) * 100 : 0.0;
+    $profitMarginAmount = $salesPrice - $totalCost;
+
+    $interestRate = (float) get_setting($pdo, 'monthly_interest_rate');
+    $priceWithInterest = max(0, $salesPrice * (1 + $interestRate));
+
+    return [
+        'errors' => $errors,
+        'groupedResults' => $groupedResults,
+        'total_cost' => $totalCost,
+        'total_weight' => $totalWeight,
+        'aluminum_waste' => $aluminumWaste,
+        'aluminum_waste_cost' => $aluminumWasteCost,
+        'aluminum_total_cost' => $aluminumTotalCost,
+        'sales_price' => $salesPrice,
+        'calculated_margin' => $calculatedMargin,
+        'profit_margin_amount' => $profitMarginAmount,
+        'price_with_interest' => $priceWithInterest,
+        'inputs' => [
+            'width' => $width,
+            'height' => $height,
+            'quantity' => $quantity,
+            'glass_type' => $glassType,
+            'profit_margin' => $profitMargin,
+        ],
+    ];
+}
+
+$input = array_merge($_GET, $_POST);
+$data = [];
+$returnPrice = false;
+$offerId = validate_int($input['id'] ?? null) ?? 0;
+$offerExists = true;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || (!empty($input['width']) && !empty($input['height']))) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        $data['errors'][] = 'Invalid CSRF token.';
+    } else {
+        if ($offerId) {
+            try {
+                $stmt = $pdo->prepare('SELECT id FROM master_quotes WHERE id = ?');
+                $stmt->execute([$offerId]);
+                $offerExists = $stmt->fetchColumn() !== false;
+            } catch (PDOException $e) {
+                $offerExists = false;
+            }
+        }
+        $returnPrice = isset($input['return']);
+        $data = calculateOptimization($input, $pdo);
+        if ($offerId && $offerExists && !empty($input['gid']) && empty($data['errors'])) {
+            try {
+                $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=?, profit_margin_rate=?, profit_margin_amount=? WHERE id=?');
+                $stmt->execute([
+                    round($data['sales_price'], 2),
+                    round($data['calculated_margin'], 2),
+                    round($data['profit_margin_amount'], 2),
+                    (int)$input['gid']
+                ]);
+            } catch (PDOException $e) {
+                $data['errors'][] = 'Offer update failed: ' . $e->getMessage();
+            }
+        }
     }
 }
+
+$inputs = $data['inputs'] ?? [
+    'width' => '',
+    'height' => '',
+    'quantity' => 1,
+    'glass_type' => 'Isıcam',
+    'profit_margin' => 0,
+];
+$errors = $data['errors'] ?? [];
+$groupedResults = $data['groupedResults'] ?? [];
+$total_cost = $data['total_cost'] ?? 0.0;
+$total_weight = $data['total_weight'] ?? 0.0;
+$aluminum_waste = $data['aluminum_waste'] ?? 0.0;
+$aluminum_waste_cost = $data['aluminum_waste_cost'] ?? 0.0;
+$aluminum_total_cost = $data['aluminum_total_cost'] ?? 0.0;
+$sales_price = $data['sales_price'] ?? 0.0;
+$price_with_interest = $data['price_with_interest'] ?? 0.0;
+$calculated_margin = $data['calculated_margin'] ?? 0.0;
+$profit_margin = $inputs['profit_margin'];
+$width = $inputs['width'];
+$height = $inputs['height'];
+$quantity = $inputs['quantity'];
+$glass_type = $inputs['glass_type'];
+
 ?>
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Optimizasyon</title>
     <link href="<?php echo theme_css(); ?>" rel="stylesheet">
 </head>
-
 <body class="bg-light">
     <?php include 'includes/header.php'; ?>
     <div class="container py-4">
@@ -296,20 +371,18 @@ if ($hasInput) {
         <div class="alert alert-warning">Teklif bulunmadı.</div>
         <?php endif; ?>
         <form method="post" class="mb-4">
+            <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Genişliği</label>
-                <input type="number" step="0.01" name="width" class="form-control" required
-                    value="<?php echo htmlspecialchars($width); ?>" readonly>
+                <input type="number" step="0.01" name="width" class="form-control" required value="<?php echo htmlspecialchars((string)$width); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Yüksekliği</label>
-                <input type="number" step="0.01" name="height" class="form-control" required
-                    value="<?php echo htmlspecialchars($height); ?>" readonly>
+                <input type="number" step="0.01" name="height" class="form-control" required value="<?php echo htmlspecialchars((string)$height); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">Adet</label>
-                <input type="number" name="quantity" class="form-control" min="1"
-                    value="<?php echo htmlspecialchars($quantity); ?>" readonly>
+                <input type="number" name="quantity" class="form-control" min="1" value="<?php echo htmlspecialchars((string)$quantity); ?>" readonly>
             </div>
             <div class="mb-3">
                 <label class="form-label">Cam Tipi</label>
@@ -321,14 +394,13 @@ if ($hasInput) {
             </div>
             <div class="mb-3">
                 <label class="form-label">Kar Marjı (%)</label>
-                <input type="number" step="5.0" name="profit_margin" class="form-control"
-                    value="<?php echo htmlspecialchars($profit_margin); ?>">
+                <input type="number" step="5.0" name="profit_margin" class="form-control" value="<?php echo htmlspecialchars((string)$profit_margin); ?>">
             </div>
             <input type="hidden" name="gid" value="<?php echo htmlspecialchars($input['gid'] ?? ''); ?>">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($offerId); ?>">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars((string)$offerId); ?>">
             <button type="submit" class="btn btn-<?php echo get_color(); ?>">Hesapla</button>
         </form>
-        <?php if ($results): ?>
+        <?php if ($groupedResults): ?>
         <table class="table table-bordered mb-4">
             <thead>
                 <tr class="table-secondary">
@@ -344,18 +416,18 @@ if ($hasInput) {
             <tbody>
                 <?php foreach ($groupedResults['Cam'] ?? [] as $row): ?>
                 <?php
-                        $dims = preg_split('/[xX]/', $row['length']);
-                        $en = isset($dims[0]) && is_numeric(trim($dims[0])) ? round(trim($dims[0])) : trim($dims[0] ?? '');
-                        $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round(trim($dims[1])) : trim($dims[1] ?? '');
-                        $adet = is_numeric($row['count']) ? (int) $row['count'] : $row['count'];
-                        $m2 = (is_numeric($en) && is_numeric($boy) && is_numeric($row['count']))
-                            ? number_format($en * $boy * $row['count'] / 1e6, 2)
-                            : '-';
-                        ?>
+                    $dims = preg_split('/[xX]/', (string) $row['length']);
+                    $en = isset($dims[0]) && is_numeric(trim($dims[0])) ? round(trim($dims[0])) : trim($dims[0] ?? '');
+                    $boy = isset($dims[1]) && is_numeric(trim($dims[1])) ? round(trim($dims[1])) : trim($dims[1] ?? '');
+                    $adet = is_numeric($row['count']) ? (int) $row['count'] : $row['count'];
+                    $m2 = (is_numeric($en) && is_numeric($boy) && is_numeric($row['count']))
+                        ? fmt_currency($en * $boy * $row['count'] / 1e6, 2)
+                        : '-';
+                ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($en); ?></td>
-                    <td><?php echo htmlspecialchars($boy); ?></td>
-                    <td><?php echo htmlspecialchars($adet); ?></td>
+                    <td><?php echo htmlspecialchars((string)$en); ?></td>
+                    <td><?php echo htmlspecialchars((string)$boy); ?></td>
+                    <td><?php echo htmlspecialchars((string)$adet); ?></td>
                     <td><?php echo $m2; ?></td>
                 </tr>
                 <?php endforeach; ?>
@@ -378,8 +450,8 @@ if ($hasInput) {
                 <?php if ($row['name'] === 'Glass Cost (m²)'): ?>
                 <tr>
                     <th><?php echo htmlspecialchars($row['name']); ?></th>
-                    <td><?php echo number_format($row['length'], 2); ?></td>
-                    <td><?php echo number_format(round($row['cost']), 0); ?></td>
+                    <td><?php echo fmt_currency($row['length'], 2); ?></td>
+                    <td><?php echo fmt_currency($row['cost']); ?></td>
                 </tr>
                 <?php endif; ?>
                 <?php endforeach; ?>
@@ -388,15 +460,15 @@ if ($hasInput) {
 
         <table class="table table-bordered mb-4">
             <thead>
-                <tr>
                 <tr class="table-secondary">
                     <th colspan="5">Alüminyum</th>
                 </tr>
-                <th>Parça</th>
-                <th>Uzunluk</th>
-                <th>Adet</th>
-                <th>Ağırlık (kg)</th>
-                <th>Maliyet</th>
+                <tr>
+                    <th>Parça</th>
+                    <th>Uzunluk</th>
+                    <th>Adet</th>
+                    <th>Ağırlık (kg)</th>
+                    <th>Maliyet</th>
                 </tr>
             </thead>
             <tbody>
@@ -408,43 +480,26 @@ if ($hasInput) {
                         <?php endif; ?>
                         <?php echo htmlspecialchars($row['name']); ?>
                     </th>
-                    <td>
-                        <?php
-                                echo is_numeric($row['length'])
-                                    ? round($row['length'])
-                                    : htmlspecialchars($row['length']);
-                                ?>
-                    </td>
-                    <td><?php echo htmlspecialchars($row['count']); ?></td>
-                    <td>
-                        <?php
-                                echo is_null($row['weight'])
-                                    ? '-' : number_format($row['weight'], 2);
-                                ?>
-                    </td>
-                    <td>
-                        <?php
-                                echo is_null($row['cost'])
-                                    ? '-'
-                                    : number_format(round($row['cost']), 0);
-                                ?>
-                    </td>
+                    <td><?php echo is_numeric($row['length']) ? round($row['length']) : htmlspecialchars((string)$row['length']); ?></td>
+                    <td><?php echo htmlspecialchars((string)$row['count']); ?></td>
+                    <td><?php echo is_null($row['weight']) ? '-' : fmt_currency($row['weight'], 2); ?></td>
+                    <td><?php echo is_null($row['cost']) ? '-' : fmt_currency($row['cost']); ?></td>
                 </tr>
                 <?php endforeach; ?>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Alüminyum Ağırlığı</th>
-                    <th><?php echo number_format($total_weight, 2); ?></th>
+                    <th><?php echo fmt_currency($total_weight, 2); ?></th>
                     <th></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Alüminyum Fire (7%)</th>
-                    <th><?php echo number_format($aluminum_waste, 2); ?></th>
-                    <th><?php echo number_format($aluminum_waste_cost, 2); ?></th>
+                    <th><?php echo fmt_currency($aluminum_waste, 2); ?></th>
+                    <th><?php echo fmt_currency($aluminum_waste_cost); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Alüminyum Maliyeti</th>
-                    <th><?php echo number_format($total_weight + $aluminum_waste, 2); ?></th>
-                    <th><?php echo number_format($aluminum_total_cost, 2); ?></th>
+                    <th><?php echo fmt_currency($total_weight + $aluminum_waste, 2); ?></th>
+                    <th><?php echo fmt_currency($aluminum_total_cost); ?></th>
                 </tr>
             </tbody>
         </table>
@@ -472,46 +527,34 @@ if ($hasInput) {
                         <?php endif; ?>
                         <?php echo htmlspecialchars($row['name']); ?>
                     </th>
-                    <td>
-                        <?php
-                                        echo is_numeric($row['length'])
-                                            ? round($row['length'])
-                                            : htmlspecialchars($row['length']);
-                                        ?>
-                    </td>
-                    <td><?php echo htmlspecialchars($row['count']); ?></td>
-                    <td>
-                        <?php
-                                        echo is_null($row['cost'])
-                                            ? '-'
-                                            : number_format(round($row['cost']), 0);
-                                        ?>
-                    </td>
+                    <td><?php echo is_numeric($row['length']) ? round($row['length']) : htmlspecialchars((string)$row['length']); ?></td>
+                    <td><?php echo htmlspecialchars((string)$row['count']); ?></td>
+                    <td><?php echo is_null($row['cost']) ? '-' : fmt_currency($row['cost']); ?></td>
                 </tr>
                 <?php endforeach; ?>
                 <?php endif; ?>
                 <?php endforeach; ?>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Maliyet</th>
-                    <th><?php echo number_format(round($total_cost), 0); ?></th>
+                    <th><?php echo fmt_currency($total_cost); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
-                    <th><?php echo number_format(round($sales_price), 0); ?></th>
+                    <th><?php echo fmt_currency($sales_price); ?></th>
                 </tr>
                 <tr>
-                    <th colspan="3" class="text-end">Taksitli Fiyat (Aylık %5 Vade Farkı)</th>
-                    <th><?php echo number_format(round($price_with_interest), 0); ?></th>
+                    <th colspan="3" class="text-end">Taksitli Fiyat</th>
+                    <th><?php echo fmt_currency($price_with_interest); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Kar Marjı (%)</th>
-                    <th><?php echo number_format($calculated_margin, 2); ?></th>
+                    <th><?php echo fmt_currency($calculated_margin, 2); ?></th>
                 </tr>
             </tbody>
         </table>
         <?php endif; ?>
     </div>
-    <?php if ($returnPrice && $results): ?>
+    <?php if ($returnPrice && $groupedResults): ?>
     <script>
     if (window.opener) {
         window.opener.postMessage({
@@ -522,5 +565,4 @@ if ($hasInput) {
     </script>
     <?php endif; ?>
 </body>
-
 </html>
