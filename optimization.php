@@ -247,6 +247,11 @@ if ($hasInput) {
     }
     $sales_price = max(0, $total_cost * (1 + $profit_margin / 100));
 
+    // Calculate additional aluminum waste and costs for display
+    $aluminum_waste = $total_weight * 0.07;
+    $aluminum_waste_cost = $aluminum_waste * ALUMINUM_COST_PER_KG;
+    $aluminum_total_cost = ($total_weight + $aluminum_waste) * ALUMINUM_COST_PER_KG;
+
     if ($offerId && $offerExists && !empty($input['gid'])) {
         $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=? WHERE id=?');
         $stmt->execute([round($sales_price, 2), (int)$input['gid']]);
@@ -412,9 +417,19 @@ if ($hasInput) {
                 </tr>
                 <?php endforeach; ?>
                 <tr>
-                    <th colspan="3" class="text-end">Toplam Ağırlık</th>
+                    <th colspan="3" class="text-end">Toplam Alüminyum Ağırlığı</th>
                     <th><?php echo number_format($total_weight, 2); ?></th>
                     <th></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Alüminyum Fire (7%)</th>
+                    <th><?php echo number_format($aluminum_waste, 2); ?></th>
+                    <th><?php echo number_format($aluminum_waste_cost, 2); ?></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Toplam Alüminyum Maliyeti</th>
+                    <th><?php echo number_format($total_weight + $aluminum_waste, 2); ?></th>
+                    <th><?php echo number_format($aluminum_total_cost, 2); ?></th>
                 </tr>
             </tbody>
         </table>
