@@ -3,6 +3,7 @@ require_once 'config.php';
 require_once 'helpers/theme.php';
 require_once 'helpers/audit.php';
 require_once 'helpers/cost.php';
+require_once 'helpers/utils.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -677,7 +678,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
             form.method = 'post';
             form.action = '/optimization.php';
             form.target = '_blank';
+            const csrf = <?php echo json_encode(csrf_token()); ?>;
             form.innerHTML =
+                '<input type="hidden" name="csrf_token" value="' + csrf + '">' +
                 '<input type="hidden" name="width" value="' + width + '">' +
                 '<input type="hidden" name="height" value="' + height + '">' +
                 '<input type="hidden" name="quantity" value="' + quantity + '">' +
