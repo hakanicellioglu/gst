@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'helpers/theme.php';
+require_once 'helpers/validation.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,7 +11,7 @@ $errors = [];
 $username = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+    $username = sanitize_string($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
     if ($username === '' || $password === '') {
