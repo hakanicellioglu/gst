@@ -2,6 +2,7 @@
 require_once 'config.php';
 require_once 'helpers/theme.php';
 require_once 'helpers/audit.php';
+require_once 'helpers/cost.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -59,6 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_guillotine']) && 
         ':ral' => $_POST['ral_code']
     ]);
     $newId = $pdo->lastInsertId();
+    $cost = calculate_guillotine_material_cost($pdo, [
+        'width_mm' => $_POST['width_mm'],
+        'height_mm' => $_POST['height_mm'],
+        'system_qty' => max(0, (int)$_POST['system_qty']),
+        'glass_type' => $_POST['glass_type'],
+        'system_type' => 'Giyotin'
+    ]);
+    $upd = $pdo->prepare('UPDATE guillotine_quotes SET total_price = ? WHERE id = ?');
+    $upd->execute([$cost, $newId]);
     $stmtData = $pdo->prepare('SELECT * FROM guillotine_quotes WHERE id = :id');
     $stmtData->execute([':id' => $newId]);
     $newData = $stmtData->fetch();
@@ -116,6 +126,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_guillotine']) &&
         ':gid' => $_POST['gid'],
         ':master' => $id
     ]);
+    $cost = calculate_guillotine_material_cost($pdo, [
+        'width_mm' => $_POST['width_mm'],
+        'height_mm' => $_POST['height_mm'],
+        'system_qty' => max(0, (int)$_POST['system_qty']),
+        'glass_type' => $_POST['glass_type'],
+        'system_type' => 'Giyotin'
+    ]);
+    $upd = $pdo->prepare('UPDATE guillotine_quotes SET total_price = ? WHERE id = ?');
+    $upd->execute([$cost, (int)$_POST['gid']]);
     $newStmt = $pdo->prepare('SELECT * FROM guillotine_quotes WHERE id=:gid');
     $newStmt->execute([':gid' => $_POST['gid']]);
     $newData = $newStmt->fetch();
