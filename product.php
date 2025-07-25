@@ -143,7 +143,7 @@ $products = $stmt->fetchAll();
         <h2 class="mb-4">Ürünler</h2>
         <div class="row mb-3">
             <div class="col-12">
-                <div class="row align-items-center justify-content-end">
+                <div class="row align-items-center justify-content-end g-2">
                     <div class="col-auto">
                         <form method="get" class="form-inline-responsive d-flex">
                             <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
