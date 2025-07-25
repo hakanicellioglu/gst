@@ -226,7 +226,14 @@ if ($hasInput) {
     }
 
     if ($glassArea > 0) {
-        $glassCost = $glassArea * 1295.26; // sabit fiyat ₺/m²
+        // Fetch glass unit price based on the selected glass type
+        $stmt = $pdo->prepare('SELECT unit_price FROM products WHERE name = ? LIMIT 1');
+        $stmt->execute([$glass_type]);
+        $glassPrice = (float) $stmt->fetchColumn();
+        if ($glassPrice <= 0) {
+            $glassPrice = 0.0;
+        }
+        $glassCost = $glassArea * $glassPrice;
         $results[] = [
             'name' => 'Glass Cost (m²)',
             'length' => $glassArea,
