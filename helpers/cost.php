@@ -41,7 +41,7 @@ function calculate_guillotine_material_cost(PDO $pdo, array $quote): float
     ];
     $weightPerSqm = $weightMap[$type] ?? $weightMap['Giyotin'];
     $alWeight = $area * $weightPerSqm * $qty;
-    $alCost = $alWeight * ALUMINUM_PRICE_PER_KG;
+    $alCost = $alWeight * ALUMINUM_PRICE_PER_KG * 1.01;
 
     return round($glassCost + $alCost, 2);
 }
