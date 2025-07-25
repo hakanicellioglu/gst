@@ -131,32 +131,42 @@ include 'includes/header.php';
         </div>
         <?php endif; ?>
         <div class="row mb-3">
-            <div class="col-12 text-end">
-                <form method="get" class="form-inline-responsive d-inline-block me-2">
-                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
-                        class="form-control" placeholder="Teklif ara">
-                    <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
-                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
-                    <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
-                </form>
-                <form method="get" class="form-inline-responsive d-inline-block me-2">
-                    <select name="sort" class="form-select" onchange="this.form.submit()">
-                        <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
-                        <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
-                    </select>
-                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
-                </form>
-                <?php if ($canAdd): ?>
-                <a href="offer_form" class="btn btn-<?php echo get_color(); ?>">Teklif Ekle</a>
-                <?php endif; ?>
-                <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
-                    <a href="<?php echo $listUrl; ?>"
-                        class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i
-                            class="bi bi-list"></i></a>
-                    <a href="<?php echo $cardUrl; ?>"
-                        class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i
-                            class="bi bi-grid"></i></a>
+            <div class="col-12">
+                <div class="row align-items-center justify-content-end">
+                    <div class="col-auto">
+                        <form method="get" class="form-inline-responsive d-flex">
+                            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
+                                class="form-control" placeholder="Teklif ara">
+                            <input type="hidden" name="sort" value="<?php echo strtolower($sort); ?>">
+                            <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                            <button type="submit" class="btn btn-<?php echo get_color(); ?> ms-2">Ara</button>
+                        </form>
+                    </div>
+                    <div class="col-auto">
+                        <form method="get" class="form-inline-responsive d-flex ms-2">
+                            <select name="sort" class="form-select" onchange="this.form.submit()">
+                                <option value="asc" <?php echo $sort === 'ASC' ? 'selected' : ''; ?>>A'dan Z'ye</option>
+                                <option value="desc" <?php echo $sort === 'DESC' ? 'selected' : ''; ?>>Z'den A'ya</option>
+                            </select>
+                            <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                            <input type="hidden" name="view" value="<?php echo htmlspecialchars($view); ?>">
+                        </form>
+                    </div>
+                    <?php if ($canAdd): ?>
+                        <div class="col-auto">
+                            <a href="offer_form" class="btn btn-<?php echo get_color(); ?> ms-2">Teklif Ekle</a>
+                        </div>
+                    <?php endif; ?>
+                    <div class="col-auto">
+                        <div class="btn-group ms-2 view-toggle d-none d-md-inline-flex" role="group">
+                            <a href="<?php echo $listUrl; ?>"
+                                class="btn btn-outline-secondary <?php echo $view === 'list' ? 'active' : ''; ?>"><i
+                                    class="bi bi-list"></i></a>
+                            <a href="<?php echo $cardUrl; ?>"
+                                class="btn btn-outline-secondary <?php echo $view === 'card' ? 'active' : ''; ?>"><i
+                                    class="bi bi-grid"></i></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
