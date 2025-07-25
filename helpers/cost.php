@@ -2,7 +2,7 @@
 // Helper for material cost calculations for guillotine quotes
 
 // Fixed aluminum price per kilogram
-const ALUMINUM_PRICE_PER_KG = 190.0;
+const ALUMINUM_PRICE_PER_KG = 202.77;
 
 /**
  * Calculate material cost for a guillotine system.
@@ -41,7 +41,16 @@ function calculate_guillotine_material_cost(PDO $pdo, array $quote): float
     ];
     $weightPerSqm = $weightMap[$type] ?? $weightMap['Giyotin'];
     $alWeight = $area * $weightPerSqm * $qty;
-    $alCost = $alWeight * ALUMINUM_PRICE_PER_KG * 1.01;
+
+    // Base aluminum cost without waste
+    $baseAlCost = $alWeight * ALUMINUM_PRICE_PER_KG;
+
+    // Additional waste allowance of 7%
+    $wasteWeight = $alWeight * 0.07;
+    $wasteCost = $wasteWeight * ALUMINUM_PRICE_PER_KG;
+
+    $alCost = $baseAlCost + $wasteCost;
+
 
     return round($glassCost + $alCost, 2);
 }

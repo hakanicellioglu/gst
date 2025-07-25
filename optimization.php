@@ -11,7 +11,7 @@ if (!isset($_SESSION['user'])) {
 load_theme_settings($pdo);
 
 // Default aluminum price per kilogram in TRY
-const ALUMINUM_COST_PER_KG = 202.39;
+const ALUMINUM_COST_PER_KG = 202.77;
 
 $results = [];
 $width = '';
@@ -243,6 +243,13 @@ if ($hasInput) {
         $groupedResults[$r['category']][] = $r;
     }
     $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
+
+    // Calculate additional aluminum waste and integrate its cost
+    $aluminum_waste = $total_weight * 0.07;
+    $aluminum_waste_cost = $aluminum_waste * ALUMINUM_COST_PER_KG;
+    $aluminum_total_cost = ($total_weight + $aluminum_waste) * ALUMINUM_COST_PER_KG;
+    $total_cost += $aluminum_waste_cost;
+
     if ($total_cost < 0) {
         $total_cost = 0;
     }
@@ -413,9 +420,19 @@ if ($hasInput) {
                 </tr>
                 <?php endforeach; ?>
                 <tr>
-                    <th colspan="3" class="text-end">Toplam Ağırlık</th>
+                    <th colspan="3" class="text-end">Toplam Alüminyum Ağırlığı</th>
                     <th><?php echo number_format($total_weight, 2); ?></th>
                     <th></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Alüminyum Fire (7%)</th>
+                    <th><?php echo number_format($aluminum_waste, 2); ?></th>
+                    <th><?php echo number_format($aluminum_waste_cost, 2); ?></th>
+                </tr>
+                <tr>
+                    <th colspan="3" class="text-end">Toplam Alüminyum Maliyeti</th>
+                    <th><?php echo number_format($total_weight + $aluminum_waste, 2); ?></th>
+                    <th><?php echo number_format($aluminum_total_cost, 2); ?></th>
                 </tr>
             </tbody>
         </table>

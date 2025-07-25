@@ -557,6 +557,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                     <th>Motor</th>
                     <th>Adet</th>
                     <th>RAL Kod</th>
+                    <th>Maliyet (₺)</th>
                     <th class="text-center actions-col">İşlemler</th>
                 </tr>
             </thead>
@@ -572,6 +573,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canAdd) {
                     <td><?php echo htmlspecialchars($g['motor_system']); ?></td>
                     <td><?php echo htmlspecialchars($g['remote_qty']); ?></td>
                     <td><?php echo htmlspecialchars($g['ral_code']); ?></td>
+                    <td><?php echo number_format((float)$g['total_price'], 2); ?></td>
                     <td class="text-center">
                         <button class="btn btn-sm bg-light text-dark edit-guillotine-btn" data-bs-toggle="modal"
                             data-bs-target="#giyotinModal" data-id="<?php echo $g['id']; ?>"
