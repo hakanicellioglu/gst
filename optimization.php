@@ -242,15 +242,17 @@ if ($hasInput) {
         $groupedResults[$r['category']][] = $r;
     }
     $categoryOrder = ['Cam', 'Alüminyum', 'Aksesuar', 'Fitil', 'Diğer'];
+
+    // Calculate additional aluminum waste and integrate its cost
+    $aluminum_waste = $total_weight * 0.07;
+    $aluminum_waste_cost = $aluminum_waste * ALUMINUM_COST_PER_KG;
+    $aluminum_total_cost = ($total_weight + $aluminum_waste) * ALUMINUM_COST_PER_KG;
+    $total_cost += $aluminum_waste_cost;
+
     if ($total_cost < 0) {
         $total_cost = 0;
     }
     $sales_price = max(0, $total_cost * (1 + $profit_margin / 100));
-
-    // Calculate additional aluminum waste and costs for display
-    $aluminum_waste = $total_weight * 0.07;
-    $aluminum_waste_cost = $aluminum_waste * ALUMINUM_COST_PER_KG;
-    $aluminum_total_cost = ($total_weight + $aluminum_waste) * ALUMINUM_COST_PER_KG;
 
     if ($offerId && $offerExists && !empty($input['gid'])) {
         $stmt = $pdo->prepare('UPDATE guillotine_quotes SET total_price=? WHERE id=?');
