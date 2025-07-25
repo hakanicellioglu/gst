@@ -260,7 +260,12 @@ function calculateOptimization(array $input, PDO $pdo): array
         $totalCost = 0.0;
     }
 
-    $salesPrice = max(0, $totalCost * (1 + $profitMargin / 100));
+    $marginFactor = 1 - ($profitMargin / 100);
+    if ($marginFactor > 0) {
+        $salesPrice = max(0, $totalCost / $marginFactor);
+    } else {
+        $salesPrice = 0.0;
+    }
     $calculatedMargin = $salesPrice > 0 ? (($salesPrice - $totalCost) / $salesPrice) * 100 : 0.0;
     $profitMarginAmount = $salesPrice - $totalCost;
 
