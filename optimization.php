@@ -359,6 +359,27 @@ $height = $inputs['height'];
 $quantity = $inputs['quantity'];
 $glass_type = $inputs['glass_type'];
 
+$isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax']));
+if ($isAjax) {
+    header('Content-Type: application/json');
+    if ($errors) {
+        echo json_encode(['success' => false, 'errors' => $errors]);
+    } else {
+        echo json_encode([
+            'success' => true,
+            'sales_price' => round($sales_price, 2),
+            'sales_price_formatted' => fmt_currency($sales_price),
+            'price_with_interest' => round($price_with_interest, 2),
+            'price_with_interest_formatted' => fmt_currency($price_with_interest),
+            'calculated_margin' => round($calculated_margin, 2),
+            'calculated_margin_formatted' => fmt_currency($calculated_margin, 2),
+            'total_cost' => round($total_cost, 2),
+            'total_cost_formatted' => fmt_currency($total_cost)
+        ]);
+    }
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -380,7 +401,7 @@ $glass_type = $inputs['glass_type'];
         <?php if (!$offerExists && $offerId): ?>
         <div class="alert alert-warning">Teklif bulunmadı.</div>
         <?php endif; ?>
-        <form method="post" class="mb-4">
+        <form method="post" class="mb-4" id="calcForm">
             <input type="hidden" name="csrf_token" value="<?php echo csrf_token(); ?>">
             <div class="mb-3">
                 <label class="form-label">Giyotin Sistemi Genişliği</label>
@@ -546,25 +567,25 @@ $glass_type = $inputs['glass_type'];
                 <?php endforeach; ?>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Maliyet</th>
-                    <th><?php echo fmt_currency($total_cost); ?></th>
+                    <th id="totalCostCell"><?php echo fmt_currency($total_cost); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Toplam Fiyat (Kar Dahil)</th>
-                    <th><?php echo fmt_currency($sales_price); ?></th>
+                    <th id="salesPriceCell"><?php echo fmt_currency($sales_price); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Taksitli Fiyat</th>
-                    <th><?php echo fmt_currency($price_with_interest); ?></th>
+                    <th id="priceInterestCell"><?php echo fmt_currency($price_with_interest); ?></th>
                 </tr>
                 <tr>
                     <th colspan="3" class="text-end">Kar Marjı (%)</th>
-                    <th><?php echo fmt_currency($calculated_margin, 2); ?></th>
+                    <th id="marginCell"><?php echo fmt_currency($calculated_margin, 2); ?></th>
                 </tr>
             </tbody>
         </table>
         <?php endif; ?>
     </div>
-    <?php if ($returnPrice && $groupedResults): ?>
+<?php if ($returnPrice && $groupedResults): ?>
     <script>
     if (window.opener) {
         window.opener.postMessage({
@@ -573,6 +594,36 @@ $glass_type = $inputs['glass_type'];
         window.close();
     }
     </script>
-    <?php endif; ?>
+<?php endif; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('calcForm');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        formData.append('ajax', '1');
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(r => r.json())
+          .then(d => {
+              if (d.success) {
+                  const sp = document.getElementById('salesPriceCell');
+                  const pi = document.getElementById('priceInterestCell');
+                  const m = document.getElementById('marginCell');
+                  const tc = document.getElementById('totalCostCell');
+                  if (sp) sp.textContent = d.sales_price_formatted;
+                  if (pi) pi.textContent = d.price_with_interest_formatted;
+                  if (m) m.textContent = d.calculated_margin_formatted;
+                  if (tc && d.total_cost_formatted) tc.textContent = d.total_cost_formatted;
+              } else if (d.errors) {
+                  alert(d.errors.join('\n'));
+              }
+          })
+          .catch(() => alert('Hesaplama sırasında hata oluştu.'));
+    });
+});
+</script>
 </body>
 </html>
