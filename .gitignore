@@ -1,0 +1,23 @@
+# Dependency directories
+/vendor/
+
+# Temporary files
+/tmp/
+/temp/
+/cache/
+
+# Logs
+*.log
+
+# IDE directories
+.idea/
+.vscode/
+nbproject/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Swap files
+*~
+*.swp
