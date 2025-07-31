@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: 127.0.0.1
--- Üretim Zamanı: 25 Tem 2025, 15:09:15
+-- Üretim Zamanı: 31 Tem 2025, 14:14:22
 -- Sunucu sürümü: 10.4.32-MariaDB
 -- PHP Sürümü: 8.0.30
 
@@ -173,7 +173,10 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action_time`, `table_name`, `column_
 (104, 1, '2025-07-24 13:53:18', 'guillotine_quotes', NULL, 8, NULL, '{\"id\":8,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":2,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Füme\",\"total_price\":null}', NULL, 3),
 (105, 1, '2025-07-24 14:04:08', 'guillotine_quotes', NULL, 8, '{\"id\":8,\"master_quote_id\":4,\"system_type\":\"Giyotin\",\"width_mm\":\"1000.00\",\"height_mm\":\"1000.00\",\"system_qty\":1,\"motor_system\":\"Cuppon\",\"remote_system\":null,\"remote_qty\":2,\"ral_code\":\"7016\",\"glass_type\":\"Tek Cam\",\"glass_color\":\"Füme\",\"total_price\":\"4795.77\"}', NULL, NULL, 5),
 (106, 1, '2025-07-25 11:40:05', 'settings', NULL, 1, NULL, NULL, NULL, 4),
-(107, 1, '2025-07-25 11:44:51', 'products', NULL, 20, NULL, '{\"id\":20,\"name\":\"Cam\",\"code\":\"CAM01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"1296.88\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 3);
+(107, 1, '2025-07-25 11:44:51', 'products', NULL, 20, NULL, '{\"id\":20,\"name\":\"Cam\",\"code\":\"CAM01\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"1296.88\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 3),
+(108, 1, '2025-07-26 09:54:45', 'products', NULL, 21, NULL, '{\"id\":21,\"name\":\"Flatbelt Kayış\",\"code\":\"KYŞ\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"1000.00\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 3),
+(109, 1, '2025-07-26 09:55:12', 'products', NULL, 22, NULL, '{\"id\":22,\"name\":\"Kenet Fitili (m)\",\"code\":\"FTL13\",\"unit\":\"metre\",\"measure_value\":\"1.000\",\"unit_price\":\"1000.00\",\"category\":\"Fitil\",\"image_data\":null,\"image_type\":null}', NULL, 3),
+(110, 1, '2025-07-26 09:55:37', 'products', NULL, 23, NULL, '{\"id\":23,\"name\":\"Kenet Fitili\",\"code\":\"AKS14\",\"unit\":\"adet\",\"measure_value\":\"1.000\",\"unit_price\":\"1000.00\",\"category\":\"Aksesuar\",\"image_data\":null,\"image_type\":null}', NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -293,7 +296,7 @@ CREATE TABLE `guillotine_quotes` (
 --
 
 INSERT INTO `guillotine_quotes` (`id`, `master_quote_id`, `system_type`, `width_mm`, `height_mm`, `system_qty`, `motor_system`, `remote_system`, `remote_qty`, `ral_code`, `glass_type`, `glass_color`, `total_price`, `profit_margin_rate`, `profit_margin_amount`) VALUES
-(6, 4, 'Giyotin', 1000.00, 1000.00, 1, 'Cuppon', NULL, 1, '7016', 'Isıcam', 'Şeffaf', 5731.50, NULL, NULL);
+(6, 4, 'Giyotin', 1000.00, 1000.00, 1, 'Cuppon', NULL, 1, '7016', 'Isıcam', 'Şeffaf', 11373.52, 30.00, 3412.06);
 
 -- --------------------------------------------------------
 
@@ -395,7 +398,10 @@ INSERT INTO `products` (`id`, `name`, `code`, `unit`, `measure_value`, `unit_pri
 (17, 'Motor Kutu Contası', 'AKS13', 'metre', 1.000, 32.36, 'Fitil', NULL, NULL),
 (18, 'Kanat Contası', 'FTL12', 'metre', 1.000, 32.36, 'Fitil', NULL, NULL),
 (19, 'Kıl Fitil', 'FTL01', 'metre', 1.000, 8.10, 'Fitil', NULL, NULL),
-(20, 'Cam', 'CAM01', 'metre', 1.000, 1296.88, 'Fitil', NULL, NULL);
+(20, 'Cam', 'CAM01', 'metre', 1.000, 1296.88, 'Fitil', NULL, NULL),
+(21, 'Flatbelt Kayış', 'KYŞ', 'metre', 1.000, 1000.00, 'Fitil', NULL, NULL),
+(22, 'Kenet Fitili (m)', 'FTL13', 'metre', 1.000, 1000.00, 'Fitil', NULL, NULL),
+(23, 'Kenet Fitili', 'AKS14', 'adet', 1.000, 1000.00, 'Aksesuar', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -640,7 +646,7 @@ ALTER TABLE `actions`
 -- Tablo için AUTO_INCREMENT değeri `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `companies`
@@ -694,7 +700,7 @@ ALTER TABLE `permissions`
 -- Tablo için AUTO_INCREMENT değeri `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `roles`
